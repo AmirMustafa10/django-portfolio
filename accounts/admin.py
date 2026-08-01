@@ -48,6 +48,12 @@ class ProfileAdmin(admin.ModelAdmin):
             },
         ),
         (
+            "User Skills",
+            {
+                "fields": ("skills",),
+            },
+        ),
+        (
             "Media & Documents",
             {
                 "fields": (
