@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils import timezone
+from portfolio.models import Skill
 
 MAX_FILE_SIZE = 2 * 1024 * 1024  # 2 MB
 
@@ -64,6 +65,10 @@ class Profile(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="profile",
+    )
+
+    skills = models.ManyToManyField(
+        Skill, related_name="profiles", blank=True, null=True
     )
 
     bio = models.TextField()

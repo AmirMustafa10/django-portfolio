@@ -40,7 +40,7 @@ A professional portfolio web application built with Django following clean archi
 - [x] Accounts application created
 - [x] Custom User
 - [x] Profile
-- [ ] Portfolio
+- [x] Portfolio application created
 - [ ] Blog
 - [ ] Contact
 
@@ -107,3 +107,8 @@ MIT
 - ✅ Business rule validation
 - ✅ Django Admin
 - ✅ Search & Filtering
+
+### Portfolio
+
+#### Skill
+Stores reusable developer skills.
