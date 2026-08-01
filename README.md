@@ -37,6 +37,7 @@ A professional portfolio web application built with Django following clean archi
 - [x] Database Design
 - [x] ER Diagram
 - [x] Django Project Setup
+- [x] Accounts application created
 - [ ] Custom User
 - [ ] Profile
 - [ ] Portfolio
@@ -44,6 +45,18 @@ A professional portfolio web application built with Django following clean archi
 - [ ] Contact
 
 ---
+
+## Project Structure
+
+- accounts
+  - User authentication
+  - User profile management
+
+---
+
+### Authentication
+
+- Custom User model based on Django AbstractUser.
 
 ## Tech Stack
 
