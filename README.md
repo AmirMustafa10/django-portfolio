@@ -36,7 +36,7 @@ A professional portfolio web application built with Django following clean archi
 - [x] Requirements Analysis
 - [x] Database Design
 - [x] ER Diagram
-- [ ] Django Project Setup
+- [x] Django Project Setup
 - [ ] Custom User
 - [ ] Profile
 - [ ] Portfolio
