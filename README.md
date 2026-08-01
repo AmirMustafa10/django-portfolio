@@ -107,3 +107,8 @@ MIT
 - ✅ Business rule validation
 - ✅ Django Admin
 - ✅ Search & Filtering
+
+### Portfolio
+
+#### Skill
+Stores reusable developer skills.
