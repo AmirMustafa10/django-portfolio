@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual Environment
+venv/
+.env/
+
+# Environment Variables
+.env
+
+# Django
+db.sqlite3
+media/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Static files
+staticfiles/
+
+# Python cache
+.pytest_cache/
+.mypy_cache/
+
+# Coverage
+htmlcov/
+.coverage

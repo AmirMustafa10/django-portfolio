@@ -1,0 +1,188 @@
+Portfolio System - Database Design
+
+Entity: User
+---------------------------------------
+Purpose: Authentication & Authorization only.
+Attributes:
+id (Primary Key)
+username
+email
+password
+first_name
+last_name
+is_active
+is_staff
+is_superuser
+last_login
+date_joined
+
+Relationships
+One-to-One → Profile
+One-to-Many → Comment
+
+
+Entity: Profile
+---------------------------------------
+Purpose: Stores developer portfolio information.
+Attributes:
+id (Primary Key)
+bio
+avatar
+resume
+github_url
+linkedin_url
+website_url
+location
+available_for_work
+
+Relationships
+One-to-One → User
+Many-to-Many → Skill
+One-to-Many → Project
+One-to-Many → Experience
+One-to-Many → Education
+One-to-Many → BlogPost
+One-to-Many → ContactMessage
+
+Entity: Skill
+---------------------------------------
+Purpose: Represents reusable developer skills.
+Attributes:
+id (Primary Key)
+name
+icon
+
+Relationships
+Many-to-Many → Profile
+Many-to-Many → Project
+
+
+Entity: Project
+---------------------------------------
+Purpose: Represents a portfolio project.
+Attributes:
+id (Primary Key)
+title
+slug
+description
+status
+live_demo_url
+source_code_url
+featured
+
+Relationships
+Many-to-One → Profile
+Many-to-Many → Skill
+One-to-Many → ProjectImage
+
+
+Entity: ProjectImage
+---------------------------------------
+Purpose: Stores multiple images for a project.
+Attributes:
+id (Primary Key)
+image
+caption
+display_order
+
+Relationships
+Many-to-One → Project
+
+
+Entity: Experience
+---------------------------------------
+Purpose: Represents work experience.
+Attributes:
+id (Primary Key)
+company_name
+job_title
+employment_type
+description
+start_date
+end_date
+currently_working
+
+Relationships
+Many-to-One → Profile
+
+
+Entity: Education
+---------------------------------------
+Purpose: Represents educational history.
+Attributes:
+id (Primary Key)
+institution
+degree
+field_of_study
+start_date
+end_date
+grade
+description
+
+Relationships
+Many-to-One → Profile
+
+
+Entity: BlogPost
+---------------------------------------
+Purpose: Represents articles written by developers.
+Attributes:
+id (Primary Key)
+title
+slug
+content
+cover_image
+status
+published_at
+
+Relationships
+Many-to-One → Profile
+One-to-Many → Comment
+
+
+Entity: Comment
+---------------------------------------
+Purpose: Represents comments on blog posts.
+Attributes:
+id (Primary Key)
+content
+
+Relationships
+Many-to-One → BlogPost
+Many-to-One → User
+
+
+Entity: ContactMessage
+---------------------------------------
+Purpose: Stores messages sent by visitors to developers.
+Attributes:
+id (Primary Key)
+name
+email
+subject
+message
+is_read
+
+Relationships
+Many-to-One → Profile
+
+
+Shared Abstract Models (Architecture)
+
+TimeStampedModel
+---------------------------------------
+Attributes:
+created_at
+updated_at
+
+inherit for:
+
+Profile
+Skill
+Project
+ProjectImage
+Experience
+Education
+BlogPost
+Comment
+ContactMessage
