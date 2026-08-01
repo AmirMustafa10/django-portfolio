@@ -87,3 +87,11 @@ MIT
 - Stores professional links (GitHub, LinkedIn, Website).
 - Includes profile availability status.
 - Enforces business validation for "Open to Work" profiles.
+
+### Admin
+
+- Customized Django Admin for User and Profile.
+- Search by username and location.
+- Filter profiles by availability.
+- Optimized admin queries using `list_select_related`.
+- Field Grouping
