@@ -95,3 +95,15 @@ MIT
 - Filter profiles by availability.
 - Optimized admin queries using `list_select_related`.
 - Field Grouping
+
+
+## Testing
+
+### Accounts Module
+
+- ✅ User creation
+- ✅ Profile creation
+- ✅ File upload validation
+- ✅ Business rule validation
+- ✅ Django Admin
+- ✅ Search & Filtering
