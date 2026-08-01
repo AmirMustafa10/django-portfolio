@@ -1,8 +1,131 @@
-from django.db import models
+import os
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
+from django.db import models
+from django.utils import timezone
 
-# Create your models here.
+MAX_FILE_SIZE = 2 * 1024 * 1024  # 2 MB
+
+
+def avatar_upload_path(instance, filename):
+    """
+    Upload path:
+    avatars/YYYY/MM/DD/<username>.<ext>
+    """
+    _, extension = os.path.splitext(filename)
+    today = timezone.now()
+
+    username = instance.user.username if instance.user_id else "user"
+
+    return os.path.join(
+        "avatars",
+        today.strftime("%Y"),
+        today.strftime("%m"),
+        today.strftime("%d"),
+        f"{username}{extension.lower()}",
+    )
+
+
+def resume_upload_path(instance, filename):
+    """
+    Upload path:
+    resumes/YYYY/MM/DD/<username>_resume.pdf
+    """
+    _, extension = os.path.splitext(filename)
+    today = timezone.now()
+
+    username = instance.user.username if instance.user_id else "user"
+
+    return os.path.join(
+        "resumes",
+        today.strftime("%Y"),
+        today.strftime("%m"),
+        today.strftime("%d"),
+        f"{username}_resume{extension.lower()}",
+    )
+
+
+def validate_file_size(file):
+    """Validate uploaded file size (max 2 MB)."""
+    if file.size > MAX_FILE_SIZE:
+        raise ValidationError("Maximum allowed file size is 2 MB.")
 
 
 class User(AbstractUser):
+    """Custom user model."""
+
     pass
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="profile",
+    )
+
+    bio = models.TextField()
+
+    avatar = models.ImageField(
+        upload_to=avatar_upload_path,
+        blank=True,
+        null=True,
+        validators=[
+            validate_file_size,
+            FileExtensionValidator(allowed_extensions=["jpg", "jpeg", "png", "webp"]),
+        ],
+    )
+
+    resume = models.FileField(
+        upload_to=resume_upload_path,
+        blank=True,
+        null=True,
+        validators=[
+            validate_file_size,
+            FileExtensionValidator(allowed_extensions=["pdf"]),
+        ],
+    )
+
+    github_url = models.URLField(max_length=300, blank=True, null=True)
+
+    linkedin_url = models.URLField(max_length=300, blank=True, null=True)
+
+    website_url = models.URLField(max_length=300, blank=True, null=True)
+
+    location = models.CharField(max_length=250, blank=True, null=True)
+
+    available_for_work = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Profile"
+        verbose_name_plural = "Profiles"
+        ordering = ("user__username",)
+        indexes = [
+            models.Index(
+                fields=["available_for_work"],
+                name="available_for_work_idx",
+            ),
+            models.Index(
+                fields=["location"],
+                name="profile_location_idx",
+            ),
+        ]
+
+    def clean(self):
+        super().clean()
+
+        links = (
+            self.github_url,
+            self.linkedin_url,
+            self.website_url,
+        )
+
+        if self.available_for_work and not any(links):
+            raise ValidationError(
+                "At least one professional link (GitHub, LinkedIn, or Website) is required when the profile is marked as available for work."
+            )
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"

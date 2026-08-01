@@ -38,8 +38,8 @@ A professional portfolio web application built with Django following clean archi
 - [x] ER Diagram
 - [x] Django Project Setup
 - [x] Accounts application created
-- [ ] Custom User
-- [ ] Profile
+- [x] Custom User
+- [x] Profile
 - [ ] Portfolio
 - [ ] Blog
 - [ ] Contact
@@ -73,3 +73,17 @@ A professional portfolio web application built with Django following clean archi
 ## License
 
 MIT
+
+## Accounts Module
+
+### Models
+
+#### User
+- Custom user model extending Django's `AbstractUser`.
+
+#### Profile
+- One-to-One relationship with `User`.
+- Supports avatar and resume uploads.
+- Stores professional links (GitHub, LinkedIn, Website).
+- Includes profile availability status.
+- Enforces business validation for "Open to Work" profiles.
