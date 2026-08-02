@@ -70,7 +70,7 @@ A professional portfolio web application built with Django following clean archi
 
 ### Upcoming
 
-- [ ] Project
+- [x] Project
 - [ ] Experience
 - [ ] Education
 - [ ] Blog
@@ -150,7 +150,27 @@ Stores reusable developer skills.
 
 ### Project
 
-> Coming soon.
+Represents a portfolio project.
+
+**Features**
+
+- SEO-friendly slugs
+- Project status management
+- Live demo and source code links
+- Featured project support
+- Many-to-Many relationship with skills
+
+**Key Fields**
+
+- `profile`
+- `skills`
+- `title`
+- `description`
+- `slug`
+- `status`
+- `live_demo_url`
+- `source_code_url`
+- `is_featured`
 
 ### Project Image
 
