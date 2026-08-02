@@ -1,7 +1,8 @@
 from django.db import models
+from core.models import TimeStampedModel
 
 
-class Skill(models.Model):
+class Skill(TimeStampedModel):
     name = models.CharField(
         max_length=100,
         unique=True,
