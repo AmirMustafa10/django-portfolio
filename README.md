@@ -201,8 +201,13 @@ Represents a portfolio project.
 
 ## Portfolio
 
-> Coming soon.
+### Project Admin
 
+- Customized Django Admin interface.
+- Search by project title and owner.
+- Filter by project status and featured flag.
+- Optimized queries using `list_select_related`.
+- Improved Many-to-Many editing with `filter_horizontal`.
 ---
 
 # Testing
