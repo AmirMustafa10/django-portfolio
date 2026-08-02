@@ -32,7 +32,7 @@ class ProjectAdmin(admin.ModelAdmin):
     def owner(self, obj):
         return obj.profile.user.username
 
-    readonly_fields = ("owner", "created_at", "updated_at")
+    readonly_fields = ("slug", "owner", "created_at", "updated_at")
 
     list_display = (
         "title",
@@ -45,15 +45,13 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display_links = ("title",)
 
     search_fields = (
-        "owner",
         "title",
-        "status",
-        "created_at",
+        "profile__user__username",
     )
 
     list_filter = ("status", "is_featured")
 
-    ordering = ("created_at",)
+    ordering = ("-created_at",)
 
     list_select_related = ("profile",)
 
@@ -61,6 +59,15 @@ class ProjectAdmin(admin.ModelAdmin):
         "profile",
         "skills",
     )
+
+    date_hierarchy = "created_at"
+
+    list_editable = (
+        "status",
+        "is_featured",
+    )
+
+    save_on_top = True
 
     filter_horizontal = ("skills",)
 
