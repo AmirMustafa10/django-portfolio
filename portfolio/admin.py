@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Skill
+from .models import Skill, Project
 
 
 @admin.register(Skill)
@@ -20,3 +20,79 @@ class SkillAdmin(admin.ModelAdmin):
     ordering = ("name",)
 
     list_per_page = 25
+
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+
+    @admin.display(
+        ordering="profile__user__username",
+        description="owner",
+    )
+    def owner(self, obj):
+        return obj.profile.user.username
+
+    readonly_fields = ("owner", "created_at", "updated_at")
+
+    list_display = (
+        "title",
+        "owner",
+        "status",
+        "is_featured",
+        "created_at",
+    )
+
+    list_display_links = ("title",)
+
+    search_fields = (
+        "owner",
+        "title",
+        "status",
+        "created_at",
+    )
+
+    list_filter = ("status", "is_featured")
+
+    ordering = ("created_at",)
+
+    list_select_related = ("profile",)
+
+    autocomplete_fields = (
+        "profile",
+        "skills",
+    )
+
+    filter_horizontal = ("skills",)
+
+    list_per_page = 25
+
+    fieldsets = (
+        (
+            "Project details",
+            {
+                "fields": (
+                    "profile",
+                    "title",
+                    "description",
+                    "status",
+                    "created_at",
+                    "is_featured",
+                ),
+            },
+        ),
+        (
+            "Project skills",
+            {
+                "fields": ("skills",),
+            },
+        ),
+        (
+            "Project Links",
+            {
+                "fields": (
+                    "live_demo_url",
+                    "source_code_url",
+                ),
+            },
+        ),
+    )
