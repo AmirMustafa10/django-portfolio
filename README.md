@@ -1,64 +1,20 @@
 # Django Portfolio
 
-A professional portfolio web application built with Django following clean architecture and backend development best practices.
+A professional portfolio web application built with Django following clean architecture, scalable architecture, and backend development best practices.
 
-## Project Goals
+---
+
+# Project Goals
 
 - Build a scalable Django application.
 - Follow Clean Architecture principles.
 - Apply Django best practices.
-- Practice Git workflow with professional commits.
-- Document the development process.
+- Practice professional Git workflows.
+- Write clean, maintainable, and well-documented code.
 
 ---
 
-## Features (Planned)
-
-- Custom User Authentication
-- Developer Profile
-- Skills Management
-- Portfolio Projects
-- Project Gallery
-- Experience
-- Education
-- Blog System
-- Comments
-- Contact Form
-
----
-
-## Project Status
-
-🚧 In Development
-
-### Progress
-
-- [x] Requirements Analysis
-- [x] Database Design
-- [x] ER Diagram
-- [x] Django Project Setup
-- [x] Accounts application created
-- [x] Custom User
-- [x] Profile
-- [x] Portfolio application created
-- [ ] Blog
-- [ ] Contact
-
----
-
-## Project Structure
-
-- accounts
-  - User authentication
-  - User profile management
-
----
-
-### Authentication
-
-- Custom User model based on Django AbstractUser.
-
-## Tech Stack
+# Tech Stack
 
 - Python
 - Django
@@ -70,45 +26,168 @@ A professional portfolio web application built with Django following clean archi
 
 ---
 
-## License
+# Features
 
-MIT
+## Implemented
 
-## Accounts Module
+- Custom User Authentication
+- Developer Profile
+- Skills Management
 
-### Models
+## Planned
+
+- Portfolio Projects
+- Project Gallery
+- Experience
+- Education
+- Blog System
+- Comments
+- Contact Form
+
+---
+
+# Project Status
+
+🚧 **In Development**
+
+## Progress
+
+- [x] Requirements Analysis
+- [x] Database Design
+- [x] ER Diagram
+- [x] Django Project Setup
+
+### Accounts
+
+- [x] Accounts application created
+- [x] Custom User
+- [x] Profile
+
+### Portfolio
+
+- [x] Portfolio application created
+- [x] Skill
+
+### Upcoming
+
+- [ ] Project
+- [ ] Experience
+- [ ] Education
+- [ ] Blog
+- [ ] Contact
+
+---
+
+# Project Architecture
+
+## Applications
+
+### Accounts
+
+Responsible for:
+
+- Authentication
+- User management
+- Developer profile
+
+### Portfolio
+
+Responsible for:
+
+- Skills
+- Projects
+- Project gallery
+
+### Blog
+
+Responsible for blog articles.
+
+### Contact
+
+Responsible for contact messages.
+
+---
+
+# Models Overview
+
 ## Shared Abstract Models
 
 ### TimeStampedModel
 
-Reusable abstract base model that provides automatic timestamp tracking.
+Reusable abstract base model providing automatic timestamps.
 
 **Attributes**
+
 - `created_at`
 - `updated_at`
 
-#### User
-- Custom user model extending Django's `AbstractUser`.
+---
 
-#### Profile
-- One-to-One relationship with `User`.
-- Supports avatar and resume uploads.
-- Stores professional links (GitHub, LinkedIn, Website).
-- Includes profile availability status.
-- Enforces business validation for "Open to Work" profiles.
+## Accounts
 
-### Admin
+### User
 
-- Customized Django Admin for User and Profile.
-- Search by username and location.
-- Filter profiles by availability.
-- Optimized admin queries using `list_select_related`.
-- Field Grouping
+Custom user model extending Django's `AbstractUser`.
 
+### Profile
 
-## Testing
+- One-to-One relationship with `User`
+- Avatar upload
+- Resume upload
+- GitHub link
+- LinkedIn link
+- Personal website
+- Availability status
+- Business validation for "Open to Work"
 
-### Accounts Module
+---
+
+## Portfolio
+
+### Skill
+
+Stores reusable developer skills.
+
+### Project
+
+> Coming soon.
+
+### Project Image
+
+> Coming soon.
+
+---
+
+## Blog
+
+> Coming soon.
+
+---
+
+# Django Admin
+
+## Accounts
+
+### User
+
+- Customized admin interface
+
+### Profile
+
+- Search by username and location
+- Filter by availability
+- Optimized queries using `list_select_related`
+- Organized field groups
+
+## Portfolio
+
+> Coming soon.
+
+---
+
+# Testing
+
+## Accounts
 
 - ✅ User creation
 - ✅ Profile creation
@@ -117,7 +196,32 @@ Reusable abstract base model that provides automatic timestamp tracking.
 - ✅ Django Admin
 - ✅ Search & Filtering
 
-### Portfolio
+## Portfolio
 
-#### Skill
-Stores reusable developer skills.
+- ✅ Skill model
+
+---
+
+# Installation
+
+```bash
+git clone <repository-url>
+
+cd django-portfolio
+
+python -m venv .venv
+
+source .venv/bin/activate
+
+pip install -r requirements.txt
+
+python manage.py migrate
+
+python manage.py runserver
+```
+
+---
+
+# License
+
+MIT License
