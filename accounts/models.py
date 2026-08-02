@@ -5,7 +5,6 @@ from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils import timezone
-from portfolio.models import Skill
 from core.models import TimeStampedModel
 
 MAX_FILE_SIZE = 2 * 1024 * 1024  # 2 MB
@@ -69,7 +68,7 @@ class Profile(TimeStampedModel):
     )
 
     skills = models.ManyToManyField(
-        Skill, related_name="profiles", blank=True, null=True
+        "portfolio.Skill", related_name="profiles", blank=True, null=True
     )
 
     bio = models.TextField()
