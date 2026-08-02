@@ -77,6 +77,15 @@ MIT
 ## Accounts Module
 
 ### Models
+## Shared Abstract Models
+
+### TimeStampedModel
+
+Reusable abstract base model that provides automatic timestamp tracking.
+
+**Attributes**
+- `created_at`
+- `updated_at`
 
 #### User
 - Custom user model extending Django's `AbstractUser`.

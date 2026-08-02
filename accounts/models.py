@@ -6,6 +6,7 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils import timezone
 from portfolio.models import Skill
+from core.models import TimeStampedModel
 
 MAX_FILE_SIZE = 2 * 1024 * 1024  # 2 MB
 
@@ -60,7 +61,7 @@ class User(AbstractUser):
     pass
 
 
-class Profile(models.Model):
+class Profile(TimeStampedModel):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

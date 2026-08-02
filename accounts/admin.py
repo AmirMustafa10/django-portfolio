@@ -14,10 +14,13 @@ class ProfileAdmin(admin.ModelAdmin):
     def username(self, obj):
         return obj.user.username
 
+    readonly_fields = ("created_at", "updated_at")
+
     list_display = (
         "username",
         "location",
         "available_for_work",
+        "created_at",
     )
 
     list_display_links = ("username",)
@@ -70,6 +73,16 @@ class ProfileAdmin(admin.ModelAdmin):
                     "github_url",
                     "linkedin_url",
                     "website_url",
+                ),
+            },
+        ),
+        (
+            "System Timestamps",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "created_at",
+                    "updated_at",
                 ),
             },
         ),
