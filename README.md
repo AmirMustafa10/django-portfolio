@@ -230,7 +230,7 @@ Represents a portfolio project.
 # Installation
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/AmirMustafa10/django-portfolio.git
 
 cd django-portfolio
 
