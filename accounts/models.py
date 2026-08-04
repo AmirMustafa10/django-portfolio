@@ -1,13 +1,11 @@
 import os
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
-from core.models import TimeStampedModel
-
-MAX_FILE_SIZE = 2 * 1024 * 1024  # 2 MB
+from core.models import TimeStampedModel, validate_file_size
 
 
 def avatar_upload_path(instance, filename):
@@ -46,12 +44,6 @@ def resume_upload_path(instance, filename):
         today.strftime("%d"),
         f"{username}_resume{extension.lower()}",
     )
-
-
-def validate_file_size(file):
-    """Validate uploaded file size (max 2 MB)."""
-    if file.size > MAX_FILE_SIZE:
-        raise ValidationError("Maximum allowed file size is 2 MB.")
 
 
 class User(AbstractUser):
