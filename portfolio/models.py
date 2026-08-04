@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from django.db import models
+from django.db.models import F
 from core.models import TimeStampedModel, validate_file_size
 from django.core.validators import FileExtensionValidator
 from django.db.models import Max, UniqueConstraint
@@ -26,6 +27,7 @@ def image_upload_path(instance, filename):
 
 
 class Skill(TimeStampedModel):
+
     name = models.CharField(
         max_length=100,
         unique=True,
@@ -45,6 +47,7 @@ class Skill(TimeStampedModel):
 
 
 class Project(TimeStampedModel):
+
     class Status(models.TextChoices):
         DRAFT = "draft", "Draft"
         IN_PROGRESS = "in_progress", "In Progress"
@@ -161,6 +164,7 @@ class Project(TimeStampedModel):
 
 
 class ProjectImage(TimeStampedModel):
+
     project = models.ForeignKey(
         "Project", related_name="images", on_delete=models.CASCADE
     )
@@ -204,3 +208,93 @@ class ProjectImage(TimeStampedModel):
             return f"{self.project.title} - {self.caption}"
 
         return f"{self.project.title} - Image {self.display_order}"
+
+
+class Experience(TimeStampedModel):
+
+    class EmploymentType(models.TextChoices):
+        FULL_TIME = "full_time", "Full Time"
+        PART_TIME = "part_time", "Part Time"
+        CONTRACT = "contract", "Contract"
+        INTERNSHIP = "internship", "Internship"
+        FREELANCE = "freelance", "Freelance"
+
+    profile = models.ForeignKey(
+        "accounts.Profile",
+        related_name="experiences",
+        on_delete=models.CASCADE,
+    )
+
+    company_name = models.CharField(
+        max_length=250,
+    )
+
+    job_title = models.CharField(
+        max_length=250,
+    )
+
+    employment_type = models.CharField(
+        max_length=20,
+        choices=EmploymentType.choices,
+    )
+
+    description = models.TextField(
+        blank=True,
+    )
+
+    start_date = models.DateField()
+
+    end_date = models.DateField(
+        null=True,
+        blank=True,
+    )
+
+    currently_working = models.BooleanField(
+        default=False,
+    )
+
+    class Meta:
+        ordering = ("-start_date",)
+
+        constraints = [
+            models.CheckConstraint(
+                condition=(
+                    models.Q(
+                        currently_working=True,
+                        end_date__isnull=True,
+                    )
+                    | models.Q(
+                        currently_working=False,
+                    )
+                ),
+                name="experience_currently_working_no_end_date",
+            ),
+            models.CheckConstraint(
+                condition=(
+                    models.Q(end_date__isnull=True)
+                    | models.Q(start_date__lte=F("end_date"))
+                ),
+                name="experience_start_before_end",
+            ),
+        ]
+
+    def clean(self):
+        super().clean()
+
+        if self.currently_working and self.end_date:
+            raise ValidationError(
+                {"end_date": ("End date must be empty while currently working.")}
+            )
+
+        if not self.currently_working and not self.end_date:
+            raise ValidationError(
+                {"end_date": ("End date is required when you are no longer working.")}
+            )
+
+        if self.end_date and self.start_date > self.end_date:
+            raise ValidationError(
+                {"end_date": ("End date cannot be earlier than start date.")}
+            )
+
+    def __str__(self):
+        return f"{self.company_name} - {self.job_title}"
