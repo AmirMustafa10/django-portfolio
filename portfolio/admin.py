@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Skill, Project, ProjectImage, Experience
+from .models import Skill, Project, ProjectImage, Experience, Education
 
 
 @admin.register(Skill)
@@ -182,6 +182,91 @@ class ExperienceAdmin(admin.ModelAdmin):
         ),
         (
             "Details",
+            {
+                "fields": ("description",),
+            },
+        ),
+        (
+            "Metadata",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "created_at",
+                    "updated_at",
+                ),
+            },
+        ),
+    )
+
+
+@admin.register(Education)
+class EducationAdmin(admin.ModelAdmin):
+
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+    )
+
+    list_display = (
+        "institution",
+        "field_of_study",
+        "profile",
+        "degree",
+        "grade",
+        "start_date",
+        "end_date",
+    )
+
+    list_display_links = (
+        "institution",
+        "field_of_study",
+    )
+
+    search_fields = (
+        "institution",
+        "profile__user__username",
+        "degree",
+        "field_of_study",
+        "grade",
+    )
+
+    list_filter = (
+        "degree",
+        "field_of_study",
+    )
+
+    ordering = ("-start_date",)
+
+    list_select_related = ("profile",)
+
+    autocomplete_fields = ("profile",)
+
+    date_hierarchy = "created_at"
+
+    list_per_page = 25
+
+    fieldsets = (
+        (
+            "Academic Information",
+            {
+                "fields": (
+                    "profile",
+                    "institution",
+                    ("degree", "field_of_study", "grade"),
+                ),
+            },
+        ),
+        (
+            "Timeline",
+            {
+                "fields": (
+                    "start_date",
+                    "end_date",
+                ),
+            },
+        ),
+        (
+            "Additional Details",
             {
                 "fields": ("description",),
             },
