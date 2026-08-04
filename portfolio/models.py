@@ -1,10 +1,9 @@
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from django.db import models
-from django.db.models import F
 from core.models import TimeStampedModel, validate_file_size
 from django.core.validators import FileExtensionValidator
-from django.db.models import Max, UniqueConstraint
+from django.db.models import Max, UniqueConstraint, F
 import os
 from django.utils import timezone
 
