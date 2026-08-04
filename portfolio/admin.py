@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Skill, Project
+from .models import Skill, Project, ProjectImage
 
 
 @admin.register(Skill)
@@ -20,6 +20,17 @@ class SkillAdmin(admin.ModelAdmin):
     ordering = ("name",)
 
     list_per_page = 25
+
+
+class ProjectImageInline(admin.TabularInline):
+    model = ProjectImage
+    extra = 1
+    fields = (
+        "image",
+        "caption",
+        "display_order",
+    )
+    ordering = ("display_order",)
 
 
 @admin.register(Project)
@@ -103,3 +114,5 @@ class ProjectAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    inlines = (ProjectImageInline,)
