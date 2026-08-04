@@ -72,9 +72,14 @@ A professional portfolio web application built with Django following clean archi
 - [x] Experience
 - [x] Education
 
+### Blog
+
+- [x] Blog application created
+- [ ] Post
+- [ ] Comments
+
 ### Upcoming
 
-- [ ] Blog
 - [ ] Contact
 
 ---
@@ -101,7 +106,10 @@ Responsible for:
 
 ### Blog
 
-Responsible for blog articles.
+Responsible for:
+
+- Blog posts
+- Comments
 
 ### Contact
 
