@@ -235,12 +235,16 @@ Represents a developer's professional work experience.
 
 - Customized admin interface
 
+---
+
 ### Profile
 
 - Search by username and location
 - Filter by availability
 - Optimized queries using `list_select_related`
 - Organized field groups
+
+---
 
 ## Portfolio
 
@@ -252,6 +256,14 @@ Represents a developer's professional work experience.
 - Optimized queries using `list_select_related`.
 - Improved Many-to-Many editing with `filter_horizontal`.
 - ProjectImage inline management
+---
+
+### Experience Admin
+
+- Customized Django Admin interface
+- Search and filtering for experience records
+- Organized experience fields
+
 ---
 
 
