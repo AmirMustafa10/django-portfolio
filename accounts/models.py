@@ -60,7 +60,7 @@ class Profile(TimeStampedModel):
     )
 
     skills = models.ManyToManyField(
-        "portfolio.Skill", related_name="profiles", blank=True, null=True
+        "portfolio.Skill", related_name="profiles", blank=True
     )
 
     bio = models.TextField()

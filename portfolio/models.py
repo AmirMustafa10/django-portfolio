@@ -21,7 +21,7 @@ def image_upload_path(instance, filename):
         today.strftime("%Y"),
         today.strftime("%m"),
         today.strftime("%d"),
-        f"{instance.slug}_image{extension.lower()}",
+        f"{instance.project.slug}_image{extension.lower()}",
     )
 
 
@@ -195,7 +195,7 @@ class ProjectImage(TimeStampedModel):
                 Max("display_order")
             )["display_order__max"]
 
-            self.display_order = (max_order or 0) + 1
+            self.display_order = (max_order or 1) + 1
 
         super().save(*args, **kwargs)
 
