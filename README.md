@@ -75,7 +75,7 @@ A professional portfolio web application built with Django following clean archi
 ### Blog
 
 - [x] Blog application created
-- [ ] Post
+- [x] BlogPost
 - [ ] Comments
 
 ### Upcoming
@@ -254,7 +254,26 @@ Represents a developer's educational background.
 
 ## Blog
 
-> Coming soon.
+### BlogPost
+
+Represents a blog post published by the developer.
+
+**Features**
+
+- Blog post content management
+- SEO-friendly slugs
+- Publication status management
+- Publication date tracking
+
+**Key Fields**
+
+- `profile`
+- `title`
+- `slug`
+- `content`
+- `cover_image`
+- `status`
+- `published_at`
 
 ---
 
