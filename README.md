@@ -223,7 +223,10 @@ Represents images associated with portfolio projects.
 - Filter by project status and featured flag.
 - Optimized queries using `list_select_related`.
 - Improved Many-to-Many editing with `filter_horizontal`.
+- ProjectImage inline management
 ---
+
+
 
 # Testing
 
