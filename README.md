@@ -70,10 +70,10 @@ A professional portfolio web application built with Django following clean archi
 - [x] Project
 - [x] ProjectImage
 - [x] Experience
+- [x] Education
 
 ### Upcoming
 
-- [ ] Education
 - [ ] Blog
 - [ ] Contact
 
@@ -216,6 +216,29 @@ Represents a developer's professional work experience.
 - `start_date`
 - `end_date`
 - `currently_working`
+
+---
+
+### Education
+
+Represents a developer's educational background.
+
+**Features**
+
+- Stores academic institution information
+- Tracks degree and field of study
+- Supports education dates
+
+**Key Fields**
+
+- `profile`
+- `institution`
+- `degree`
+- `field_of_study`
+- `start_date`
+- `end_date`
+- `grade`
+- `description`
 
 ---
 
