@@ -324,6 +324,14 @@ Represents a blog post published by the developer.
 
 ---
 
+### BlogPost
+
+- Customized Django Admin interface
+- Organized blog post fields
+- Search and filtering support
+
+---
+
 
 # Testing
 

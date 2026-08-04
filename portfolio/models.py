@@ -11,13 +11,14 @@ from django.utils import timezone
 def image_upload_path(instance, filename):
     """
     Upload path:
-    images/YYYY/MM/DD/<username>_image.<ext>
+    images/Project/YYYY/MM/DD/<username>_image.<ext>
     """
     _, extension = os.path.splitext(filename)
     today = timezone.now()
 
     return os.path.join(
         "images",
+        "Project",
         today.strftime("%Y"),
         today.strftime("%m"),
         today.strftime("%d"),

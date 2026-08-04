@@ -9,13 +9,14 @@ from django.core.validators import FileExtensionValidator
 def image_upload_path(instance, filename):
     """
     Upload path:
-    images/YYYY/MM/DD/<username>_blog_image.<ext>
+    images/Blog/YYYY/MM/DD/<username>_blog_image.<ext>
     """
     _, extension = os.path.splitext(filename)
     today = timezone.now()
 
     return os.path.join(
         "images",
+        "Blog",
         today.strftime("%Y"),
         today.strftime("%m"),
         today.strftime("%d"),
