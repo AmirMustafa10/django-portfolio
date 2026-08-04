@@ -69,10 +69,10 @@ A professional portfolio web application built with Django following clean archi
 - [x] Skill
 - [x] Project
 - [x] ProjectImage
+- [x] Experience
 
 ### Upcoming
 
-- [ ] Experience
 - [ ] Education
 - [ ] Blog
 - [ ] Contact
@@ -149,6 +149,7 @@ Custom user model extending Django's `AbstractUser`.
 
 Stores reusable developer skills.
 
+---
 ### Project
 
 Represents a portfolio project.
@@ -173,6 +174,8 @@ Represents a portfolio project.
 - `source_code_url`
 - `is_featured`
 
+---
+
 ### Project Image
 
 Represents images associated with portfolio projects.
@@ -190,6 +193,31 @@ Represents images associated with portfolio projects.
 - `image`
 - `caption`
 - `display_order`
+
+---
+### Experience
+
+Represents a developer's professional work experience.
+
+**Features**
+
+- Supports different employment types
+- Stores company and job information
+- Tracks employment dates
+- Supports current positions
+
+**Key Fields**
+
+- `profile`
+- `job_title`
+- `company`
+- `employment_type`
+- `description`
+- `start_date`
+- `end_date`
+- `currently_working`
+
+---
 
 ---
 
