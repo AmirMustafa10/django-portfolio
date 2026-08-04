@@ -185,6 +185,8 @@ class ProjectImage(TimeStampedModel):
     display_order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
+        verbose_name = "image"
+        verbose_name_plural = "images"
         ordering = ["project", "display_order"]
 
         constraints = [
@@ -254,6 +256,9 @@ class Experience(TimeStampedModel):
     )
 
     class Meta:
+        verbose_name = "Experience"
+        verbose_name_plural = "Experiences"
+
         ordering = ("-start_date",)
 
         constraints = [
@@ -298,3 +303,62 @@ class Experience(TimeStampedModel):
 
     def __str__(self):
         return f"{self.company_name} - {self.job_title}"
+
+
+class Education(TimeStampedModel):
+
+    profile = models.ForeignKey(
+        "accounts.Profile",
+        related_name="educations",
+        on_delete=models.CASCADE,
+    )
+
+    institution = models.CharField(max_length=255)
+
+    degree = models.CharField(max_length=255)
+
+    field_of_study = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+
+    start_date = models.DateField()
+
+    end_date = models.DateField(
+        null=True,
+        blank=True,
+    )
+
+    grade = models.CharField(
+        max_length=100,
+        blank=True,
+    )
+
+    description = models.TextField(blank=True)
+
+    class Meta:
+        verbose_name = "Education"
+        verbose_name_plural = "Educations"
+
+        ordering = ("-start_date",)
+
+        constraints = [
+            models.CheckConstraint(
+                condition=(
+                    models.Q(end_date__isnull=True)
+                    | models.Q(start_date__lte=F("end_date"))
+                ),
+                name="education_start_before_end",
+            ),
+        ]
+
+    def clean(self):
+        super().clean()
+
+        if self.end_date and self.start_date > self.end_date:
+            raise ValidationError(
+                {"end_date": ("End date cannot be earlier than start date.")}
+            )
+
+    def __str__(self):
+        return f"{self.institution} - {self.degree}"
