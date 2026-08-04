@@ -1,6 +1,5 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import Skill, Project, ProjectImage
+from .models import Skill, Project, ProjectImage, Experience
 
 
 @admin.register(Skill)
@@ -36,18 +35,11 @@ class ProjectImageInline(admin.TabularInline):
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
 
-    @admin.display(
-        ordering="profile__user__username",
-        description="owner",
-    )
-    def owner(self, obj):
-        return obj.profile.user.username
-
-    readonly_fields = ("slug", "owner", "created_at", "updated_at")
+    readonly_fields = ("slug", "created_at", "updated_at")
 
     list_display = (
         "title",
-        "owner",
+        "profile",
         "status",
         "is_featured",
         "created_at",
@@ -116,3 +108,92 @@ class ProjectAdmin(admin.ModelAdmin):
     )
 
     inlines = (ProjectImageInline,)
+
+
+@admin.register(Experience)
+class ExperienceAdmin(admin.ModelAdmin):
+
+    readonly_fields = ("created_at", "updated_at")
+
+    list_display = (
+        "company_name",
+        "job_title",
+        "profile",
+        "employment_type",
+        "start_date",
+        "end_date",
+        "currently_working",
+    )
+
+    list_display_links = (
+        "company_name",
+        "job_title",
+    )
+
+    search_fields = (
+        "company_name",
+        "profile__user__username",
+        "job_title",
+    )
+
+    list_filter = (
+        "employment_type",
+        "currently_working",
+    )
+
+    ordering = ("-start_date",)
+
+    list_select_related = ("profile",)
+
+    autocomplete_fields = ("profile",)
+
+    date_hierarchy = "created_at"
+
+    list_editable = (
+        "employment_type",
+        "currently_working",
+    )
+
+    save_on_top = True
+
+    list_per_page = 25
+
+    fieldsets = (
+        (
+            "Basic Information",
+            {
+                "fields": (
+                    "profile",
+                    "company_name",
+                    "job_title",
+                    "employment_type",
+                )
+            },
+        ),
+        (
+            "Dates & Status",
+            {
+                "fields": (
+                    "start_date",
+                    "end_date",
+                    "currently_working",
+                )
+            },
+        ),
+        (
+            "Details",
+            {
+                "fields": ("description",),
+            },
+        ),
+        (
+            "Metadata",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "created_at",
+                    "updated_at",
+                ),
+            },
+        ),
+    )
