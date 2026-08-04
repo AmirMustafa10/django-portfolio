@@ -1,7 +1,28 @@
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from django.db import models
-from core.models import TimeStampedModel
+from core.models import TimeStampedModel, validate_file_size
+from django.core.validators import FileExtensionValidator
+from django.db.models import Max, UniqueConstraint
+import os
+from django.utils import timezone
+
+
+def image_upload_path(instance, filename):
+    """
+    Upload path:
+    images/YYYY/MM/DD/<username>_image.<ext>
+    """
+    _, extension = os.path.splitext(filename)
+    today = timezone.now()
+
+    return os.path.join(
+        "images",
+        today.strftime("%Y"),
+        today.strftime("%m"),
+        today.strftime("%d"),
+        f"{instance.slug}_image{extension.lower()}",
+    )
 
 
 class Skill(TimeStampedModel):
@@ -137,3 +158,49 @@ class Project(TimeStampedModel):
 
     def __str__(self):
         return self.title
+
+
+class ProjectImage(TimeStampedModel):
+    project = models.ForeignKey(
+        "Project", related_name="images", on_delete=models.CASCADE
+    )
+
+    image = models.ImageField(
+        upload_to=image_upload_path,
+        validators=[
+            validate_file_size,
+            FileExtensionValidator(allowed_extensions=["jpg", "jpeg", "png", "webp"]),
+        ],
+    )
+
+    caption = models.CharField(
+        max_length=150,
+        blank=True,
+    )
+
+    display_order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["project", "display_order"]
+
+        constraints = [
+            UniqueConstraint(
+                fields=["project", "display_order"], name="unique_project_image_order"
+            )
+        ]
+
+    def save(self, *args, **kwargs):
+        if not self.pk and self.display_order == 0:
+            max_order = ProjectImage.objects.filter(project=self.project).aggregate(
+                Max("display_order")
+            )["display_order__max"]
+
+            self.display_order = (max_order or 0) + 1
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        if self.caption:
+            return f"{self.project.title} - {self.caption}"
+
+        return f"{self.project.title} - Image {self.display_order}"

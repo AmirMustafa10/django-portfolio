@@ -67,10 +67,11 @@ A professional portfolio web application built with Django following clean archi
 
 - [x] Portfolio application created
 - [x] Skill
+- [x] Project
+- [x] ProjectImage
 
 ### Upcoming
 
-- [x] Project
 - [ ] Experience
 - [ ] Education
 - [ ] Blog
@@ -174,7 +175,21 @@ Represents a portfolio project.
 
 ### Project Image
 
-> Coming soon.
+Represents images associated with portfolio projects.
+
+**Features**
+
+- Associates images with projects
+- Supports multiple images per project
+- Stores optional image captions
+- Supports custom display ordering
+
+**Key Fields**
+
+- `project`
+- `image`
+- `caption`
+- `display_order`
 
 ---
 
