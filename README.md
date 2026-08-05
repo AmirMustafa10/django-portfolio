@@ -80,7 +80,8 @@ A professional portfolio web application built with Django following clean archi
 
 ### Contact
 
-- [ ] Contact
+- [x] Contact application created
+- [x] Message
 
 ---
 
@@ -115,7 +116,7 @@ Responsible for:
 
 ### Contact
 
-Responsible for contact messages.
+- Message
 
 ---
 
@@ -252,8 +253,6 @@ Represents a developer's educational background.
 
 ---
 
----
-
 ## Blog
 
 ### BlogPost
@@ -295,6 +294,28 @@ Represents comments on blog posts.
 - `user`
 - `blog_post`
 - `content`
+
+---
+
+## Contact
+
+### Message
+
+Represents messages submitted through the contact form.
+
+**Features**
+
+- Stores contact inquiries
+- Tracks sender information
+- Supports message status management
+- Timestamp tracking
+
+**Key Fields**
+
+- `name`
+- `email`
+- `subject`
+- `status`
 
 ---
 
