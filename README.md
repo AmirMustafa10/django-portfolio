@@ -76,9 +76,9 @@ A professional portfolio web application built with Django following clean archi
 
 - [x] Blog application created
 - [x] BlogPost
-- [ ] Comments
+- [x] Comment
 
-### Upcoming
+### Contact
 
 - [ ] Contact
 
@@ -103,6 +103,8 @@ Responsible for:
 - Skills
 - Projects
 - Project gallery
+- Experience
+- Education
 
 ### Blog
 
@@ -276,6 +278,26 @@ Represents a blog post published by the developer.
 - `published_at`
 
 ---
+
+### Comment
+
+Represents comments on blog posts.
+
+**Features**
+
+- Associates comments with blog posts
+- Supports author information
+- Comment moderation support
+- Timestamp tracking
+
+**Key Fields**
+
+- `user`
+- `blog_post`
+- `content`
+
+---
+
 
 # Django Admin
 
