@@ -346,11 +346,21 @@ Represents comments on blog posts.
 
 ---
 
+## BlogPost
+
 ### BlogPost
 
 - Customized Django Admin interface
 - Organized blog post fields
 - Search and filtering support
+
+---
+
+### Comment
+
+- Customized Django Admin interface
+- Search and filtering support
+- Organized comment fields
 
 ---
 
