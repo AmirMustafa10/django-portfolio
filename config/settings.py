@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "portfolio.apps.PortfolioConfig",
     "BlogPost.apps.BlogpostConfig",
+    "messaging.apps.MessagingConfig",
 ]
 
 MIDDLEWARE = [
