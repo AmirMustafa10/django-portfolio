@@ -385,6 +385,16 @@ Represents messages submitted through the contact form.
 
 ---
 
+## Contact
+
+### Message
+
+- Customized Django Admin interface
+- Search and filtering support
+- Organized message fields
+
+---
+
 
 # Testing
 
