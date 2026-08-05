@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import BlogPost
+from .models import BlogPost, Comment
 
 
 @admin.register(BlogPost)
@@ -63,6 +63,85 @@ class BlogPostAdmin(admin.ModelAdmin):
                 "fields": (
                     "status",
                     "published_at",
+                ),
+            },
+        ),
+        (
+            "Metadata",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "created_at",
+                    "updated_at",
+                ),
+            },
+        ),
+    )
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+
+    @admin.display(
+        ordering="user__username",
+        description="Author",
+    )
+    def author(self, obj):
+        return obj.user.username if obj.user else "Deleted User"
+
+    @admin.display(
+        ordering="blog_post__title",
+        description="Blog Post",
+    )
+    def post_title(self, obj):
+        return obj.blog_post.title
+
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+    )
+
+    list_display = (
+        "author",
+        "post_title",
+        "created_at",
+    )
+
+    list_display_links = (
+        "author",
+        "post_title",
+    )
+
+    search_fields = (
+        "user__username",
+        "blog_post__title",
+        "content",
+    )
+
+    list_select_related = (
+        "user",
+        "blog_post",
+    )
+
+    autocomplete_fields = (
+        "user",
+        "blog_post",
+    )
+
+    ordering = ("-created_at",)
+
+    date_hierarchy = "created_at"
+
+    list_per_page = 25
+
+    fieldsets = (
+        (
+            "Comment Information",
+            {
+                "fields": (
+                    "user",
+                    "blog_post",
+                    "content",
                 ),
             },
         ),
