@@ -1,8 +1,12 @@
+from enum import unique
+
 from django.db import models
 from core.models import TimeStampedModel, validate_file_size
 import os
+from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 
 
@@ -134,3 +138,56 @@ class BlogPost(TimeStampedModel):
 
     def __str__(self):
         return self.title
+
+
+class Comment(TimeStampedModel):
+
+    blog_post = models.ForeignKey(
+        "BlogPost",
+        related_name="comments",
+        on_delete=models.CASCADE,
+    )
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="comments",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
+    content = models.TextField(
+        max_length=500,
+        db_index=False,
+    )
+
+    class Meta:
+        verbose_name = "Comment"
+        verbose_name_plural = "Comments"
+
+        ordering = ("-created_at",)
+
+        indexes = [
+            models.Index(
+                fields=["blog_post", "-created_at"],
+                name="comment_post_created_idx",
+            )
+        ]
+
+    def clean(self):
+        super().clean()
+
+        if self.content:
+            self.content = self.content.strip()
+
+        if not self.content:
+            raise ValidationError({"content": "Comment cannot be empty."})
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        username = self.user.username if self.user else "Deleted User"
+
+        return f"comment {username} - {self.blog_post.title}"
