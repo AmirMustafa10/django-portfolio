@@ -1,5 +1,3 @@
-from enum import unique
-
 from django.db import models
 from core.models import TimeStampedModel, validate_file_size
 import os
