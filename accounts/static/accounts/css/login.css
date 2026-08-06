@@ -1,0 +1,201 @@
+/* ==========================================================================
+   AUTH LAYOUT & CARD
+   ========================================================================== */
+.auth-page-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 4.5rem - 100px);
+    padding: 3rem 1.5rem;
+}
+.auth-card {
+    background-color: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    width: 100%;
+    max-width: 480px;
+    border: 1px solid var(--border-light);
+    padding: 3rem 2.5rem;
+}
+/* ==========================================================================
+   BRANDING & HEADER
+   ========================================================================== */
+.auth-header {
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+.auth-brand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background-color: var(--text-main);
+    color: white;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+}
+.auth-header h2 {
+    font-size: 1.75rem;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+.auth-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+/* ==========================================================================
+   FORM STYLES (Fixed to target Django inputs directly)
+   ========================================================================== */
+.form-group {
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+}
+.form-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+/* Target all inputs directly inside form-group to override Django defaults */
+.form-group input:not([type="checkbox"]) {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 1rem;
+    background-color: var(--bg-body);
+    color: var(--text-body);
+    transition: var(--transition);
+    box-sizing: border-box;
+}
+.form-group input:not([type="checkbox"]):focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+.form-group input.is-invalid {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+.invalid-feedback {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+    display: block;
+}
+.non-field-errors {
+    background-color: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+/* ==========================================================================
+   PASSWORD UX
+   ========================================================================== */
+.password-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+}
+.password-toggle:hover {
+    color: var(--text-main);
+}
+.password-strength {
+    margin-top: 0.75rem;
+}
+.strength-bars {
+    display: flex;
+    gap: 0.25rem;
+    height: 4px;
+    margin-bottom: 0.5rem;
+}
+.strength-bar {
+    flex: 1;
+    background-color: var(--border-light);
+    border-radius: 2px;
+    transition: background-color 0.3s ease;
+}
+.strength-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-align: right;
+}
+.password-requirements {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.password-requirements ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.25rem;
+}
+
+.password-requirements li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.req-icon {
+    width: 14px; height: 14px;
+}
+.req-met { color: #10b981; }
+.req-unmet { color: var(--border-light); }
+.submit-btn {
+    width: 100%;
+    padding: 0.875rem;
+    font-size: 1.05rem;
+    margin-top: 1.5rem;
+}
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+.auth-footer a {
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+.auth-footer a:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
+/* Responsive */
+@media (max-width: 992px) {
+    .auth-card { flex-direction: column; }
+    .auth-banner { padding: 3rem 2rem; }
+    .auth-form-container { padding: 3rem 2rem; }
+}
+
+@media (max-width: 576px) {
+    .form-grid { grid-template-columns: 1fr; gap: 1rem; }
+}
+
+.forgot-password {
+    color: #2563eb;
+}

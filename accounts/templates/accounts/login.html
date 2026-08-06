@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login to Your Account | DevConnect{% endblock %}
+
+{% block css %}
+<link rel="stylesheet"  href="{% static 'accounts/css/login.css' %}">
+{% endblock css %}
+
+{% block content %}
+<div class="auth-page-wrapper">
+    <div class="auth-card">
+        
+        <div class="auth-header">
+            <div class="auth-brand">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                </svg>
+            </div>
+            <h2>Build Your Professional Presence</h2>
+            <p>Sign in to manage your profile, showcase your work, and connect with others.</p>
+        </div>
+
+        <form method="post" action="{% url 'accounts:login' %}" novalidate>
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="non-field-errors">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Username / Email -->
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}" class="form-label">Username or Email</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="invalid-feedback">{{ form.username.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+                <div class="password-wrapper">
+                    {{ form.password }}
+                    <button type="button" class="password-toggle" id="togglePassword" tabindex="-1" aria-label="Toggle password visibility">
+                        <svg id="eyeIcon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <!-- Eye Icon (Default) -->
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </button>
+                </div>
+                {% if form.password.errors %}
+                    <div class="invalid-feedback">{{ form.password.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="form-options">
+                <label class="checkbox-wrapper">
+                    <!-- Standard HTML checkbox to capture remember_me if the backend handles it manually -->
+                    <input type="checkbox" name="remember_me" id="remember_me">
+                    <span>Remember me</span>
+                </label>
+                <a href="" class="forgot-password">Forgot your password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary submit-btn">Login</button>
+            
+            <!-- Next URL redirection (Standard Django Auth feature) -->
+            {% if request.GET.next %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+            {% endif %}
+        </form>
+
+        <div class="auth-footer">
+            Don't have an account? <a href="{% url 'accounts:register' %}">Create an account</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'accounts/js/login.js' %}"></script>
+{% endblock js %}
