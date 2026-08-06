@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Discover Top Developers | DevConnect{% endblock %}
+
+{% block css %}
+<link rel="stylesheet"  href="{% static 'css/home.css' %}">
+{% endblock css %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Discover Developers.<br>Explore Their Work.<br><span>Build Connections.</span></h1>
+        <p>The premier platform to explore professional developer profiles, skills, deep technical experience, and live projects — all in one place.</p>
+        <div class="hero-actions">
+            <a href="" class="btn btn-primary">Explore Developers</a>
+            {% if not user.is_authenticated %}
+                <a href="{% url 'accounts:register' %}" class="btn btn-outline">Join as a Developer</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="hero-visual">
+        <!-- Abstract representation of code/profiles -->
+        <svg width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="var(--border-light)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+        </svg>
+    </div>
+</section>
+
+<!-- SEARCH / DISCOVERY SECTION -->
+<div class="search-wrapper">
+    <form class="card search-card" action="" method="GET">
+        <div class="form-group">
+            <label for="search">Find a Developer</label>
+            <input type="text" id="search" name="q" class="form-control" placeholder="Search by name, keyword, or technology...">
+        </div>
+        <div class="form-group" style="flex: 0.5;">
+            <label for="skill">Primary Skill</label>
+            <select id="skill" name="skill" class="form-control">
+                <option value="">All Skills</option>
+                <option value="python">Python</option>
+                <option value="django">Django</option>
+                <option value="react">React</option>
+                <option value="javascript">JavaScript</option>
+            </select>
+        </div>
+        <div class="form-group" style="flex: 0.5;">
+            <label for="availability">Availability</label>
+            <select id="availability" name="availability" class="form-control">
+                <option value="">Any</option>
+                <option value="available">Available for Work</option>
+                <option value="employed">Employed</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary search-btn">Search</button>
+    </form>
+</div>
+
+<!-- FEATURED DEVELOPERS -->
+<section class="featured-developers">
+    <div class="section-header">
+        <h2>Featured Developers</h2>
+        <p>Discover top talent showcasing their skills, experience, and real-world projects.</p>
+    </div>
+    
+    <div class="grid-3">
+        {% for developer in featured_developers %}
+        <div class="card dev-card">
+            <div class="dev-header">
+                {% if developer.profile.avatar %}
+                    <img src="{{ developer.profile.avatar.url }}" alt="{{ developer.get_full_name }}" class="avatar">
+                {% else %}
+                    <!-- Fallback Avatar -->
+                    <div class="avatar" style="background-color: var(--border-light); display: flex; align-items: center; justify-content: center;">
+                        <svg width="32" height="32" fill="none" stroke="var(--text-muted)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    </div>
+                {% endif %}
+                <div class="dev-info">
+                    <h3>{{ developer.get_full_name|default:developer.username }}</h3>
+                    <p>{{ developer.profile.title|default:"Software Developer" }}</p>
+                </div>
+            </div>
+            
+            <div class="dev-meta">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                {{ developer.profile.location|default:"Remote" }}
+                &nbsp;&bull;&nbsp;
+                {{ developer.projects.count }} Projects
+            </div>
+
+            <div class="dev-skills">
+                {% for skill in developer.profile.skills.all|slice:":4" %}
+                    <span class="badge">{{ skill.name }}</span>
+                {% empty %}
+                    <span class="badge">General Programming</span>
+                {% endfor %}
+            </div>
+
+            <div class="dev-footer">
+                {% if developer.profile.is_available %}
+                <div class="status-badge">
+                    <span class="status-dot"></span> Available for Work
+                </div>
+                {% else %}
+                <div class="status-badge" style="color: var(--text-muted);">
+                    <span class="status-dot" style="background-color: var(--text-muted);"></span> Unavailable
+                </div>
+                {% endif %}
+                <a href="{% url 'profile' developer.username %}" class="btn btn-ghost" style="padding: 0.25rem 0.5rem; font-size: 0.9rem;">View Profile &rarr;</a>
+            </div>
+        </div>
+        {% empty %}
+        <!-- Placeholder Empty State -->
+        <p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">No featured developers available at the moment.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- FEATURED PROJECTS -->
+<section class="featured-projects">
+    <div class="section-header">
+        <h2>Featured Projects</h2>
+        <p>Explore production-ready code, live applications, and technical architectures built by our community.</p>
+    </div>
+    
+    <div class="grid-3">
+        {% for project in featured_projects %}
+        <div class="card project-card">
+            {% if project.thumbnail %}
+                <img src="{{ project.thumbnail.url }}" alt="{{ project.title }}" class="project-img">
+            {% else %}
+                <div class="project-img" style="display: flex; align-items: center; justify-content: center;">
+                    <svg width="48" height="48" fill="none" stroke="var(--text-muted)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+            {% endif %}
+            
+            <div class="project-body">
+                <div class="project-author">
+                    Developed by <a href="{% url 'profile' project.developer.username %}">{{ project.developer.get_full_name }}</a>
+                </div>
+                <h3>{{ project.title }}</h3>
+                <p>{{ project.short_description|truncatewords:15 }}</p>
+                
+                <div class="dev-skills" style="margin-bottom: 0;">
+                    {% for tech in project.technologies.all|slice:":3" %}
+                        <span class="badge">{{ tech.name }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="project-links">
+                    <a href="{% url 'project_detail' project.id %}" class="btn btn-outline" style="flex:1;">View Case Study</a>
+                    {% if project.live_url %}
+                        <a href="{{ project.live_url }}" target="_blank" class="btn btn-primary">Live Demo</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">No projects showcased yet.</p>
+        {% endfor %}
+    </div>
+    
+    <div style="text-align: center; margin-top: 3rem;">
+        <a href="" class="btn btn-ghost">View All Projects &rarr;</a>
+    </div>
+</section>
+
+<!-- WHY USE THE PLATFORM (Full width background) -->
+<div class="bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2>The Developer Hub</h2>
+            <p>Whether you are building your career or looking for the perfect technical partner, DevConnect provides the tools you need.</p>
+        </div>
+
+        <div class="grid-2">
+            <div class="card feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                </div>
+                <h3>For Developers</h3>
+                <p style="color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 1rem;">Stop relying on a single static resume. Build a dynamic portfolio that grows with you.</p>
+                <ul style="color: var(--text-body); display: flex; flex-direction: column; gap: 0.5rem;">
+                    <li>✓ Showcase detailed project case studies</li>
+                    <li>✓ Highlight specific technologies and skills</li>
+                    <li>✓ Publish technical blog posts to prove expertise</li>
+                    <li>✓ Signal availability for freelance or full-time work</li>
+                </ul>
+            </div>
+
+            <div class="card feature-card">
+                <div class="feature-icon" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981;">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </div>
+                <h3>For Clients & Teams</h3>
+                <p style="color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 1rem;">Find verified talent based on actual output, not just buzzwords on a PDF.</p>
+                <ul style="color: var(--text-body); display: flex; flex-direction: column; gap: 0.5rem;">
+                    <li>✓ Search developers by specific technology stacks</li>
+                    <li>✓ Review real project architectures and source code</li>
+                    <li>✓ Read developers' technical insights on the blog</li>
+                    <li>✓ Contact developers directly with zero platform fees</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works">
+    <div class="section-header">
+        <h2>How DevConnect Works</h2>
+        <p>A simple, transparent process to connect talent with opportunity.</p>
+    </div>
+
+    <div class="steps-container">
+        <div class="step">
+            <div class="step-num">1</div>
+            <h3>Create a Profile</h3>
+            <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 0.95rem;">Developers set up their professional portfolio, listing skills, education, and experience.</p>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <h3>Showcase Work</h3>
+            <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 0.95rem;">Upload detailed project case studies, link GitHub repos, and write technical articles.</p>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <h3>Make Connections</h3>
+            <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 0.95rem;">Visitors browse portfolios and reach out directly to developers available for work.</p>
+        </div>
+    </div>
+</section>
+
+<!-- LATEST BLOG POSTS -->
+<section class="latest-blogs">
+    <div class="section-header">
+        <h2>Latest from the Community</h2>
+        <p>Technical insights, tutorials, and experiences shared by our developers.</p>
+    </div>
+
+    <div class="grid-3">
+        {% for post in latest_posts %}
+        <div class="card blog-card">
+            <div class="blog-meta">
+                <span>By <a href="{% url 'profile' post.author.username %}" style="color: var(--text-main); font-weight: 500;">{{ post.author.get_full_name }}</a></span>
+                <span>&bull;</span>
+                <span>{{ post.created_at|date:"M d, Y" }}</span>
+            </div>
+            <h3><a href="{% url 'blog_detail' post.id %}">{{ post.title }}</a></h3>
+            <p>{{ post.excerpt|truncatewords:20|default:post.content|truncatewords:20 }}</p>
+            
+            <div class="blog-footer">
+                <a href="{% url 'blog_detail' post.id %}" class="btn btn-ghost" style="padding:0;">Read Article &rarr;</a>
+                <span class="blog-meta" style="margin:0;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    {{ post.comments.count }}
+                </span>
+            </div>
+        </div>
+        {% empty %}
+        <p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">No blog posts published yet.</p>
+        {% endfor %}
+    </div>
+    
+    <div style="text-align: center; margin-top: 3rem;">
+        <a href="" class="btn btn-outline">Browse All Articles</a>
+    </div>
+</section>
+
+<!-- CALL TO ACTION -->
+<section class="final-cta">
+    <div class="card" style="background-color: var(--text-main); color: white; padding: 4rem 2rem; max-width: 800px; margin: 0 auto;">
+        <h2 style="color: white;">Ready to Showcase Your Work?</h2>
+        <p style="color: #cbd5e1; font-size: 1.15rem; margin-bottom: 2.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Join a growing community of professionals. Create your developer profile today and let your code speak for you.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            {% if not user.is_authenticated %}
+                <a href="{% url 'accounts:register' %}" class="btn btn-primary" style="background-color: var(--accent-primary); border-color: var(--accent-primary);">Create Developer Profile</a>
+            {% endif %}
+            <a href="" class="btn btn-outline" style="color: white; border-color: #475569;">Explore Developers</a>
+        </div>
+    </div>
+</section>
+{% endblock content %}
