@@ -31,6 +31,8 @@ A professional portfolio web application built with Django following clean archi
 ## Implemented
 
 - Custom User Authentication
+  - User registration
+  - Login with username or email
 - Developer Profile
 - Skills Management
 
@@ -62,6 +64,9 @@ A professional portfolio web application built with Django following clean archi
 - [x] Accounts application created
 - [x] Custom User
 - [x] Profile
+- [x] Registration form
+- [x] Login form
+- [x] Email or username login
 
 ### Portfolio
 
@@ -95,6 +100,7 @@ Responsible for:
 
 - Authentication
 - User management
+- Registration and login
 - Developer profile
 
 ### Portfolio
@@ -161,6 +167,7 @@ Custom user model extending Django's `AbstractUser`.
 Stores reusable developer skills.
 
 ---
+
 ### Project
 
 Represents a portfolio project.
@@ -206,6 +213,7 @@ Represents images associated with portfolio projects.
 - `display_order`
 
 ---
+
 ### Experience
 
 Represents a developer's professional work experience.
@@ -319,7 +327,6 @@ Represents messages submitted through the contact form.
 
 ---
 
-
 # Django Admin
 
 ## Accounts
@@ -349,6 +356,7 @@ Represents messages submitted through the contact form.
 - Optimized queries using `list_select_related`.
 - Improved Many-to-Many editing with `filter_horizontal`.
 - ProjectImage inline management
+
 ---
 
 ### Experience Admin
@@ -394,7 +402,6 @@ Represents messages submitted through the contact form.
 - Organized message fields
 
 ---
-
 
 # Testing
 
