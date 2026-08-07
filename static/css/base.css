@@ -217,3 +217,7 @@ main {
     .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
     .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
 }
+
+form .btn-ghost:hover {
+    background-color: red !important;
+}
