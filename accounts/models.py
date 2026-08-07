@@ -89,6 +89,9 @@ class User(AbstractUser):
 
 
 class Profile(TimeStampedModel):
+
+    jop_title = models.CharField(max_length=50)
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -162,3 +165,7 @@ class Profile(TimeStampedModel):
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
+
+    @property
+    def get_full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
