@@ -5,7 +5,29 @@ from .models import User, Profile
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    pass
+    list_display = (
+        "username",
+        "email",
+        "first_name",
+        "last_name",
+        "is_staff",
+        "is_active",
+    )
+
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": (
+                    "username",
+                    "email",
+                    "password1",
+                    "password2",
+                ),
+            },
+        ),
+    )
 
 
 @admin.register(Profile)
@@ -18,6 +40,7 @@ class ProfileAdmin(admin.ModelAdmin):
 
     list_display = (
         "username",
+        "jop_title",
         "location",
         "available_for_work",
         "created_at",
@@ -43,6 +66,7 @@ class ProfileAdmin(admin.ModelAdmin):
             "User Identity",
             {
                 "fields": (
+                    "jop_title",
                     "user",
                     "bio",
                     "location",
