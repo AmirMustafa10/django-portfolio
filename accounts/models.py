@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from core.models import TimeStampedModel, validate_file_size
+from django.db.models.functions import Lower
 
 
 def avatar_upload_path(instance, filename):
@@ -49,7 +50,42 @@ def resume_upload_path(instance, filename):
 class User(AbstractUser):
     """Custom user model."""
 
-    pass
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                Lower("username"),
+                name="unique_username_case_insensitive",
+            ),
+            models.UniqueConstraint(
+                Lower("email"),
+                name="unique_email_case_insensitive",
+            ),
+        ]
+
+    def clean(self):
+        super().clean()
+
+        if self.username:
+            if (
+                type(self)
+                .objects.filter(username__iexact=self.username)
+                .exclude(pk=self.pk)
+                .exists()
+            ):
+                raise ValidationError(
+                    {"username": ("A user with this username already exists.")}
+                )
+
+        if self.email:
+            if (
+                type(self)
+                .objects.filter(email__iexact=self.email)
+                .exclude(pk=self.pk)
+                .exists()
+            ):
+                raise ValidationError(
+                    {"email": ("A user with this email already exists.")}
+                )
 
 
 class Profile(TimeStampedModel):
