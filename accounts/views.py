@@ -1,6 +1,8 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth import login, logout
 from .forms import LoginForm, RegisterForm
+from accounts.models import Profile
+from django.db.models import Q
 
 
 def register_view(request):
@@ -56,3 +58,33 @@ def logout_view(request):
     logout(request)
 
     return redirect("home")
+
+
+def developers_view(request):
+
+    query = request.GET.get("q", "").strip()
+    availability = request.GET.get("availability", "").strip()
+
+    devs = Profile.objects.select_related("user").prefetch_related("skills")
+
+    if query:
+        devs = devs.filter(
+            Q(user__username__icontains=query)
+            | Q(user__first_name__icontains=query)
+            | Q(user__last_name__icontains=query)
+        )
+
+    if availability == "available":
+        devs = devs.filter(available_for_work=True)
+
+    devs = devs.distinct()
+
+    return render(
+        request,
+        "accounts/developers.html",
+        {
+            "developers": devs,
+            "query": query,
+            "availability": availability,
+        },
+    )
