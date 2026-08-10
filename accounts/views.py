@@ -115,7 +115,7 @@ def developer_detail_view(request, username):
         user__username__iexact=username,
     )
 
-    projects_count = developer.projects.count()
+    projects_count = developer.projects.count() # type: ignore
 
     return render(
         request,

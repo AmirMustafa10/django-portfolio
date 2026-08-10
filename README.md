@@ -1,16 +1,22 @@
 # Django Portfolio
 
-A professional portfolio web application built with Django following clean architecture, scalable architecture, and backend development best practices.
+A professional developer portfolio platform built with Django, designed to allow developers to showcase their professional profiles, skills, projects, experience, education, and blog content.
+
+The platform also allows users to discover developers and communicate with them through the contact system.
+
+The project follows clean architecture principles, Django best practices, and a professional Git workflow.
 
 ---
 
 # Project Goals
 
 - Build a scalable Django application.
-- Follow Clean Architecture principles.
+- Follow clean architecture principles.
 - Apply Django best practices.
+- Build reusable and maintainable components.
 - Practice professional Git workflows.
 - Write clean, maintainable, and well-documented code.
+- Provide a platform for developers to showcase their professional profiles and work.
 
 ---
 
@@ -30,21 +36,53 @@ A professional portfolio web application built with Django following clean archi
 
 ## Implemented
 
+### Authentication
+
 - Custom User Authentication
-  - User registration
-  - Login with username or email
-- Developer Profile
-- Skills Management
+- User registration
+- Login with username or email
+
+### Developer Profiles
+
+- Developer profiles
+- Developer listing
+- Developer details
+- Skills management
+- Experience management
+- Education management
+
+### Portfolio
+
+- Portfolio projects
+- Project status management
+- Featured projects
+- Project gallery
+- Project images
+- Project skills
+
+### Blog
+
+- Blog posts
+- Blog post comments
+- Blog post status management
+
+### Contact
+
+- Contact messages
+- Message status management
+
+---
 
 ## Planned
 
-- Portfolio Projects
-- Project Gallery
-- Experience
-- Education
-- Blog System
-- Comments
-- Contact Form
+- Developer search and filtering
+- Advanced developer discovery
+- Project search and filtering
+- Improved user-to-developer communication
+- Blog improvements
+- Notifications
+- API development
+- Expanded automated testing
 
 ---
 
@@ -52,12 +90,17 @@ A professional portfolio web application built with Django following clean archi
 
 🚧 **In Development**
 
+The core architecture, authentication, developer profiles, portfolio management, blog system, and contact functionality are currently implemented.
+
 ## Progress
+
+### Core
 
 - [x] Requirements Analysis
 - [x] Database Design
 - [x] ER Diagram
 - [x] Django Project Setup
+- [x] Shared Abstract Models
 
 ### Accounts
 
@@ -67,6 +110,11 @@ A professional portfolio web application built with Django following clean archi
 - [x] Registration form
 - [x] Login form
 - [x] Email or username login
+- [x] Login page
+- [x] Registration page
+- [x] Homepage
+- [x] Developers page
+- [x] Developer details page
 
 ### Portfolio
 
@@ -101,7 +149,9 @@ Responsible for:
 - Authentication
 - User management
 - Registration and login
-- Developer profile
+- Developer profiles
+- Developer listing
+- Developer details
 
 ### Portfolio
 
@@ -122,7 +172,61 @@ Responsible for:
 
 ### Contact
 
-- Message
+Responsible for:
+
+- Contact messages
+- Message management
+
+---
+
+# Project Structure
+
+```text
+django-portfolio/
+├── accounts/
+│   ├── migrations/
+│   ├── templates/
+│   ├── static/
+│   ├── admin.py
+│   ├── forms.py
+│   ├── models.py
+│   ├── urls.py
+│   └── views.py
+│
+├── portfolio/
+│   ├── migrations/
+│   ├── admin.py
+│   ├── models.py
+│   └── ...
+│
+├── blog/
+│   ├── migrations/
+│   ├── admin.py
+│   ├── models.py
+│   └── ...
+│
+├── contact/
+│   ├── migrations/
+│   ├── admin.py
+│   ├── models.py
+│   └── ...
+│
+├── core/
+│   ├── urls.py
+│   └── views.py
+│
+├── config/
+│   ├── settings.py
+│   ├── urls.py
+│   └── ...
+│
+├── static/
+├── templates/
+├── media/
+├── manage.py
+├── requirements.txt
+└── README.md
+```
 
 ---
 
@@ -141,13 +245,19 @@ Reusable abstract base model providing automatic timestamps.
 
 ---
 
-## Accounts
+# Accounts
 
-### User
+## User
 
 Custom user model extending Django's `AbstractUser`.
 
-### Profile
+---
+
+## Profile
+
+Represents a developer's professional profile.
+
+**Features**
 
 - One-to-One relationship with `User`
 - Avatar upload
@@ -155,20 +265,21 @@ Custom user model extending Django's `AbstractUser`.
 - GitHub link
 - LinkedIn link
 - Personal website
+- Location
 - Availability status
 - Business validation for "Open to Work"
 
 ---
 
-## Portfolio
+# Portfolio
 
-### Skill
+## Skill
 
 Stores reusable developer skills.
 
 ---
 
-### Project
+## Project
 
 Represents a portfolio project.
 
@@ -183,18 +294,18 @@ Represents a portfolio project.
 **Key Fields**
 
 - `profile`
-- `skills`
 - `title`
-- `description`
 - `slug`
+- `description`
 - `status`
 - `live_demo_url`
 - `source_code_url`
 - `is_featured`
+- `skills`
 
 ---
 
-### Project Image
+## ProjectImage
 
 Represents images associated with portfolio projects.
 
@@ -214,7 +325,7 @@ Represents images associated with portfolio projects.
 
 ---
 
-### Experience
+## Experience
 
 Represents a developer's professional work experience.
 
@@ -238,7 +349,7 @@ Represents a developer's professional work experience.
 
 ---
 
-### Education
+## Education
 
 Represents a developer's educational background.
 
@@ -261,11 +372,11 @@ Represents a developer's educational background.
 
 ---
 
-## Blog
+# Blog
 
-### BlogPost
+## BlogPost
 
-Represents a blog post published by the developer.
+Represents a blog post published by a developer.
 
 **Features**
 
@@ -273,6 +384,7 @@ Represents a blog post published by the developer.
 - SEO-friendly slugs
 - Publication status management
 - Publication date tracking
+- Cover image support
 
 **Key Fields**
 
@@ -286,9 +398,9 @@ Represents a blog post published by the developer.
 
 ---
 
-### Comment
+## Comment
 
-Represents comments on blog posts.
+Represents a comment submitted on a blog post.
 
 **Features**
 
@@ -305,11 +417,11 @@ Represents comments on blog posts.
 
 ---
 
-## Contact
+# Contact
 
-### Message
+## Message
 
-Represents messages submitted through the contact form.
+Represents a message submitted through the contact form.
 
 **Features**
 
@@ -333,14 +445,14 @@ Represents messages submitted through the contact form.
 
 ### User
 
-- Customized admin interface
-
----
+- Customized Django Admin interface
+- User search and filtering
+- Custom user creation fields
 
 ### Profile
 
 - Search by username and location
-- Filter by availability
+- Filter profiles by availability
 - Optimized queries using `list_select_related`
 - Organized field groups
 
@@ -348,24 +460,20 @@ Represents messages submitted through the contact form.
 
 ## Portfolio
 
-### Project Admin
+### Project
 
-- Customized Django Admin interface.
-- Search by project title and owner.
-- Filter by project status and featured flag.
-- Optimized queries using `list_select_related`.
-- Improved Many-to-Many editing with `filter_horizontal`.
+- Customized Django Admin interface
+- Search by project title and owner
+- Filter by project status and featured flag
+- Optimized queries using `list_select_related`
+- Improved Many-to-Many editing with `filter_horizontal`
 - ProjectImage inline management
 
----
-
-### Experience Admin
+### Experience
 
 - Customized Django Admin interface
 - Search and filtering for experience records
 - Organized experience fields
-
----
 
 ### Education
 
@@ -375,15 +483,13 @@ Represents messages submitted through the contact form.
 
 ---
 
-## BlogPost
+## Blog
 
 ### BlogPost
 
 - Customized Django Admin interface
 - Organized blog post fields
 - Search and filtering support
-
----
 
 ### Comment
 
@@ -412,30 +518,104 @@ Represents messages submitted through the contact form.
 - ✅ File upload validation
 - ✅ Business rule validation
 - ✅ Django Admin
-- ✅ Search & Filtering
+- ✅ Search and filtering
 
 ## Portfolio
 
 - ✅ Skill model
 
+> Additional model and feature tests will be added as development progresses.
+
 ---
 
 # Installation
 
+## Clone the Repository
+
 ```bash
 git clone https://github.com/AmirMustafa10/django-portfolio.git
-
 cd django-portfolio
+```
 
+## Create a Virtual Environment
+
+```bash
 python -m venv .venv
+```
 
+### Windows
+
+```bash
+.venv\Scripts\activate
+```
+
+### Linux / macOS
+
+```bash
 source .venv/bin/activate
+```
 
+## Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
+## Apply Migrations
+
+```bash
 python manage.py migrate
+```
 
+## Run the Development Server
+
+```bash
 python manage.py runserver
+```
+
+The application will be available at:
+
+```text
+http://127.0.0.1:8000/
+```
+
+---
+
+# Environment Variables
+
+Create a `.env` file for environment-specific configuration.
+
+Example:
+
+```env
+SECRET_KEY=your-secret-key
+DEBUG=True
+```
+
+Additional environment variables may be required depending on the database and email configuration.
+
+---
+
+# Git Workflow
+
+The project follows a professional Git workflow:
+
+- Feature branches for new functionality
+- Small and focused commits
+- Conventional Commit messages
+- Separate documentation commits
+- Pull Requests for feature integration
+
+### Example Branch
+
+```text
+feature/developer-details
+```
+
+### Example Commit
+
+```text
+feat(developers): add developer details page
 ```
 
 ---
