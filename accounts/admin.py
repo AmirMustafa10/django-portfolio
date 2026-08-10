@@ -69,6 +69,7 @@ class ProfileAdmin(admin.ModelAdmin):
                     "jop_title",
                     "user",
                     "bio",
+                    "about",
                     "location",
                     "available_for_work",
                 ),

@@ -102,7 +102,9 @@ class Profile(TimeStampedModel):
         "portfolio.Skill", related_name="profiles", blank=True
     )
 
-    bio = models.TextField()
+    bio = models.TextField(max_length=150)
+
+    about = models.TextField()
 
     avatar = models.ImageField(
         upload_to=avatar_upload_path,
