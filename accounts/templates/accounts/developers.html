@@ -86,7 +86,7 @@
                     </div>
 
                     <!-- CTA -->
-                    <a href="" class="btn btn-outline btn-block">View Profile</a>
+                    <a href="{% url 'accounts:developer_detail' developer.user.username %}" class="btn btn-outline btn-block">View Profile</a>
                 </div>
             </div>
         {% empty %}

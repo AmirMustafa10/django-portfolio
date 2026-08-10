@@ -1,8 +1,9 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import login, logout
 from .forms import LoginForm, RegisterForm
 from accounts.models import Profile
-from django.db.models import Q
+from django.db.models import Q, Prefetch
+from portfolio.models import ProjectImage, Project
 
 
 def register_view(request):
@@ -86,5 +87,41 @@ def developers_view(request):
             "developers": devs,
             "query": query,
             "availability": availability,
+        },
+    )
+
+
+def developer_detail_view(request, username):
+
+    developer = get_object_or_404(
+        Profile.objects.select_related("user").prefetch_related(
+            "skills",
+            "experiences",
+            "educations",
+            Prefetch(
+                "projects",
+                queryset=(
+                    Project.objects.order_by("-created_at").prefetch_related(
+                        Prefetch(
+                            "images",
+                            queryset=ProjectImage.objects.order_by("display_order")[:1],
+                            to_attr="cover_images",
+                        )
+                    )[:3]
+                ),
+                to_attr="preview_projects",
+            ),
+        ),
+        user__username__iexact=username,
+    )
+
+    projects_count = developer.projects.count()
+
+    return render(
+        request,
+        "accounts/developer_detail.html",
+        {
+            "developer": developer,
+            "projects_count": projects_count,
         },
     )
