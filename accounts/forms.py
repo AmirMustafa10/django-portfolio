@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.forms import AuthenticationForm
+from .models import Profile
 
 User = get_user_model()
 
@@ -84,3 +85,31 @@ class LoginForm(AuthenticationForm):
         self.confirm_login_allowed(self.user_cache)
 
         return cleaned_data
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = (
+            "first_name",
+            "last_name",
+            "email",
+            "username",
+        )
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = (
+            "avatar",
+            "jop_title",
+            "bio",
+            "about",
+            "resume",
+            "github_url",
+            "linkedin_url",
+            "website_url",
+            "location",
+            "available_for_work",
+        )
