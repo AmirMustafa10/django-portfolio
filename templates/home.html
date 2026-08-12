@@ -14,7 +14,7 @@
         <h1>Discover Developers.<br>Explore Their Work.<br><span>Build Connections.</span></h1>
         <p>The premier platform to explore professional developer profiles, skills, deep technical experience, and live projects — all in one place.</p>
         <div class="hero-actions">
-            <a href="" class="btn btn-primary">Explore Developers</a>
+            <a href="{% url 'accounts:developers' %}" class="btn btn-primary">Explore Developers</a>
             {% if not user.is_authenticated %}
                 <a href="{% url 'accounts:register' %}" class="btn btn-outline">Join as a Developer</a>
             {% endif %}
@@ -31,27 +31,16 @@
 
 <!-- SEARCH / DISCOVERY SECTION -->
 <div class="search-wrapper">
-    <form class="card search-card" action="" method="GET">
+    <form class="card search-card" action="{% url 'accounts:developers' %}" method="GET">
         <div class="form-group">
             <label for="search">Find a Developer</label>
             <input type="text" id="search" name="q" class="form-control" placeholder="Search by name, keyword, or technology...">
-        </div>
-        <div class="form-group" style="flex: 0.5;">
-            <label for="skill">Primary Skill</label>
-            <select id="skill" name="skill" class="form-control">
-                <option value="">All Skills</option>
-                <option value="python">Python</option>
-                <option value="django">Django</option>
-                <option value="react">React</option>
-                <option value="javascript">JavaScript</option>
-            </select>
         </div>
         <div class="form-group" style="flex: 0.5;">
             <label for="availability">Availability</label>
             <select id="availability" name="availability" class="form-control">
                 <option value="">Any</option>
                 <option value="available">Available for Work</option>
-                <option value="employed">Employed</option>
             </select>
         </div>
         <button type="submit" class="btn btn-primary search-btn">Search</button>
@@ -66,11 +55,11 @@
     </div>
     
     <div class="grid-3">
-        {% for developer in featured_developers %}
+        {% for developer in developers%}
         <div class="card dev-card">
             <div class="dev-header">
-                {% if developer.profile.avatar %}
-                    <img src="{{ developer.profile.avatar.url }}" alt="{{ developer.get_full_name }}" class="avatar">
+                {% if developer.avatar %}
+                    <img src="{{ developer.avatar.url }}" alt="{{ developer.get_full_name }}" class="avatar">
                 {% else %}
                     <!-- Fallback Avatar -->
                     <div class="avatar" style="background-color: var(--border-light); display: flex; align-items: center; justify-content: center;">
@@ -78,16 +67,16 @@
                     </div>
                 {% endif %}
                 <div class="dev-info">
-                    <h3>{{ developer.get_full_name|default:developer.username }}</h3>
-                    <p>{{ developer.profile.title|default:"Software Developer" }}</p>
+                    <h3>{{ developer.get_full_name|default:developer.user.username }}</h3>
+                    <p>{{ developer.title|default:"Software Developer" }}</p>
                 </div>
             </div>
             
             <div class="dev-meta">
                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                {{ developer.profile.location|default:"Remote" }}
+                {{ developer.location|default:"Remote" }}
                 &nbsp;&bull;&nbsp;
-                {{ developer.projects.count }} Projects
+                {{ developer.projects_count }} Projects
             </div>
 
             <div class="dev-skills">
@@ -99,7 +88,7 @@
             </div>
 
             <div class="dev-footer">
-                {% if developer.profile.is_available %}
+                {% if developer.available_for_work %}
                 <div class="status-badge">
                     <span class="status-dot"></span> Available for Work
                 </div>
@@ -108,13 +97,17 @@
                     <span class="status-dot" style="background-color: var(--text-muted);"></span> Unavailable
                 </div>
                 {% endif %}
-                <a href="{% url 'profile' developer.username %}" class="btn btn-ghost" style="padding: 0.25rem 0.5rem; font-size: 0.9rem;">View Profile &rarr;</a>
+                <a href="{% url 'accounts:developer_detail' developer.user.username %}" class="btn btn-ghost" style="padding: 0.25rem 0.5rem; font-size: 0.9rem;">View Profile &rarr;</a>
             </div>
         </div>
         {% empty %}
         <!-- Placeholder Empty State -->
         <p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">No featured developers available at the moment.</p>
         {% endfor %}
+    </div>
+    <br>
+    <div style="text-align: center; margin-top: 3rem;">
+        <a href="{% url 'accounts:developers' %}" class="btn btn-outline">View All developers &rarr;</a>
     </div>
 </section>
 
@@ -161,9 +154,9 @@
         <p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">No projects showcased yet.</p>
         {% endfor %}
     </div>
-    
+
     <div style="text-align: center; margin-top: 3rem;">
-        <a href="" class="btn btn-ghost">View All Projects &rarr;</a>
+        <a href="" class="btn btn-outline">View All Projects &rarr;</a>
     </div>
 </section>
 
@@ -280,7 +273,7 @@
             {% if not user.is_authenticated %}
                 <a href="{% url 'accounts:register' %}" class="btn btn-primary" style="background-color: var(--accent-primary); border-color: var(--accent-primary);">Create Developer Profile</a>
             {% endif %}
-            <a href="" class="btn btn-outline" style="color: white; border-color: #475569;">Explore Developers</a>
+            <a href="accounts:developer_detail" class="btn btn-outline" style="color: white; border-color: #475569;">Explore Developers</a>
         </div>
     </div>
 </section>

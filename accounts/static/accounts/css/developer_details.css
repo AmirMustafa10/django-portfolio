@@ -1,205 +1,101 @@
-/* ==========================================================================
-   DESIGN SYSTEM OVERRIDES
-   ========================================================================== */
-:root {
-    --bs-primary: #2563eb;
-    --bs-primary-rgb: 37, 99, 235;
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-    --border-light: #e2e8f0;
-    --bg-surface: #ffffff;
-    --bg-body: #f8fafc;
-    --radius-custom: 12px;
-}
-.text-main { color: var(--text-main) !important; }
-.text-muted-custom { color: var(--text-muted) !important; }
-.bg-surface { background-color: var(--bg-surface) !important; }
-.border-light-custom { border-color: var(--border-light) !important; }
-.rounded-custom { border-radius: var(--radius-custom) !important; }
-
-.hover-lift {
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
-.hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04) !important;
-}
-/* ==========================================================================
-   HERO & IDENTITY
-   ========================================================================== */
-.hero-card {
-    padding: 2.5rem;
-    margin-bottom: 2rem;
-    position: relative;
+/* Scoped Styles for Developer Profile Page */
+.developer-profile-page {
+    font-family: 'Inter', sans-serif;
 }
 
-.avatar-xl {
-    width: 130px;
-    height: 130px;
+/* Color Variables specific to the profile */
+.developer-profile-page .text-navy {
+    color: #0f172a; /* Dark Navy */
+}
+.developer-profile-page .tracking-wide {
+    letter-spacing: 0.05em;
+}
+
+/* Profile Header */
+.developer-profile-page .profile-avatar {
+    width: 140px;
+    height: 140px;
     object-fit: cover;
-    border: 4px solid var(--bg-body);
-    background-color: var(--border-light);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 4px solid #ffffff;
 }
-
-.avatar-placeholder {
-    width: 130px;
-    height: 130px;
-    border: 4px solid var(--bg-body);
-    background-color: var(--border-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    color: var(--text-muted);
-    font-weight: 700;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+.developer-profile-page .profile-bio {
+    max-width: 600px;
 }
-.status-dot {
-    width: 10px;
-    height: 10px;
-    background-color: #10b981;
+.developer-profile-page .availability-dot {
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     display: inline-block;
 }
-.social-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 8px;
-    background-color: var(--bg-body);
-    color: var(--text-muted);
+.developer-profile-page .profile-actions {
+    min-width: 200px;
+}
+
+/* Statistics Cards */
+.developer-profile-page .stats-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.developer-profile-page .stats-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.08) !important;
+}
+
+/* Skills Badges */
+.developer-profile-page .skill-badge {
     transition: all 0.2s ease;
-    border: 1px solid var(--border-light);
+    cursor: default;
 }
-.social-link:hover {
-    background-color: #f1f5f9;
-    color: var(--bs-primary);
-    border-color: #cbd5e1;
+.developer-profile-page .skill-badge:hover {
+    background-color: #e2e8f0 !important;
+    border-color: #cbd5e1 !important;
 }
-/* ==========================================================================
-   STATS SECTION
-   ========================================================================== */
-.stats-container {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 2.5rem;
+
+/* Project Cards */
+.developer-profile-page .project-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.stat-card {
-    flex: 1;
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-custom);
-    padding: 1.25rem 1rem;
-    text-align: center;
-    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
+.developer-profile-page .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.08) !important;
 }
-.stat-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-main);
-    line-height: 1;
-    margin-bottom: 0.25rem;
-}
-.stat-label {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-}
-/* ==========================================================================
-   CONTENT SECTIONS (Skills, Projects, Timelines)
-   ========================================================================== */
-.section-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--text-main);
-    margin-bottom: 1.25rem;
-}
-.skill-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: var(--bg-body);
-    color: var(--text-main);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    border: 1px solid var(--border-light);
-}
-.project-img {
-    width: 100%;
+.developer-profile-page .project-img {
     height: 180px;
     object-fit: cover;
-    border-bottom: 1px solid var(--border-light);
-    background-color: var(--bg-body);
+    width: 100%;
 }
-/* Timelines */
-.timeline {
-    border-left: 2px solid var(--border-light);
+
+/* Timeline (Experience & Education) */
+.developer-profile-page .timeline-wrapper {
+    position: relative;
     padding-left: 1.5rem;
     margin-left: 0.5rem;
+    border-left: 2px solid #e2e8f0;
 }
-.timeline-item {
+.developer-profile-page .timeline-item {
     position: relative;
-    margin-bottom: 2rem;
 }
-.timeline-item:last-child {
-    margin-bottom: 0;
+.developer-profile-page .timeline-item:last-child {
+    padding-bottom: 0 !important;
 }
-.timeline-item::before {
+.developer-profile-page .timeline-item::before {
     content: '';
     position: absolute;
     left: -1.85rem;
     top: 0.25rem;
     width: 12px;
     height: 12px;
-    background: var(--bg-surface);
-    border: 2px solid var(--bs-primary);
+    background-color: #ffffff;
+    border: 2px solid #0d6efd; /* Primary blue */
     border-radius: 50%;
 }
-.timeline-date {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    font-weight: 500;
-    margin-bottom: 0.25rem;
+
+/* Button overrides specific to this page if needed */
+.developer-profile-page .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
 }
-.timeline-title {
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: var(--text-main);
-    margin-bottom: 0.15rem;
-}
-.timeline-org {
-    font-size: 0.95rem;
-    color: var(--bs-primary);
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-/* Empty States */
-.empty-state {
-    background-color: var(--bg-body);
-    border: 1px dashed var(--border-light);
-    border-radius: var(--radius-custom);
-    padding: 2rem 1.5rem;
-    text-align: center;
-    color: var(--text-muted);
-}
-.empty-state svg {
-    margin-bottom: 0.75rem;
-    color: #cbd5e1;
-}
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .hero-card { text-align: center; padding: 2rem 1.5rem; }
-    .hero-actions { justify-content: center; margin-top: 1.5rem; width: 100%; }
-    .hero-actions .btn { flex: 1; }
-    .stats-container { flex-wrap: wrap; }
-    .stat-card { flex: 1 1 45%; }
-    .timeline { padding-left: 1.25rem; }
-    .timeline-item::before { left: -1.55rem; }
+.developer-profile-page .btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
 }

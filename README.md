@@ -47,6 +47,8 @@ The project follows clean architecture principles, Django best practices, and a 
 - Developer profiles
 - Developer listing
 - Developer details
+- Profile editing
+- Featured developers on the homepage
 - Skills management
 - Experience management
 - Education management
@@ -115,6 +117,7 @@ The core architecture, authentication, developer profiles, portfolio management,
 - [x] Homepage
 - [x] Developers page
 - [x] Developer details page
+- [x] Developer Profile editing
 
 ### Portfolio
 

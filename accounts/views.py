@@ -1,9 +1,10 @@
 from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, UserForm, ProfileForm
 from accounts.models import Profile
 from django.db.models import Q, Prefetch
-from portfolio.models import ProjectImage, Project
+from portfolio.models import ProjectImage, Project, Skill
 
 
 def register_view(request):
@@ -107,7 +108,7 @@ def developer_detail_view(request, username):
                             queryset=ProjectImage.objects.order_by("display_order")[:1],
                             to_attr="cover_images",
                         )
-                    )[:3]
+                    )[:2]
                 ),
                 to_attr="preview_projects",
             ),
@@ -115,7 +116,7 @@ def developer_detail_view(request, username):
         user__username__iexact=username,
     )
 
-    projects_count = developer.projects.count() # type: ignore
+    projects_count = developer.projects.count()  # type: ignore
 
     return render(
         request,
@@ -123,5 +124,71 @@ def developer_detail_view(request, username):
         {
             "developer": developer,
             "projects_count": projects_count,
+        },
+    )
+
+
+@login_required
+def edit_profile_view(request):
+
+    user = request.user
+    profile = user.profile
+    skills = Skill.objects.all()
+    selected_skills = profile.skills.all()
+    experiences = profile.experiences.all()
+    educations = profile.educations.all()
+
+    if request.method == "POST":
+        form1 = UserForm(request.POST, instance=user)
+        form2 = ProfileForm(request.POST, request.FILES, instance=profile)
+
+        selected_skill_values = request.POST.getlist("skills")
+
+        if form1.is_valid() and form2.is_valid():
+
+            form1.save()
+            form2.save()
+
+            selected_skill_values = request.POST.getlist("skills")
+            new_skill_names = request.POST.getlist("new_skills")
+
+            selected_skill_ids = []
+
+            for value in selected_skill_values:
+
+                if not value.startswith("new-"):
+                    selected_skill_ids.append(value)
+
+            for skill_name in new_skill_names:
+                skill_name = skill_name.strip().title()
+
+                if not skill_name:
+                    continue
+
+                skill, created = Skill.objects.get_or_create(name=skill_name)
+
+                selected_skill_ids.append(skill.id)  # type: ignore
+
+            profile.skills.set(selected_skill_ids)
+
+            return redirect(
+                "accounts:developer_detail",
+                username=user.username,
+            )
+
+    else:
+        form1 = UserForm(instance=user)
+        form2 = ProfileForm(instance=profile)
+
+    return render(
+        request,
+        "accounts/edit_profile.html",
+        {
+            "user_form": form1,
+            "profile_form": form2,
+            "skills": skills,
+            "selected_skills": selected_skills,
+            "experiences": experiences,
+            "educations": educations,
         },
     )
