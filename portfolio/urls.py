@@ -8,6 +8,10 @@ from .views import (
     add_education_view,
     projects_view,
     project_details,
+    my_projects_view,
+    add_project_view,
+    edit_project_view,
+    delete_project_view,
 )
 
 app_name = "portfolio"
@@ -56,5 +60,25 @@ urlpatterns = [
         "project_details/<str:slug>/",
         project_details,
         name="project_details",
+    ),
+    path(
+        "my-projects/",
+        my_projects_view,
+        name="my_projects",
+    ),
+    path(
+        "add-project/",
+        add_project_view,
+        name="add_project",
+    ),
+    path(
+        "edit-project/<str:slug>/",
+        edit_project_view,
+        name="edit_project",
+    ),
+    path(
+        "project/<slug:slug>/delete/",
+        delete_project_view,
+        name="delete_project",
     ),
 ]

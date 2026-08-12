@@ -1,0 +1,645 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Project | DevConnect{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'accounts/css/edit_profile.css' %}">
+<style>
+    /* ==========================================================================
+       SCOPED PAGE STYLES: .add-project-page
+       ========================================================================== */
+    .add-project-page {
+        --bg-main: #f8fafc;
+        --card-bg: #ffffff;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --border-color: #e2e8f0;
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --danger: #ef4444;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Fallback and enforcement for Django rendered form fields */
+    .add-project-page .form-group input:not([type="checkbox"]),
+    .add-project-page .form-group select,
+    .add-project-page .form-group textarea {
+        width: 100%;
+        background-color: #f8fafc;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 0 1.25rem;
+        font-size: 1rem;
+        color: var(--text-main);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        appearance: none;
+    }
+    
+    .add-project-page .form-group input:not([type="checkbox"]),
+    .add-project-page .form-group select {
+        height: 56px;
+    }
+
+    .add-project-page .form-group textarea {
+        min-height: 140px;
+        padding: 1rem 1.25rem;
+        resize: vertical;
+        line-height: 1.6;
+    }
+
+    .add-project-page .form-group input:focus,
+    .add-project-page .form-group select:focus,
+    .add-project-page .form-group textarea:focus {
+        background-color: #ffffff;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        outline: none;
+    }
+
+    /* Error States */
+    .add-project-page .has-error input:not([type="checkbox"]),
+    .add-project-page .has-error select,
+    .add-project-page .has-error textarea {
+        border-color: var(--danger);
+        background-color: #fef2f2;
+    }
+    .add-project-page .has-error input:focus,
+    .add-project-page .has-error select:focus,
+    .add-project-page .has-error textarea:focus {
+        box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+    }
+
+    /* Custom Switch for 'is_featured' checkbox */
+    .add-project-page .featured-switch-wrapper {
+        background-color: #f8fafc;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .add-project-page .form-switch input[type="checkbox"] {
+        appearance: none;
+        width: 3em;
+        height: 1.5em;
+        background-color: #cbd5e1;
+        border-radius: 2em;
+        position: relative;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+        border: none;
+        margin: 0;
+        flex-shrink: 0;
+    }
+    .add-project-page .form-switch input[type="checkbox"]::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: calc(1.5em - 4px);
+        height: calc(1.5em - 4px);
+        background-color: white;
+        border-radius: 50%;
+        transition: transform 0.2s ease-in-out;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .add-project-page .form-switch input[type="checkbox"]:checked {
+        background-color: var(--primary);
+    }
+    .add-project-page .form-switch input[type="checkbox"]:checked::after {
+        transform: translateX(1.5em);
+    }
+
+    /* Skills Chips/Cards UX */
+    .add-project-page .skills-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .add-project-page .skill-option {
+        display: inline-block;
+    }
+    .add-project-page .skill-option input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+    .add-project-page .skill-label {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        background-color: #f8fafc;
+        color: var(--text-main);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+    }
+    .add-project-page .skill-label:hover {
+        border-color: #cbd5e1;
+        background-color: #f1f5f9;
+        color: var(--primary);
+    }
+    .add-project-page .skill-option input[type="checkbox"]:checked + .skill-label {
+        background-color: var(--primary);
+        color: #ffffff;
+        border-color: var(--primary);
+    }
+    .add-project-page .skill-option input[type="checkbox"]:focus-visible + .skill-label {
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+    }
+
+/* ==========================================================================
+   ADD PROJECT PAGE
+   ========================================================================== */
+
+.add-project-page {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Project Images */
+.add-project-page .project-image-upload {
+    background-color: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.add-project-page .project-image-upload:hover {
+    border-color: var(--bs-primary);
+    background-color: #f0f7ff;
+}
+
+.add-project-page .image-upload-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.add-project-page .image-upload-info h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.25rem;
+}
+
+.add-project-page .image-upload-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.add-project-page .project-image-input {
+    display: none;
+}
+
+.add-project-page .image-upload-btn {
+    min-height: 45px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+/* Image Preview Grid */
+.add-project-page .image-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1.25rem;
+}
+
+.add-project-page .image-preview-item {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    background-color: #e2e8f0;
+    border: 1px solid var(--border-light);
+}
+
+.add-project-page .image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.add-project-page .image-preview-number {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 0.45rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background-color: rgba(15, 23, 42, 0.78);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.add-project-page .image-preview-name {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.55rem 0.65rem;
+    background: linear-gradient(
+        to top,
+        rgba(15, 23, 42, 0.82),
+        rgba(15, 23, 42, 0)
+    );
+    color: #ffffff;
+    font-size: 0.72rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.add-project-page .image-preview-empty {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px dashed var(--border-light);
+    border-radius: 12px;
+    color: var(--text-muted);
+    background-color: #ffffff;
+}
+
+/* Skills */
+.add-project-page .skills-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.add-project-page .skill-option {
+    position: relative;
+}
+
+.add-project-page .skill-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.add-project-page .skill-option span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 0.55rem 0.95rem;
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    background-color: #f8fafc;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.add-project-page .skill-option span:hover {
+    border-color: #93c5fd;
+    background-color: #eff6ff;
+}
+
+.add-project-page .skill-option input:checked + span {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: #ffffff;
+}
+
+.add-project-page .skill-option input:focus-visible + span {
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+/* Featured Switch */
+.add-project-page .featured-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: var(--input-height);
+    padding: 0.9rem 1.25rem;
+    background-color: #f8fafc;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+}
+
+.add-project-page .featured-wrapper .form-switch {
+    margin: 0;
+}
+
+.add-project-page .featured-description {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .add-project-page .image-upload-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .add-project-page .image-upload-btn {
+        width: 100%;
+    }
+
+    .add-project-page .image-preview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .add-project-page .featured-wrapper {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .add-project-page .image-preview-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock css %}
+
+{% block content %}
+<main class="add-project-page container py-4 py-md-5">
+    <div class="form-container" style="max-width: 860px; margin: 0 auto;">
+        
+        <!-- Page Header -->
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 pb-2">
+            <div>
+                <h1 class="fw-bold text-main m-0 fs-2">Add Project</h1>
+                <p class="text-muted-custom mt-1 mb-0">Create and showcase a new project in your developer portfolio.</p>
+            </div>
+            <div class="mt-3 mt-sm-0">
+                <a href="{% url 'portfolio:my_projects' %}" class="btn btn-outline-secondary rounded-3 text-nowrap">
+                    &larr; Back to My Projects
+                </a>
+            </div>
+        </div>
+
+        <form method="POST" class="project-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Non-field Errors -->
+            {% if project_form.non_field_errors %}
+                <div class="alert alert-danger rounded-3 mb-4">
+                    {{ project_form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <!-- SECTION 1: PROJECT INFORMATION -->
+            <div class="section-card bg-surface border border-light-custom rounded-custom shadow-sm p-4 p-md-5 mb-4">
+                <h2 class="section-title h4 fw-bold text-main mb-4 pb-3 border-bottom border-light-custom">
+                    Project Information
+                </h2>
+
+                <div class="row g-4">
+                    <!-- Row 1: Title -->
+                    <div class="col-12 form-group {% if project_form.title.errors %}has-error{% endif %}">
+                        <label class="form-label" for="{{ project_form.title.id_for_label }}">{{ project_form.title.label }}</label>
+                        {{ project_form.title }}
+                        {% if project_form.title.errors %}
+                            <div class="invalid-feedback d-block">{{ project_form.title.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Row 2: Status & Featured -->
+                    <div class="col-12 col-md-6 form-group {% if project_form.status.errors %}has-error{% endif %}">
+                        <label class="form-label" for="{{ project_form.status.id_for_label }}">{{ project_form.status.label }}</label>
+                        {{ project_form.status }}
+                        {% if project_form.status.errors %}
+                            <div class="invalid-feedback d-block">{{ project_form.status.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-12 col-md-6 form-group {% if project_form.is_featured.errors %}has-error{% endif %}">
+                        <div class="featured-switch-wrapper">
+                            <div>
+                                <label class="form-label m-0 cursor-pointer" for="{{ project_form.is_featured.id_for_label }}">{{ project_form.is_featured.label }}</label>
+                                <div class="small text-muted-custom mt-1">Highlight this project in featured sections.</div>
+                            </div>
+                            <div class="form-check form-switch m-0 p-0 d-flex align-items-center ms-3">
+                                {{ project_form.is_featured }}
+                            </div>
+                        </div>
+                        {% if project_form.is_featured.errors %}
+                            <div class="invalid-feedback d-block">{{ project_form.is_featured.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Row 3: Live Demo & Source Code URL -->
+                    <div class="col-12 col-md-6 form-group {% if project_form.live_demo_url.errors %}has-error{% endif %}">
+                        <label class="form-label" for="{{ project_form.live_demo_url.id_for_label }}">{{ project_form.live_demo_url.label }}</label>
+                        {{ project_form.live_demo_url }}
+                        <div class="small text-muted-custom mt-1">Optional link to the deployed project.</div>
+                        {% if project_form.live_demo_url.errors %}
+                            <div class="invalid-feedback d-block">{{ project_form.live_demo_url.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-12 col-md-6 form-group {% if project_form.source_code_url.errors %}has-error{% endif %}">
+                        <label class="form-label" for="{{ project_form.source_code_url.id_for_label }}">{{ project_form.source_code_url.label }}</label>
+                        {{ project_form.source_code_url }}
+                        <div class="small text-muted-custom mt-1">Optional link to the project's source code.</div>
+                        {% if project_form.source_code_url.errors %}
+                            <div class="invalid-feedback d-block">{{ project_form.source_code_url.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Row 4: Description -->
+                    <div class="col-12 form-group {% if project_form.description.errors %}has-error{% endif %}">
+                        <label class="form-label" for="{{ project_form.description.id_for_label }}">{{ project_form.description.label }}</label>
+                        {{ project_form.description }}
+                        {% if project_form.description.errors %}
+                            <div class="invalid-feedback d-block">{{ project_form.description.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: TECHNOLOGIES & SKILLS -->
+            <div class="section-card bg-surface border border-light-custom rounded-custom shadow-sm p-4 p-md-5 mb-4">
+                <h2 class="section-title h4 fw-bold text-main mb-1">
+                    Technologies & Skills
+                </h2>
+                <p class="text-muted-custom small mb-4 pb-3 border-bottom border-light-custom">
+                    Select the technologies and skills used in this project.
+                </p>
+
+                <div class="skills-selector">
+                    {% for skill in skills %}
+                        <div class="skill-option">
+                            <input type="checkbox" name="skills" value="{{ skill.id }}" id="skill_{{ skill.id }}">
+                            <label class="skill-label" for="skill_{{ skill.id }}">{{ skill.name }}</label>
+                        </div>
+                    {% empty %}
+                        <div class="w-100 p-4 text-center border rounded-3 bg-light">
+                            <p class="text-muted-custom mb-0">No skills available yet.</p>
+                            <span class="small text-muted-custom">You can add skills from your profile editor.</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- =========================================================
+                 PROJECT IMAGES
+                 ========================================================= -->
+
+            <div class="section-card">
+
+                <h2 class="section-title">
+                    Project Images
+                </h2>
+
+                <div class="project-image-upload">
+
+                    <div class="image-upload-header">
+
+                        <div class="image-upload-info">
+
+                            <h3>
+                                Add project screenshots or images
+                            </h3>
+
+                            <p>
+                                You can select multiple images. JPG, PNG and WEBP are supported.
+                            </p>
+
+                        </div>
+
+                        <label
+                            for="project-images"
+                            class="btn btn-outline-primary rounded-3 px-4 image-upload-btn"
+                        >
+                            Choose Images
+                        </label>
+
+                    </div>
+
+                    <input
+                        type="file"
+                        id="project-images"
+                        name="project_images"
+                        class="project-image-input"
+                        accept="image/jpeg,image/png,image/webp"
+                        multiple
+                    >
+
+                    <div
+                        id="image-preview-grid"
+                        class="image-preview-grid"
+                    ></div>
+
+                    <div
+                        id="image-preview-empty"
+                        class="image-preview-empty"
+                    >
+                        No images selected yet.
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- FORM ACTIONS -->
+            <div class="d-flex flex-column flex-sm-row justify-content-end align-items-sm-center gap-3 mt-4 pt-2">
+                <a href="{% url 'portfolio:my_projects' %}" class="btn btn-ghost text-muted-custom rounded-3 px-4 py-2 text-decoration-none text-center">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary rounded-3 px-5 py-2 shadow-sm fw-medium w-100 w-sm-auto">
+                    Add Project
+                </button>
+            </div>
+            
+        </form>
+    </div>
+</main>
+{% endblock content %}
+
+{% block js %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const imageInput = document.getElementById("project-images");
+    const previewGrid = document.getElementById("image-preview-grid");
+    const emptyState = document.getElementById("image-preview-empty");
+
+    if (!imageInput || !previewGrid || !emptyState) {
+        return;
+    }
+
+    imageInput.addEventListener("change", function () {
+
+        previewGrid.innerHTML = "";
+
+        if (!this.files.length) {
+            emptyState.style.display = "block";
+            return;
+        }
+
+        emptyState.style.display = "none";
+
+        Array.from(this.files).forEach(function (file, index) {
+
+            if (!file.type.startsWith("image/")) {
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+
+                const item = document.createElement("div");
+                item.className = "image-preview-item";
+
+                item.innerHTML = `
+                    <img
+                        src="${event.target.result}"
+                        alt="Project image ${index + 1}"
+                    >
+
+                    <span class="image-preview-number">
+                        ${index + 1}
+                    </span>
+
+                    <div class="image-preview-name">
+                        ${file.name}
+                    </div>
+                `;
+
+                previewGrid.appendChild(item);
+            };
+
+            reader.readAsDataURL(file);
+
+        });
+
+    });
+
+});
+</script>
+
+{% endblock js %}
