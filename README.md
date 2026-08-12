@@ -39,8 +39,8 @@ The project follows clean architecture principles, Django best practices, and a 
 ### Authentication
 
 - Custom User Authentication
-- User registration
-- Login with username or email
+  - User registration
+  - Login with username or email
 
 ### Developer Profiles
 
@@ -126,7 +126,13 @@ The core architecture, authentication, developer profiles, portfolio management,
 - [x] Project
 - [x] ProjectImage
 - [x] Experience
+  - [x] Create
+  - [x] Update
+  - [x] Delete
 - [x] Education
+  - [x] Create
+  - [x] Update
+  - [x] Delete
 
 ### Blog
 
