@@ -77,7 +77,6 @@ class Project(TimeStampedModel):
     slug = models.SlugField(
         max_length=255,
         unique=True,
-        blank=True,
         help_text="Unique SEO-friendly slug generated automatically from the project title.",
     )
 
