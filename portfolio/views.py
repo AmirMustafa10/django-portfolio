@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseNotAllowed
 from django.contrib.auth.decorators import login_required
-from .models import Experience, Education
+from .models import Experience, Education, Project
 from .forms import EducationForm, ExperienceForm
 from django.contrib import messages
+from django.db.models import Q
 
 
+# Experience views
 @login_required
 def delete_experience_view(request, pk):
     experience = get_object_or_404(
@@ -155,3 +157,52 @@ def add_education_view(request):
             "education_form": form,
         },
     )
+
+
+# Project views
+def projects_view(request):
+
+    query = request.GET.get("q", "").strip()
+    status = request.GET.get("status", "").strip()
+
+    projects = Project.objects.select_related("profile__user").prefetch_related(
+        "images", "skills"
+    )
+
+    if query:
+        projects = projects.filter(Q(title__icontains=query) | Q(slug__icontains=query))
+
+    if status:
+        projects = projects.filter(status=status)
+
+    projects = projects.distinct()
+
+    return render(
+        request,
+        "portfolio/Projects.html",
+        {
+            "Projects": projects,
+            "query": query,
+        },
+    )
+
+
+def project_details(request, slug):
+
+    project = get_object_or_404(
+        Project.objects.select_related("profile__user").prefetch_related(
+            "images", "skills"
+        ),
+        slug=slug,
+    )
+
+    return render(
+        request,
+        "portfolio/project_details.html",
+        {
+            "project": project,
+        },
+    )
+
+
+

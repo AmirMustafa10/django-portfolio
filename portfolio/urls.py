@@ -6,12 +6,15 @@ from .views import (
     delete_education_view,
     edit_education_view,
     add_education_view,
+    projects_view,
+    project_details,
 )
 
 app_name = "portfolio"
 
 
 urlpatterns = [
+    # Experience Urls
     path(
         "experience/<int:pk>/delete/",
         delete_experience_view,
@@ -42,5 +45,16 @@ urlpatterns = [
         "add_education/",
         add_education_view,
         name="add_education",
+    ),
+    # Project Urls
+    path(
+        "projects/",
+        projects_view,
+        name="projects",
+    ),
+    path(
+        "project_details/<str:slug>/",
+        project_details,
+        name="project_details",
     ),
 ]

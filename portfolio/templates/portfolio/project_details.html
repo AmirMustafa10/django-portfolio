@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} | DevConnect{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'portfolio/css/project_details.css' %}">
+{% endblock css %}
+
+{% block content %}
+<div class="project-details-page">
+    <div class="container">
+        
+        <!-- Breadcrumbs & Back Button -->
+        <div class="d-flex justify-content-between align-items-center breadcrumb-nav">
+            <nav aria-label="breadcrumb">
+                <span class="text-muted small fw-medium">
+                    <a href="{% url 'portfolio:projects' %}" class="breadcrumb-link">Projects</a> 
+                    <span class="mx-2">/</span> 
+                    <span class="text-main">{{ project.title }}</span>
+                </span>
+            </nav>
+            <a href="{% url 'portfolio:projects' %}" class="btn-secondary-custom" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                &larr; Back to Projects
+            </a>
+        </div>
+
+        <!-- Header -->
+        <header class="project-header mb-4">
+            <h1 class="project-title">{{ project.title }}</h1>
+            <div class="d-flex flex-wrap gap-2 align-items-center mt-3">
+                <!-- Status Badge -->
+                <span class="badge-status 
+                    {% if project.status|lower == 'draft' %}status-draft
+                    {% elif project.status|lower == 'in progress' or project.status|lower == 'in_progress' %}status-in-progress
+                    {% elif project.status|lower == 'completed' %}status-completed
+                    {% else %}status-archived{% endif %}">
+                    {{ project.get_status_display }}
+                </span>
+                
+                <!-- Featured Badge -->
+                {% if project.is_featured %}
+                    <span class="badge-featured">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1 mb-1" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+                        Featured
+                    </span>
+                {% endif %}
+            </div>
+        </header>
+
+        <!-- Two Column Layout -->
+        <div class="row gx-lg-5">
+            
+            <!-- LEFT COLUMN: Gallery & Details -->
+            <div class="col-12 col-lg-8">
+                
+                <!-- 4. Project Image Gallery -->
+                <section class="project-gallery" id="projectGallery" aria-label="Project images gallery">
+                    
+                    <div class="main-image-wrapper">
+                        {% if project.images.all %}
+                            <img src="{{ project.images.first.image.url }}" alt="{{ project.title }} Main Image" class="main-image" id="mainGalleryImage">
+                            
+                            <!-- Controls (Hidden via JS if only 1 image exists) -->
+                            <button class="gallery-btn prev" id="galleryPrevBtn" aria-label="Previous image">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                            </button>
+                            <button class="gallery-btn next" id="galleryNextBtn" aria-label="Next image">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
+                            </button>
+                            <div class="gallery-counter" id="galleryCounter">
+                                1 / {{ project.images.count }}
+                            </div>
+                        {% else %}
+                            <div class="gallery-placeholder">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="mb-3" viewBox="0 0 16 16"><path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3zM4.5 10a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-7z"/></svg>
+                                <span class="fw-medium">No project images available.</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Thumbnails (Hidden via JS if < 2 images) -->
+                    {% if project.images.count > 1 %}
+                    <div class="thumbnail-track" id="thumbnailTrack">
+                        {% for img in project.images.all %}
+                            <div class="thumbnail-item {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}" data-src="{{ img.image.url }}" aria-label="View image {{ forloop.counter }}" tabindex="0" role="button">
+                                <img src="{{ img.image.url }}" alt="Thumbnail {{ forloop.counter }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </section>
+
+                <!-- 6. Project Description -->
+                <section class="mb-5">
+                    <h2 class="section-title">About this project</h2>
+                    <div class="project-description">{{ project.description }}</div>
+                </section>
+
+                <!-- 7. Technologies / Skills -->
+                <section class="mb-5">
+                    <h2 class="section-title">Technologies</h2>
+                    {% if project.skills.all %}
+                        <div class="skills-container">
+                            {% for skill in project.skills.all %}
+                                <span class="technology-badge">{{ skill.name }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted italic">No technologies listed.</p>
+                    {% endif %}
+                </section>
+                
+            </div>
+
+            <!-- RIGHT COLUMN: Sidebar -->
+            <aside class="col-12 col-lg-4 project-sidebar">
+                
+                <!-- 9. Project Links Card -->
+                {% if project.live_demo_url or project.source_code_url %}
+                <div class="sidebar-card">
+                    <h3 class="sidebar-card-title">Project Links</h3>
+                    <div class="d-flex flex-column gap-3">
+                        {% if project.live_demo_url %}
+                            <a href="{{ project.live_demo_url }}" target="_blank" rel="noopener noreferrer" class="btn-primary-custom w-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/><path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/></svg>
+                                Live Demo
+                            </a>
+                        {% endif %}
+                        
+                        {% if project.source_code_url %}
+                            <a href="{{ project.source_code_url }}" target="_blank" rel="noopener noreferrer" class="btn-secondary-custom w-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+                                Source Code
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- 10. Project Owner / Developer Card -->
+                <div class="sidebar-card">
+                    <h3 class="sidebar-card-title">Developer</h3>
+                    
+                    <div class="developer-card">
+                        {% if project.profile.avatar %}
+                            <img src="{{ project.profile.avatar.url }}" alt="Developer Avatar" class="dev-avatar">
+                        {% else %}
+                            <div class="dev-initials">
+                                {{ project.profile.user.username|make_list|first|upper }}
+                            </div>
+                        {% endif %}
+                        
+                        <div>
+                            <p class="dev-name">{{ project.profile.user.get_full_name|default:project.profile.user.username }}</p>
+                            <p class="dev-username">@{{ project.profile.user.username }}</p>
+                            {% if project.profile.job_title %}
+                                <p class="dev-title">{{ project.profile.job_title }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'accounts:developer_detail' project.profile.user.username %}" class="btn-secondary-custom w-100">
+                        View Developer Profile
+                    </a>
+                </div>
+
+                <!-- 11. Metadata -->
+                <div class="sidebar-card">
+                    <h3 class="sidebar-card-title">Details</h3>
+                    <ul class="meta-list">
+                        <li>
+                            <span class="meta-label">Status</span>
+                            <span class="meta-value">{{ project.get_status_display }}</span>
+                        </li>
+                        <li>
+                            <span class="meta-label">Created</span>
+                            <span class="meta-value">{{ project.created_at|date:"M j, Y" }}</span>
+                        </li>
+                        <li>
+                            <span class="meta-label">Updated</span>
+                            <span class="meta-value">{{ project.updated_at|date:"M j, Y" }}</span>
+                        </li>
+                        <li>
+                            <span class="meta-label">Featured</span>
+                            <span class="meta-value">{% if project.is_featured %}Yes{% else %}Standard{% endif %}</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </aside>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'portfolio/js/project_details.js' %}"></script>
+{% endblock js %}
