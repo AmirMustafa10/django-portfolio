@@ -36,7 +36,7 @@
                 <div class="nav-actions">
                     {% if user.is_authenticated %}
                         <a href="" class="btn btn-ghost">Dashboard</a>
-                        <a href="{% url 'accounts:developer_detail' request.user.username %}" class="btn btn-outline"><i class="bi bi-person">
+                        <a href="{% url 'accounts:create_profile'%}" class="btn btn-outline"><i class="bi bi-person">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 width="16"
                                 height="16"

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from .forms import LoginForm, RegisterForm, UserForm, ProfileForm
 from accounts.models import Profile
+from django.contrib import messages
 from django.db.models import Q, Prefetch
 from portfolio.models import ProjectImage, Project, Skill
 
@@ -124,6 +125,75 @@ def developer_detail_view(request, username):
         {
             "developer": developer,
             "projects_count": projects_count,
+        },
+    )
+
+
+@login_required
+def create_profile_view(request):
+    user = request.user
+
+    skills = Skill.objects.all()
+
+    if hasattr(user, "profile"):
+        return redirect(
+            "accounts:developer_detail",
+            username=user.username,
+        )
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, request.FILES)
+        user_form = UserForm(request.POST, instance=user)
+
+        if form.is_valid() and user_form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = user
+            profile.save()
+            user_form.save()
+
+            selected_skill_values = request.POST.getlist("skills")
+            new_skill_names = request.POST.getlist("new_skills")
+
+            selected_skill_ids = []
+
+            for value in selected_skill_values:
+
+                if not value.startswith("new-"):
+                    selected_skill_ids.append(value)
+
+            for skill_name in new_skill_names:
+                skill_name = skill_name.strip().title()
+
+                if not skill_name:
+                    continue
+
+                skill, created = Skill.objects.get_or_create(name=skill_name)
+
+                selected_skill_ids.append(skill.id)  # type: ignore
+
+            profile.skills.set(selected_skill_ids)
+
+            messages.success(
+                request,
+                "Profile created successfully.",
+            )
+
+            return redirect(
+                "accounts:developer_detail",
+                username=user.username,
+            )
+
+    else:
+        form = ProfileForm()
+        user_form = UserForm(instance=user)
+
+    return render(
+        request,
+        "accounts/create_profile.html",
+        {
+            "profile_form": form,
+            "user_form": user_form,
+            "skills": skills,
         },
     )
 
