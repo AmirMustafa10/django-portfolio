@@ -432,12 +432,12 @@ function setupDeleteModal() {
         return;
     }
 
-    document.querySelectorAll(".delete-btn").forEach((button) => {
-        button.addEventListener("click", function () {
-            deleteForm.action = this.dataset.deleteUrl;
+    document.querySelectorAll(".btn-delete").forEach((button) => {
+      button.addEventListener("click", function () {
+        deleteForm.action = this.dataset.deleteUrl;
 
-            deleteType.textContent = this.dataset.deleteType || "";
-            deleteName.textContent = this.dataset.deleteName || "";
-        });
+        deleteType.textContent = this.dataset.deleteType || "";
+        deleteName.textContent = this.dataset.deleteName || "";
+      });
     });
 }

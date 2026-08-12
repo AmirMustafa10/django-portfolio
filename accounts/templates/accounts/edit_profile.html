@@ -321,7 +321,7 @@
                                 <!-- Delete -->
                                 <button
                                     type="button"
-                                    class="btn btn-ghost text-muted-custom rounded-3 px-4 delete-btn"
+                                    class="btn btn-ghost text-muted-custom rounded-3 px-4 btn-delete"
                                     data-bs-toggle="modal"
                                     data-bs-target="#deleteModal"
                                     data-delete-url="{% url 'portfolio:delete_experience' exp.id %}"
@@ -402,7 +402,7 @@
                                 <!-- Delete -->
                                 <button
                                     type="button"
-                                    class="btn btn-ghost text-muted-custom rounded-3 px-4 delete-btn"
+                                    class="btn btn-ghost text-muted-custom rounded-3 px-4 btn-delete"
                                     data-bs-toggle="modal"
                                     data-bs-target="#deleteModal"
                                     data-delete-url="{% url 'portfolio:delete_education' edu.id %}"
@@ -432,175 +432,7 @@
             </div>
     </div>
 </main>
-
-<!-- EMPTY FORM TEMPLATES (Hidden, used by JS to clone new formsets) -->
-
-<template id="skills-empty-template">
-    <div class="skill-tag" id="skill-row-skills-__prefix__">
-        {{ skills_formset.empty_form.id }}
-        {{ skills_formset.empty_form.DELETE }}
-        <input type="hidden" name="{{ skills_formset.empty_form.name.html_name }}" value="">
-        <span class="skill-name-display"></span>
-        <button type="button" class="remove-skill" aria-label="Remove skill" data-action="delete" data-prefix="skills" data-target="skill-row-skills-__prefix__">
-            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-    </div>
-</template>
-
-<template id="experience-empty-template">
-    <div class="nested-card" id="exp-row-experience-__prefix__">
-        {{ experience_formset.empty_form.id }}
-        {{ experience_formset.empty_form.DELETE }}
-        <div class="row g-4">
-            <div class="col-12 col-md-6 form-group">
-                <label class="form-label">Job Title</label>
-                {{ experience_formset.empty_form.job_title }}
-            </div>
-            <div class="col-12 col-md-6 form-group">
-                <label class="form-label">Company</label>
-                {{ experience_formset.empty_form.company }}
-            </div>
-            <div class="col-12 col-md-4 form-group">
-                <label class="form-label">Employment Type</label>
-                {{ experience_formset.empty_form.employment_type }}
-            </div>
-            <div class="col-12 col-md-4 form-group">
-                <label class="form-label">Start Date</label>
-                {{ experience_formset.empty_form.start_date }}
-            </div>
-            <div class="col-12 col-md-4 form-group">
-                <label class="form-label">End Date</label>
-                {{ experience_formset.empty_form.end_date }}
-                <div class="form-check mt-3">
-                    {{ experience_formset.empty_form.is_current }}
-                    <label class="form-check-label fw-medium text-main" for="{{ experience_formset.empty_form.is_current.id_for_label }}">Currently working here</label>
-                </div>
-            </div>
-            <div class="col-12 form-group">
-                <label class="form-label">Description</label>
-                {{ experience_formset.empty_form.description }}
-            </div>
-            <div class="col-12 text-end mt-4 pt-3 border-top border-light-custom">
-                <button type="button" class="btn btn-link btn-delete-nested" data-action="delete" data-prefix="experience" data-target="exp-row-experience-__prefix__">
-                    Delete Experience
-                </button>
-            </div>
-        </div>
-    </div>
-</template>
-
-<template id="education-empty-template">
-    <div class="nested-card" id="edu-row-education-__prefix__">
-        {{ education_formset.empty_form.id }}
-        {{ education_formset.empty_form.DELETE }}
-        <div class="row g-4">
-            <div class="col-12 col-md-6 form-group">
-                <label class="form-label">Degree</label>
-                {{ education_formset.empty_form.degree }}
-            </div>
-            <div class="col-12 col-md-6 form-group">
-                <label class="form-label">Institution</label>
-                {{ education_formset.empty_form.institution }}
-            </div>
-            <div class="col-12 col-md-4 form-group">
-                <label class="form-label">Field of Study</label>
-                {{ education_formset.empty_form.field_of_study }}
-            </div>
-            <div class="col-12 col-md-4 form-group">
-                <label class="form-label">Start Year</label>
-                {{ education_formset.empty_form.start_year }}
-            </div>
-            <div class="col-12 col-md-4 form-group">
-                <label class="form-label">End Year</label>
-                {{ education_formset.empty_form.end_year }}
-                <div class="form-check mt-3">
-                    {{ education_formset.empty_form.is_current }}
-                    <label class="form-check-label fw-medium text-main" for="{{ education_formset.empty_form.is_current.id_for_label }}">Currently studying</label>
-                </div>
-            </div>
-            <div class="col-12 text-end mt-4 pt-3 border-top border-light-custom">
-                <button type="button" class="btn btn-link btn-delete-nested" data-action="delete" data-prefix="education" data-target="edu-row-education-__prefix__">
-                    Delete Education
-                </button>
-            </div>
-        </div>
-    </div>
-</template>
 <br>
-
-<div
-    class="modal fade"
-    id="deleteModal"
-    tabindex="-1"
-    aria-labelledby="deleteModalLabel"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-dialog-centered">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5
-                    class="modal-title"
-                    id="deleteModalLabel"
-                >
-                    Confirm Deletion
-                </h5>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
-
-            </div>
-
-            <div class="modal-body">
-
-                <p class="mb-1">
-                    Are you sure you want to delete this
-                    <span id="delete-item-type"></span>?
-                </p>
-
-                <div
-                    id="delete-item-name"
-                    class="fw-semibold text-main"
-                ></div>
-
-            </div>
-
-            <div class="modal-footer">
-
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                >
-                    Cancel
-                </button>
-
-                <form
-                    method="POST"
-                    id="confirm-delete-form"
-                >
-                    {% csrf_token %}
-
-                    <button
-                        type="submit"
-                        class="btn btn-danger"
-                    >
-                        Delete
-                    </button>
-                </form>
-
-            </div>
-
-        </div>
-
-    </div>
-</div>
 {% endblock content %}
 
 {% block js %}
