@@ -124,6 +124,11 @@ The core architecture, authentication, developer profiles, portfolio management,
 - [x] Portfolio application created
 - [x] Skill
 - [x] Project
+  - [x] Project listing
+  - [x] Project details
+  - [x] Create project
+  - [x] Update project
+  - [x] Delete project
 - [x] ProjectImage
 - [x] Experience
   - [x] Create

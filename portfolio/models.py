@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
+from unidecode import unidecode
 from django.db import models
 from core.models import TimeStampedModel, validate_file_size
 from django.core.validators import FileExtensionValidator
@@ -77,7 +78,6 @@ class Project(TimeStampedModel):
     slug = models.SlugField(
         max_length=255,
         unique=True,
-        blank=True,
         help_text="Unique SEO-friendly slug generated automatically from the project title.",
     )
 
@@ -119,7 +119,8 @@ class Project(TimeStampedModel):
         constraints = [
             models.CheckConstraint(
                 condition=(
-                    models.Q(live_demo_url__isnull=False)
+                    ~models.Q(status="completed")
+                    | models.Q(live_demo_url__isnull=False)
                     | models.Q(source_code_url__isnull=False)
                 ),
                 name="project_requires_at_least_one_link",
@@ -149,7 +150,7 @@ class Project(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            base_slug = slugify(self.title)
+            base_slug = slugify(unidecode(self.title))
             slug = base_slug
             counter = 1
 

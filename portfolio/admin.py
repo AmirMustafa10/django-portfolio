@@ -81,6 +81,7 @@ class ProjectAdmin(admin.ModelAdmin):
             "Project details",
             {
                 "fields": (
+                    "slug",
                     "profile",
                     "title",
                     "description",

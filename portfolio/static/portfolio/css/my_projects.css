@@ -1,0 +1,322 @@
+/* ==========================================================================
+   SCOPED PAGE STYLES: .my-projects-page
+   ========================================================================== */
+.my-projects-page {
+    --bg-main: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --success: #16a34a;
+    --danger: #ef4444;
+    
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-main);
+    min-height: 100vh;
+    padding-top: 3rem;
+    padding-bottom: 5rem;
+}
+/* --- Header --- */
+.my-projects-page .projects-header {
+    margin-bottom: 2.5rem;
+}
+.my-projects-page .page-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.02em;
+}
+.my-projects-page .page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+/* --- Action Buttons --- */
+.my-projects-page .btn-primary-custom {
+    background-color: var(--primary);
+    color: #ffffff;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.6rem 1.25rem;
+    transition: background-color 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+}
+.my-projects-page .btn-primary-custom:hover {
+    background-color: var(--primary-hover);
+    color: #ffffff;
+}
+.my-projects-page .btn-secondary-custom {
+    background-color: #ffffff;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.6rem 1.25rem;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.my-projects-page .btn-secondary-custom:hover {
+    background-color: #f1f5f9;
+    color: var(--text-main);
+}
+/* --- Stats Section --- */
+.my-projects-page .stats-section {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    display: inline-block;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.my-projects-page .stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+.my-projects-page .stat-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+/* --- Project Card --- */
+.my-projects-page .project-card {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+.my-projects-page .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(15, 23, 42, 0.1);
+}
+/* Cover Image */
+.my-projects-page .project-cover {
+    position: relative;
+    height: 180px;
+    width: 100%;
+    background-color: #f1f5f9;
+    border-bottom: 1px solid var(--border-color);
+}
+.my-projects-page .project-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.my-projects-page .cover-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+.my-projects-page .image-count-badge {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background-color: rgba(15, 23, 42, 0.75);
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+/* Card Body */
+.my-projects-page .project-body {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Badges */
+.my-projects-page .card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+.my-projects-page .status-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.my-projects-page .status-draft { background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+.my-projects-page .status-in-progress { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.my-projects-page .status-completed { background-color: #f0fdf4; color: var(--success); border: 1px solid #bbf7d0; }
+.my-projects-page .status-archived { background-color: #f8fafc; color: var(--text-muted); border: 1px solid var(--border-color); }
+
+.my-projects-page .featured-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background-color: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+/* Title & Desc */
+.my-projects-page .project-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.my-projects-page .project-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.3;
+    margin: 0;
+}
+.my-projects-page .project-links a {
+    color: var(--text-muted);
+    transition: color 0.2s;
+}
+.my-projects-page .project-links a:hover {
+    color: var(--primary);
+}
+.my-projects-page .project-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+/* Skills */
+.my-projects-page .skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+.my-projects-page .skill-badge {
+    background-color: #f1f5f9;
+    color: var(--text-main);
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid var(--border-color);
+}
+.my-projects-page .skill-more {
+    background-color: transparent;
+    color: var(--text-muted);
+    border: 1px dashed var(--border-color);
+}
+/* Metadata */
+.my-projects-page .project-meta {
+    margin-top: auto;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+/* Card Footer Actions */
+.my-projects-page .project-actions {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background-color: #fdfdfe;
+    border-top: 1px solid var(--border-color);
+}
+.my-projects-page .btn-action {
+    flex: 1;
+    padding: 0.5rem;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+}
+.my-projects-page .btn-view {
+    background-color: var(--primary);
+    color: #ffffff;
+    border: 1px solid var(--primary);
+}
+.my-projects-page .btn-view:hover { background-color: var(--primary-hover); color: #ffffff; }
+
+.my-projects-page .btn-edit {
+    background-color: #ffffff;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+.my-projects-page .btn-edit:hover { background-color: #f1f5f9; }
+
+.my-projects-page .btn-delete {
+    flex: 0 0 auto;
+    background-color: #ffffff;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+}
+.my-projects-page .btn-delete:hover {
+    background-color: #fef2f2;
+    color: var(--danger);
+    border-color: #fca5a5;
+}
+/* --- Empty State --- */
+.my-projects-page .empty-state {
+    background-color: var(--card-bg);
+    border: 1px dashed var(--border-color);
+    border-radius: 16px;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+.my-projects-page .empty-icon {
+    color: var(--border-color);
+    margin-bottom: 1.25rem;
+}
+/* Responsive */
+@media (max-width: 768px) {
+    .my-projects-page .projects-header {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 1rem;
+    }
+    .my-projects-page .header-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .my-projects-page .header-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
