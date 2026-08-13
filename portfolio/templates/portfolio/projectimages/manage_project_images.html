@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Project Images | DevConnect{% endblock %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'portfolio/css/manage_project_images.css' %}">
+<link rel="stylesheet" href="{% static 'accounts/css/edit_profile.css' %}">
+{% endblock css %}
+
+{% block content %}
+<main class="manage-project-images-page container py-4 py-md-5">
+    
+    <!-- 3. PAGE HEADER -->
+    <header class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom border-light-custom">
+        <div class="mb-3 mb-md-0">
+            <h1 class="fw-bold text-main m-0 fs-2">Manage Project Images</h1>
+            <p class="text-muted-custom mt-1 mb-1">Manage the images displayed in your project gallery.</p>
+            <div class="d-flex align-items-center gap-2 mt-2">
+                <span class="badge bg-light text-dark border border-light-custom fw-medium px-2 py-1">Project</span>
+                <span class="fw-bold text-primary">{{ project.title }}</span>
+            </div>
+        </div>
+        <div class="d-flex flex-column flex-sm-row gap-2">
+            <a href="{% url 'portfolio:my_projects' %}" class="btn btn-outline-secondary rounded-3 px-3 py-2 fw-medium text-nowrap">
+                Back to My Projects
+            </a>
+            <a href="{% url 'portfolio:edit_project' project.slug %}" class="btn btn-outline-primary rounded-3 px-3 py-2 fw-medium text-nowrap">
+                Back to Project
+            </a>
+        </div>
+    </header>
+
+    <!-- 4. CURRENT IMAGES SECTION -->
+    <section class="section-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="h5 fw-bold text-main m-0">Current Images</h2>
+        </div>
+        <p class="text-muted-custom small mb-4 pb-2 border-bottom border-light-custom">
+            These images are currently part of your project gallery.
+        </p>
+
+        {% if images %}
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 image-grid">
+                {% for image in images %}
+                    <!-- 5. IMAGE CARD -->
+                    <div class="col">
+                        <article class="image-card h-100 d-flex flex-column">
+                            <div class="position-relative">
+                                <img src="{{ image.image.url }}" alt="{{ image.caption|default:project.title }}" class="image-preview-img">
+                                <span class="position-absolute top-0 start-0 m-2 image-badge shadow-sm">
+                                    #{{ image.display_order|default:forloop.counter }}
+                                </span>
+                            </div>
+                            
+                            <div class="p-3 d-flex flex-column flex-grow-1 bg-surface">
+                                {% if image.caption %}
+                                    <p class="caption-text mb-3">{{ image.caption }}</p>
+                                {% else %}
+                                    <p class="caption-text mb-3 fst-italic">No caption</p>
+                                {% endif %}
+                                
+                                <button
+                                    type="button"
+                                    class="btn btn-success btn-sm w-100 rounded-3 mt-auto caption-toggle-btn"
+                                >
+                                    {% if image.caption %}
+                                        Edit Caption
+                                    {% else %}
+                                        Add Caption
+                                    {% endif %}
+                                </button>
+                                <br>
+                                <div class="caption-editor d-none">
+                                    <form
+                                        method="POST"
+                                        action="{% url 'portfolio:edit_project_image_caption' image.id %}"
+                                    >
+                                        {% csrf_token %}
+
+                                        <input
+                                            type="text"
+                                            name="caption"
+                                            value="{{ image.caption }}"
+                                            class="form-control form-control-sm mb-2"
+                                            maxlength="15"
+                                            placeholder="Add a caption..."
+                                        >
+
+                                        <div class="d-flex gap-2">
+                                            <button
+                                                type="submit"
+                                                class="btn btn-primary btn-sm"
+                                            >
+                                                Save
+                                            </button>
+                                        
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-secondary btn-sm caption-cancel-btn"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <br>
+                                </div>
+                                <!-- 6. DELETE IMAGE (Using shared modal) -->
+                                <button type="button" 
+                                        class="btn btn-delete btn-sm w-100 rounded-3 mt-auto" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteModal"
+                                        data-delete-url="{% url 'portfolio:delete_project_image' image.id %}" 
+                                        data-delete-type="ProjectImage" 
+                                        data-delete-name="{{ image.caption|default:'this image' }}"
+                                        aria-label="Delete image {{ forloop.counter }}">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="me-1 mb-1"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    Delete
+                                </button>
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- 11. EMPTY STATE -->
+            <div class="empty-state">
+                <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-muted-custom mb-3"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <h3 class="h5 fw-bold text-main mb-2">No project images yet</h3>
+                <p class="text-muted-custom mb-0">Add screenshots or images to showcase this project.</p>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- 7 & 8. ADD IMAGES SECTION (UPLOAD FORM) -->
+    <form method="POST" enctype="multipart/form-data" id="image-upload-form">
+        {% csrf_token %}
+        
+        <section class="section-card">
+            <h2 class="h5 fw-bold text-main mb-1">Add Images</h2>
+            <p class="text-muted-custom small mb-4 pb-2 border-bottom border-light-custom">
+                Select one or more images to add to your project gallery. Supported formats: JPG, PNG, WEBP.
+            </p>
+
+            <div class="upload-area mb-4">
+                <svg width="40" height="40" fill="none" stroke="var(--primary)" viewBox="0 0 24 24" class="mb-3 opacity-75"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                <label for="project-images" class="d-block fw-semibold text-main mb-3">Choose files to upload</label>
+                
+                <!-- Mandatory input name: project_images -->
+                <input type="file" 
+                    id="project-images" 
+                    name="project_images" 
+                    multiple 
+                    accept="image/jpeg,image/png,image/webp" 
+                    class="form-control-file"
+                    aria-label="Upload project images">
+            </div>
+
+            <!-- 9. NEW IMAGE PREVIEW CONTAINER -->
+            <div id="new-images-container" style="display: none;">
+                <h3 class="h6 fw-bold text-main mt-5 mb-3">New Images Preview</h3>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="new-images-preview-grid">
+                    <!-- Previews injected via JS -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 12. ACTIONS -->
+        <div class="d-flex flex-column flex-sm-row justify-content-end align-items-sm-center gap-3 mt-4">
+            <a href="{% url 'portfolio:edit_project' project.slug %}" class="btn btn-outline-secondary rounded-3 px-4 py-2 fw-medium text-nowrap order-2 order-sm-1 w-100 w-sm-auto text-center">
+                Cancel
+            </a>
+            <button type="submit" class="btn btn-primary rounded-3 px-5 py-2 shadow-sm fw-medium order-1 order-sm-2 w-100 w-sm-auto" id="save-images-btn">
+                Save Images
+            </button>
+        </div>
+    </form>
+
+</main>
+{% endblock content %}
+
+{% block js %}
+<script>
+    document.querySelectorAll(".caption-toggle-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+            const card = this.closest(".image-card");
+            const editor = card.querySelector(".caption-editor");
+
+            editor.classList.remove("d-none");
+            this.classList.add("d-none");
+        });
+    });
+
+    document.querySelectorAll(".caption-cancel-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+            const card = this.closest(".image-card");
+            const editor = card.querySelector(".caption-editor");
+            const toggleButton = card.querySelector(".caption-toggle-btn");
+
+            editor.classList.add("d-none");
+            toggleButton.classList.remove("d-none");
+        });
+    });
+</script>
+{% endblock js %}

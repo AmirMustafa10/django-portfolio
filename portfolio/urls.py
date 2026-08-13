@@ -12,6 +12,9 @@ from .views import (
     add_project_view,
     edit_project_view,
     delete_project_view,
+    manage_project_images_view,
+    delete_project_image_view,
+    edit_project_image_caption_view,
 )
 
 app_name = "portfolio"
@@ -80,5 +83,21 @@ urlpatterns = [
         "project/<slug:slug>/delete/",
         delete_project_view,
         name="delete_project",
+    ),
+    # project images urls
+    path(
+        "manage-project-images/<str:slug>/",
+        manage_project_images_view,
+        name="manage_project_images",
+    ),
+    path(
+        "delete-project-image/<int:pk>/delete/",
+        delete_project_image_view,
+        name="delete_project_image",
+    ),
+    path(
+        "edit-project-image-caption/<int:pk>/delete/",
+        edit_project_image_caption_view,
+        name="edit_project_image_caption",
     ),
 ]
