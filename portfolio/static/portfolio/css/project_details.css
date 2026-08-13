@@ -305,3 +305,7 @@
 .project-details-page .meta-list li:last-child { border-bottom: none; }
 .project-details-page .meta-label { color: var(--text-muted); }
 .project-details-page .meta-value { color: var(--text-main); font-weight: 500; }
+.size-small{
+    font-size: x-small;
+    font-weight: bold;
+}

@@ -86,6 +86,14 @@
                             <div class="thumbnail-item {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}" data-src="{{ img.image.url }}" aria-label="View image {{ forloop.counter }}" tabindex="0" role="button">
                                 <img src="{{ img.image.url }}" alt="Thumbnail {{ forloop.counter }}">
                             </div>
+                            <div class="size-small">
+                                Caption:
+                                {% if img.caption %}
+                                    <p class="caption-text mb-3">{{ img.caption }}</p>
+                                {% else %}
+                                    <p class="caption-text mb-3 fst-italic">No caption</p>
+                                {% endif %}
+                            </div>
                         {% endfor %}
                     </div>
                     {% endif %}
