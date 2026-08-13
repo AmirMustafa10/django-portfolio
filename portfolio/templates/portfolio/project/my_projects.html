@@ -159,35 +159,3 @@
     </div>
 </div>
 {% endblock content %}
-
-{% block js %}
-{{ block.super }}
-<script src="{% static 'accounts/js/edit_profile.js' %}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- 20. Minimal JS for Shared Delete Modal Binding ---
-        const deleteButtons = document.querySelectorAll('.btn-delete[data-delete-url]');
-        const deleteForm = document.getElementById('confirm-delete-form');
-        const deleteNameTarget = document.getElementById('deleteItemName'); // Matching existing architecture
-        const deleteTypeTarget = document.getElementById('deleteItemType'); // Optional based on shared modal design
-
-        deleteButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const url = this.getAttribute('data-delete-url');
-                const name = this.getAttribute('data-delete-name');
-                const type = this.getAttribute('data-delete-type');
-
-                if (deleteForm) {
-                    deleteForm.action = url;
-                }
-                if (deleteNameTarget && name) {
-                    deleteNameTarget.textContent = name;
-                }
-                if (deleteTypeTarget && type) {
-                    deleteTypeTarget.textContent = type.toLowerCase();
-                }
-            });
-        });
-    });
-</script>
-{% endblock js %}
