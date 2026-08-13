@@ -421,23 +421,3 @@ if (addSkillBtn && newSkillInput && skillsList) {
     window.isFormDirty = true;
   });
 }
-
-
-function setupDeleteModal() {
-    const deleteForm = document.getElementById("confirm-delete-form");
-    const deleteType = document.getElementById("delete-item-type");
-    const deleteName = document.getElementById("delete-item-name");
-
-    if (!deleteForm) {
-        return;
-    }
-
-    document.querySelectorAll(".btn-delete").forEach((button) => {
-      button.addEventListener("click", function () {
-        deleteForm.action = this.dataset.deleteUrl;
-
-        deleteType.textContent = this.dataset.deleteType || "";
-        deleteName.textContent = this.dataset.deleteName || "";
-      });
-    });
-}
