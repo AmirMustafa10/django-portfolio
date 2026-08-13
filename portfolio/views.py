@@ -1,3 +1,5 @@
+from email.mime import image
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseNotAllowed
 from django.contrib.auth.decorators import login_required
@@ -368,5 +370,103 @@ def delete_project_view(request, slug):
         messages.success(request, "Project deleted successfully.")
 
         return redirect("portfolio:my_projects")
+
+    return HttpResponseNotAllowed(["POST"])
+
+
+# project images views
+@login_required
+def manage_project_images_view(request, slug):
+    if not hasattr(request.user, "profile"):
+        messages.warning(
+            request,
+            "Create your profile first before managing project images.",
+        )
+        return redirect("accounts:create_profile")
+
+    project = get_object_or_404(
+        Project,
+        slug=slug,
+        profile=request.user.profile,
+    )
+
+    images = project.images.all()  # type: ignore
+
+    if request.method == "POST":
+        uploaded_images = request.FILES.getlist("project_images")
+
+        for uploaded_image in uploaded_images:
+            ProjectImage.objects.create(
+                project=project,
+                image=uploaded_image,
+            )
+
+        if uploaded_images:
+            messages.success(
+                request,
+                "Images added successfully.",
+            )
+
+        return redirect(
+            "portfolio:manage_project_images",
+            slug=project.slug,
+        )
+
+    return render(
+        request,
+        "portfolio/projectimages/manage_project_images.html",
+        {
+            "project": project,
+            "images": images,
+        },
+    )
+
+
+@login_required
+def delete_project_image_view(request, pk):
+    image = get_object_or_404(
+        ProjectImage,
+        pk=pk,
+        project__profile=request.user.profile,
+    )
+
+    if request.method == "POST":
+        project = image.project
+
+        image.delete()
+
+        messages.success(request, "Image deleted successfully.")
+
+        return redirect(
+            "portfolio:manage_project_images",
+            slug=project.slug,
+        )
+
+    return HttpResponseNotAllowed(["POST"])
+
+
+@login_required
+def edit_project_image_caption_view(request, pk):
+    image = get_object_or_404(
+        ProjectImage,
+        pk=pk,
+        project__profile=request.user.profile,
+    )
+
+    if request.method == "POST":
+        caption = request.POST.get("caption", "").strip()
+
+        image.caption = caption
+        image.save(update_fields=["caption"])
+
+        messages.success(
+            request,
+            "Caption updated successfully.",
+        )
+
+        return redirect(
+            "portfolio:manage_project_images",
+            slug=image.project.slug,
+        )
 
     return HttpResponseNotAllowed(["POST"])
