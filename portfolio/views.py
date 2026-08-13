@@ -49,7 +49,7 @@ def edit_experience_view(request, pk):
 
     return render(
         request,
-        "portfolio/edit_experience.html",
+        "portfolio/experience/edit_experience.html",
         {
             "experience_form": form,
             "experience": experience,
@@ -76,7 +76,7 @@ def add_experience_view(request):
 
     return render(
         request,
-        "portfolio/add_experience.html",
+        "portfolio/experience/add_experience.html",
         {
             "experience_form": form,
         },
@@ -125,7 +125,7 @@ def edit_education_view(request, pk):
 
     return render(
         request,
-        "portfolio/edit_education.html",
+        "portfolio/education/edit_education.html",
         {
             "education_form": form,
             "education": education,
@@ -152,7 +152,7 @@ def add_education_view(request):
 
     return render(
         request,
-        "portfolio/add_education.html",
+        "portfolio/education/add_education.html",
         {
             "education_form": form,
         },
@@ -179,7 +179,7 @@ def projects_view(request):
 
     return render(
         request,
-        "portfolio/Projects.html",
+        "portfolio/project/Projects.html",
         {
             "Projects": projects,
             "query": query,
@@ -198,7 +198,7 @@ def project_details(request, slug):
 
     return render(
         request,
-        "portfolio/project_details.html",
+        "portfolio/project/project_details.html",
         {
             "project": project,
         },
@@ -222,7 +222,7 @@ def my_projects_view(request):
 
     return render(
         request,
-        "portfolio/my_projects.html",
+        "portfolio/project/my_projects.html",
         {
             "projects": projects,
         },
@@ -271,7 +271,7 @@ def add_project_view(request):
 
     return render(
         request,
-        "portfolio/add_project.html",
+        "portfolio/project/add_project.html",
         {
             "project_form": form,
             "skills": skills,
@@ -344,7 +344,7 @@ def edit_project_view(request, slug):
 
     return render(
         request,
-        "portfolio/edit_project.html",
+        "portfolio/project/edit_project.html",
         {
             "project_form": form,
             "skills": skills,
