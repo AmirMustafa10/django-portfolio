@@ -130,6 +130,9 @@ The core architecture, authentication, developer profiles, portfolio management,
   - [x] Update project
   - [x] Delete project
 - [x] ProjectImage
+  - [x] Project image management
+  - [x] Image captions
+  - [x] Image deletion confirmation
 - [x] Experience
   - [x] Create
   - [x] Update
