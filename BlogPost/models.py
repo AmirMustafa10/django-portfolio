@@ -154,6 +154,14 @@ class Comment(TimeStampedModel):
         blank=True,
     )
 
+    parent = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        related_name="replies",
+        on_delete=models.CASCADE,
+    )
+
     content = models.TextField(
         max_length=500,
         db_index=False,
