@@ -45,7 +45,6 @@ class BlogPost(TimeStampedModel):
     slug = models.SlugField(
         max_length=255,
         unique=True,
-        blank=True,
     )
 
     content = models.TextField()
