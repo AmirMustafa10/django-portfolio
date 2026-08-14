@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Article | DevConnect{% endblock %}
+
+{% block css %}
+<link rel="stylesheet"  href="{% static 'blog/css/add_blog.css' %}">
+{% endblock css %}
+
+{% block content %}
+<div class="add-blog-page">
+    <div class="container py-4 py-md-5">
+        <div class="form-container">
+            
+            <!-- 2. PAGE HEADER -->
+            <header class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-2">
+                <div class="mb-3 mb-md-0">
+                    <h1 class="fw-bold text-main m-0 fs-2">Create Article</h1>
+                    <p class="text-muted-custom mt-1 mb-0">Share your knowledge, tutorials, and ideas with the DevConnect community.</p>
+                </div>
+                <div class="d-flex">
+                    <a href="{% url 'blog:my_blogs' %}" class="btn-secondary-custom border-light-custom bg-surface shadow-sm">
+                        &larr; Back to My Blog
+                    </a>
+                </div>
+            </header>
+
+            <!-- 3. FORM -->
+            <form method="POST" enctype="multipart/form-data" class="blog-form">
+                {% csrf_token %}
+                
+                <!-- 4. NON-FIELD ERRORS -->
+                {% if blog_form.non_field_errors %}
+                    <div class="alert alert-danger rounded-3 mb-4 shadow-sm">
+                        {{ blog_form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <!-- 5. ARTICLE INFORMATION SECTION -->
+                <section class="form-section">
+                    <h2 class="section-title">Article Information</h2>
+                    <p class="section-desc">Provide the core details of your article.</p>
+
+                    <div class="row g-4">
+                        <!-- 6. Title -->
+                        <div class="col-12 form-group {% if blog_form.title.errors %}has-error{% endif %}">
+                            <label class="form-label fw-semibold mb-2" for="{{ blog_form.title.id_for_label }}">Article Title</label>
+                            {{ blog_form.title }}
+                            <div class="small text-muted-custom mt-1">Choose a clear and descriptive title for your article.</div>
+                            {% if blog_form.title.errors %}
+                                <div class="invalid-feedback d-block">{{ blog_form.title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- 7. Status -->
+                        <div class="col-12 col-md-6 form-group {% if blog_form.status.errors %}has-error{% endif %}">
+                            <label class="form-label fw-semibold mb-2" for="{{ blog_form.status.id_for_label }}">Publication Status</label>
+                            {{ blog_form.status }}
+                            <div class="small text-muted-custom mt-1">Draft articles remain private. Published articles are visible on the public blog.</div>
+                            {% if blog_form.status.errors %}
+                                <div class="invalid-feedback d-block">{{ blog_form.status.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 8. COVER IMAGE SECTION -->
+                <section class="form-section">
+                    <h2 class="section-title">Cover Image</h2>
+                    <p class="section-desc">Add an image that represents your article.</p>
+
+                    <!-- 18. Cover Image UI -->
+                    <div class="cover-upload form-group {% if blog_form.cover_image.errors %}has-error{% endif %}">
+                        <svg width="40" height="40" fill="none" stroke="var(--primary)" viewBox="0 0 24 24" class="mb-3 opacity-75"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        <label for="{{ blog_form.cover_image.id_for_label }}" class="d-block fw-semibold text-main mb-3">Choose Cover Image</label>
+                        
+                        <div class="d-flex justify-content-center">
+                            {{ blog_form.cover_image }}
+                        </div>
+                        <div class="small text-muted-custom mt-2" id="cover-empty-text">No cover image selected. Supported formats: JPG, PNG, WEBP.</div>
+                        
+                        {% if blog_form.cover_image.errors %}
+                            <div class="invalid-feedback d-block">{{ blog_form.cover_image.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- 9. Preview Container -->
+                    <div class="cover-preview" id="cover-preview-container">
+                        <h3 class="h6 fw-bold text-main mb-2">Image Preview</h3>
+                        <img src="" alt="Cover Image Preview" class="cover-preview-img" id="cover-preview-image">
+                        <p class="cover-filename" id="cover-preview-filename"></p>
+                    </div>
+                </section>
+
+                <!-- 10. ARTICLE CONTENT SECTION -->
+                <section class="form-section content-wrapper">
+                    <h2 class="section-title">Article Content</h2>
+                    <p class="section-desc">Write the complete content of your article.</p>
+
+                    <!-- 11. Content Wrapping via CSS -->
+                    <div class="form-group {% if blog_form.content.errors %}has-error{% endif %}">
+                        <label class="form-label visually-hidden" for="{{ blog_form.content.id_for_label }}">Article Content</label>
+                        {{ blog_form.content }}
+                        {% if blog_form.content.errors %}
+                            <div class="invalid-feedback d-block">{{ blog_form.content.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <!-- 14. ACTIONS -->
+                <div class="form-actions">
+                    <a href="{% url 'blog:my_blogs' %}" class="btn-secondary-custom">Cancel</a>
+                    <button type="submit" class="btn-primary-custom">Create Article</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'blog/js/add_blog.js' %}"></script>
+{% endblock js %}

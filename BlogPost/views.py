@@ -1,3 +1,5 @@
+import profile
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.http import HttpResponseNotAllowed
@@ -193,5 +195,130 @@ def delete_comment_view(request, pk):
         messages.success(request, "Comment deleted successfully.")
 
         return redirect("blog:blog_details", slug=comment.blog_post.slug)
+
+    return HttpResponseNotAllowed(["POST"])
+
+
+# My Blogs views
+@login_required
+def my_blogs_view(request):
+    if not hasattr(request.user, "profile"):
+        return redirect("accounts:create_profile")
+
+    status = request.GET.get("status", "").strip()
+
+    blogs = (
+        BlogPost.objects.filter(profile=request.user.profile)
+        .select_related("profile__user")
+        .annotate(comment_count=Count("comments"))
+        .order_by("-created_at")
+    )
+
+    if status in {
+        BlogPost.Status.DRAFT,
+        BlogPost.Status.PUBLISHED,
+    }:
+        blogs = blogs.filter(status=status)
+
+    paginator = Paginator(blogs, 9)
+
+    page_number = request.GET.get("page", 1)
+
+    page_obj = paginator.get_page(page_number)
+
+    return render(
+        request,
+        "blog/myblogs.html",
+        {
+            "page_obj": page_obj,
+            "status": status,
+        },
+    )
+
+
+@login_required
+def add_blog_view(request):
+    profile = request.user.profile
+
+    if request.method == "POST":
+        form = BlogForm(
+            request.POST,
+            request.FILES,
+        )
+
+        if form.is_valid():
+            blog = form.save(commit=False)
+            blog.profile = profile
+            blog.save()
+
+            messages.success(
+                request,
+                "Blog added successfully.",
+            )
+
+            return redirect("blog:my_blogs")
+
+    else:
+        form = BlogForm()
+
+    return render(
+        request,
+        "blog/add_blog.html",
+        {
+            "blog_form": form,
+        },
+    )
+
+
+@login_required
+def edit_blog_view(request, blog_slug):
+    blog = get_object_or_404(BlogPost, slug=blog_slug, profile=request.user.profile)
+
+    if request.method == "POST":
+        form = BlogForm(
+            request.POST,
+            request.FILES,
+            instance=blog,
+        )
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(
+                request,
+                "Blog edited successfully.",
+            )
+
+            return redirect("blog:my_blogs")
+
+    else:
+        form = BlogForm(
+            instance=blog,
+        )
+
+    return render(
+        request,
+        "blog/edit_blog.html",
+        {
+            "blog_form": form,
+            "blog": blog,
+        },
+    )
+
+
+@login_required
+def delete_blog_view(request, pk):
+    blog = get_object_or_404(
+        BlogPost,
+        id=pk,
+        profile=request.user.profile,
+    )
+
+    if request.method == "POST":
+        blog.delete()
+
+        messages.success(request, "Blog deleted successfully.")
+
+        return redirect("blog:my_blogs")
 
     return HttpResponseNotAllowed(["POST"])
