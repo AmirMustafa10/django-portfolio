@@ -140,6 +140,7 @@ class CommentAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "user",
+                    "parent",
                     "blog_post",
                     "content",
                 ),
