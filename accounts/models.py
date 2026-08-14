@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
 from core.models import TimeStampedModel, validate_file_size
@@ -47,8 +48,22 @@ def resume_upload_path(instance, filename):
     )
 
 
+username_validator = RegexValidator(
+    regex=r"^[a-zA-Z0-9_.-]+$",
+    message=(
+        "Username may contain only letters, numbers, " "dots, underscores, and hyphens."
+    ),
+)
+
+
 class User(AbstractUser):
     """Custom user model."""
+
+    username = models.CharField(
+        max_length=150,
+        unique=True,
+        validators=[username_validator],
+    )
 
     class Meta:
         constraints = [
