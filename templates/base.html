@@ -36,6 +36,7 @@
                 <div class="nav-actions">
                     {% if user.is_authenticated %}
                         <a href="" class="btn btn-ghost">Dashboard</a>
+                        <a href="{% url 'blog:my_blogs' %}" class="btn btn-ghost">My Blogs</a>
                         <a href="{% url 'portfolio:my_projects' %}" class="btn btn-ghost">My Projects</a>
                         <a href="{% url 'accounts:create_profile'%}" class="btn btn-outline"><i class="bi bi-person">
                             <svg xmlns="http://www.w3.org/2000/svg"
@@ -80,6 +81,7 @@
             <div class="mobile-actions">
                 {% if user.is_authenticated %}
                     <a href="" class="btn btn-outline" style="text-align:center;">Dashboard</a>
+                    <a href="{% url 'blog:my_blogs' %}" class="btn btn-ghost">My Blogs</a>
                     <a href="{% url 'portfolio:my_projects' %}" class="btn btn-outline" style="text-align:center;">My Projects</a>
                     <a href="{% url 'accounts:developer_detail' request.user.username %}" class="btn btn-outline" style="text-align:center;">My Profile</a>
                     <form method="post" action="{% url 'accounts:logout'%}" style="display:block; width:100%;">
