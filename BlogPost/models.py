@@ -1,6 +1,7 @@
 from django.db import models
 from core.models import TimeStampedModel, validate_file_size
 import os
+from unidecode import unidecode
 from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
@@ -45,7 +46,6 @@ class BlogPost(TimeStampedModel):
     slug = models.SlugField(
         max_length=255,
         unique=True,
-        blank=True,
     )
 
     content = models.TextField()
@@ -120,7 +120,7 @@ class BlogPost(TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if not self.slug and self.title:
-            base_slug = slugify(self.title)
+            base_slug = slugify(unidecode(self.title))
             slug = base_slug
             counter = 1
 
@@ -154,6 +154,14 @@ class Comment(TimeStampedModel):
         blank=True,
     )
 
+    parent = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        related_name="replies",
+        on_delete=models.CASCADE,
+    )
+
     content = models.TextField(
         max_length=500,
         db_index=False,
@@ -180,6 +188,15 @@ class Comment(TimeStampedModel):
 
         if not self.content:
             raise ValidationError({"content": "Comment cannot be empty."})
+        
+        if self.parent and self.parent.blog_post != self.blog_post:
+            raise ValidationError(
+                {
+                    "parent": (
+                        "A reply must belong to the same blog as its parent comment."
+                    )
+                }
+            )
 
     def save(self, *args, **kwargs):
         self.full_clean()

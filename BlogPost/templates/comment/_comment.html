@@ -1,0 +1,221 @@
+<div class="comment-item" id="comment-{{ comment.id }}">
+    <div class="d-flex gap-2 gap-sm-3">
+        
+        <!-- Avatar -->
+        <a href="{% url 'accounts:developer_detail' comment.user.username %}">
+        <div class="flex-shrink-0">
+            {% if comment.user.profile.avatar %}
+                <img src="{{ comment.user.profile.avatar.url }}" alt="{{ comment.user.username }}" class="comment-avatar rounded-circle shadow-sm">
+            {% else %}
+                <div class="comment-avatar placeholder-avatar rounded-circle d-flex align-items-center justify-content-center bg-secondary text-white fw-bold shadow-sm">
+                    {{ comment.user.username|make_list|first|upper }}
+                </div>
+            {% endif %}
+        </div>
+        </a>
+        
+        <!-- Comment Content -->
+        <div class="flex-grow-1 min-w-0">
+            
+            <!-- Author & Meta (Forced to single line) -->
+            <div class="comment-header d-flex flex-nowrap align-items-baseline gap-1 gap-sm-2 mb-1 overflow-hidden">
+                <span class="fw-bold text-main text-truncate">{{ comment.user.get_full_name|default:comment.user.username }}</span>
+                <span class="text-muted-custom small flex-shrink-0">&bull;</span>
+                <span class="text-muted-custom small flex-shrink-0 text-nowrap">{{ comment.created_at|timesince }} ago</span>
+            </div>
+            
+            <!-- Body -->
+            <div
+                class="comment-body mb-2 text-dark lh-base break-text"
+                id="comment-body-{{ comment.id }}"
+            >
+                {{ comment.content|linebreaksbr }}
+            </div>
+
+            <div
+                class="comment-edit-form-wrapper d-none mb-3"
+                id="comment-edit-form-{{ comment.id }}"
+            >
+                <form
+                    method="POST"
+                    action="{% url 'blog:edit_comment' blog.slug comment.id %}"
+                    class="comment-edit-form"
+                >
+                    {% csrf_token %}
+
+                    <textarea
+                        name="content"
+                        class="form-control bg-surface"
+                        rows="3"
+                        maxlength="1000"
+                        required
+                    >{{ comment.content }}</textarea>
+
+                    <div class="d-flex justify-content-end gap-2 mt-2">
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-outline-secondary rounded-3 btn-edit-cancel"
+                        >
+                            Cancel
+                        </button>
+                    
+                        <button
+                            type="submit"
+                            class="btn btn-sm btn-primary rounded-3 px-3"
+                        >
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Actions -->
+            <div class="comment-actions d-flex align-items-center gap-3">
+            
+                <button
+                    type="button"
+                    class="btn-action-text btn-reply-toggle"
+                    aria-expanded="false"
+                    aria-controls="reply-form-{{ comment.id }}"
+                >
+                    Reply
+                </button>
+            
+                {% if request.user.is_authenticated and comment.user_id == request.user.id %}
+            
+                    <div class="comment-menu position-relative">
+                    
+                        <button
+                            type="button"
+                            class="btn-action-text comment-menu-toggle"
+                            aria-label="Comment options"
+                            aria-expanded="false"
+                            aria-controls="comment-menu-{{ comment.id }}"
+                        >
+                            <span class="comment-dots" aria-hidden="true">⋮</span>
+                        </button>
+                    
+                        <div
+                            class="comment-menu-dropdown d-none"
+                            id="comment-menu-{{ comment.id }}"
+                        >
+                    
+                            <!-- Edit -->
+                            <button
+                                type="button"
+                                class="comment-menu-item comment-edit-btn"
+                                data-comment-id="{{ comment.id }}"
+                            >
+                                <svg
+                                    width="14"
+                                    height="14"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 20h9"
+                                    />
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"
+                                    />
+                                </svg>
+                            
+                                Edit
+                            </button>
+                        
+                            <!-- Delete -->
+                            <button
+                                type="button"
+                                class="comment-menu-item btn-delete"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal"
+                                data-delete-url="{% url 'blog:delete_comment' comment.id %}"
+                                data-delete-type="Comment"
+                                data-delete-name="{{ comment.content|truncatechars:40 }}"
+                            >
+                                <svg
+                                    width="14"
+                                    height="14"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M3 6h18"
+                                    />
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"
+                                    />
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M19 6l-1 14H6L5 6"
+                                    />
+                                </svg>
+                            
+                                Delete
+                            </button>
+                        
+                        </div>
+                    
+                    </div>
+                
+                {% endif %}
+                
+            </div>
+
+            <!-- Inline Reply Form (Hidden by default) -->
+            <div class="reply-form-wrapper d-none mt-3 mb-3" id="reply-form-{{ comment.id }}">
+                {% if request.user.is_authenticated %}
+                <form method="POST" action="{% url 'blog:add_comment' blog.slug %}" class="comment-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                    <textarea name="content" class="form-control bg-surface mb-2" rows="2" placeholder="Write a reply..." required></textarea>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-3 btn-reply-cancel">Cancel</button>
+                        <button type="submit" class="btn btn-sm btn-primary rounded-3 px-3">Post Reply</button>
+                    </div>
+                </form>
+                {% else %}
+                <div class="p-3 bg-light rounded-3 border border-light-custom text-center mb-3">
+                    <p class="text-muted-custom small mb-2">Log in to join the discussion.</p>
+                    <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-sm btn-primary rounded-3 px-3">Log in</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- View Replies Toggle -->
+            {% if comment.replies.all %}
+                <div class="mt-2 mb-2">
+                    <button type="button" class="btn-action-text btn-view-replies d-inline-flex align-items-center gap-1" aria-expanded="false" aria-controls="replies-{{ comment.id }}" data-reply-count="{{ comment.replies.count }}">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16" class="toggle-icon transition-transform"><path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 0 1 2v4.8a2.5 2.5 0 0 0 2.5 2.5h9.793l-3.347 3.346a.5.5 0 0 0 .708.708l4.2-4.2a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 8.3H3.5A1.5 1.5 0 0 1 2 6.8V2a.5.5 0 0 0-.5-.5z"/></svg>
+                        <span class="toggle-text">View {{ comment.replies.count }} repl{{ comment.replies.count|pluralize:"y,ies" }}</span>
+                    </button>
+                </div>
+                
+                <!-- Nested Replies Container -->
+                <div class="replies-container d-none" id="replies-{{ comment.id }}" data-replies-url="">
+                    {% for child in comment.replies.all %}
+                        {% include 'comment/_comment.html' with comment=child %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

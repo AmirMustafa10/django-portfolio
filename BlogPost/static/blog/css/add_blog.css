@@ -1,0 +1,211 @@
+/* ==========================================================================
+   SCOPED PAGE STYLES: .add-blog-page
+   ========================================================================== */
+.add-blog-page {
+    --bg-main: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --danger: #ef4444;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-main);
+    min-height: 100vh;
+    padding-top: 2.5rem;
+    padding-bottom: 5rem;
+}
+.add-blog-page .text-main { color: var(--text-main) !important; }
+.add-blog-page .text-muted-custom { color: var(--text-muted) !important; }
+.add-blog-page .border-light-custom { border-color: var(--border-color) !important; }
+.add-blog-page .bg-surface { background-color: var(--card-bg) !important; }
+/* --- Form Container --- */
+.add-blog-page .form-container {
+    max-width: 860px;
+    margin: 0 auto;
+}
+/* --- Section Cards --- */
+.add-blog-page .form-section {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+.add-blog-page .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+.add-blog-page .section-desc {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+/* --- Fallback for Django Form Fields --- */
+.add-blog-page .form-group input:not([type="checkbox"]):not([type="file"]),
+.add-blog-page .form-group select,
+.add-blog-page .form-group textarea {
+    width: 100%;
+    background-color: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    color: var(--text-main);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    appearance: none;
+}
+
+.add-blog-page .form-group input:not([type="checkbox"]):not([type="file"]),
+.add-blog-page .form-group select {
+    height: 56px;
+}
+.add-blog-page .form-group textarea {
+    min-height: 400px;
+    padding: 1.25rem;
+    resize: vertical;
+    line-height: 1.6;
+    /* Prevent unbroken strings from causing horizontal overflow */
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+.add-blog-page .form-group input:focus,
+.add-blog-page .form-group select:focus,
+.add-blog-page .form-group textarea:focus {
+    background-color: #ffffff;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    outline: none;
+}
+/* Error States */
+.add-blog-page .has-error input:not([type="checkbox"]):not([type="file"]),
+.add-blog-page .has-error select,
+.add-blog-page .has-error textarea {
+    border-color: var(--danger);
+    background-color: #fef2f2;
+}
+.add-blog-page .has-error input:focus,
+.add-blog-page .has-error select:focus,
+.add-blog-page .has-error textarea:focus {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+.add-blog-page .invalid-feedback {
+    color: var(--danger);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+/* --- Cover Image Upload Area --- */
+.add-blog-page .cover-upload {
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    background-color: #f8fafc;
+    transition: all 0.2s;
+}
+.add-blog-page .cover-upload:hover,
+.add-blog-page .cover-upload:focus-within {
+    border-color: var(--primary);
+    background-color: #eff6ff;
+}
+.add-blog-page .form-control-file {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-main);
+}
+.add-blog-page .form-control-file::file-selector-button {
+    background-color: #f1f5f9;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    color: var(--text-main);
+    font-weight: 500;
+    cursor: pointer;
+    margin-right: 1rem;
+    transition: background-color 0.2s;
+}
+.add-blog-page .form-control-file::file-selector-button:hover {
+    background-color: #e2e8f0;
+}
+
+.add-blog-page .cover-preview {
+    margin-top: 1.5rem;
+    display: none;
+}
+.add-blog-page .cover-preview-img {
+    width: 100%;
+    max-height: 350px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.add-blog-page .cover-filename {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+/* --- Form Actions --- */
+.add-blog-page .form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+@media (min-width: 576px) {
+    .add-blog-page .form-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+    }
+}
+
+.add-blog-page .btn-primary-custom {
+    background-color: var(--primary);
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.75rem 2rem;
+    border: none;
+    transition: background-color 0.2s;
+    text-align: center;
+}
+.add-blog-page .btn-primary-custom:hover { background-color: var(--primary-hover); color: #ffffff; }
+
+.add-blog-page .btn-secondary-custom {
+    background-color: transparent;
+    color: var(--text-muted);
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.75rem 2rem;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    text-align: center;
+    text-decoration: none;
+}
+.add-blog-page .btn-secondary-custom:hover { background-color: #f1f5f9; color: var(--text-main); }
+/* Responsive */
+@media (max-width: 768px) {
+    .add-blog-page .form-section {
+        padding: 1.5rem;
+    }
+    .add-blog-page .form-group textarea {
+        min-height: 300px;
+    }
+}
