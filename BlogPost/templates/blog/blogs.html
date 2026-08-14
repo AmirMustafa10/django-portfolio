@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blogs | DevConnect{% endblock %}
+
+{% block css %}
+<link rel="stylesheet"  href="{% static 'blog/css/blogs.css' %}">
+{% endblock css %}
+
+{% block content %}
+<div class="blogs-page">
+    
+    <!-- HEADER & TOOLBAR -->
+    <header class="blogs-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-lg-8">
+                    <h1 class="page-title">Blogs</h1>
+                    <p class="fs-5 text-muted-custom m-0">Discover articles, tutorials, insights, and ideas from developers on DevConnect.</p>
+                    
+                    <!-- Search & Filter Toolbar -->
+                    <form class="blog-toolbar d-flex flex-column flex-md-row align-items-center" method="GET" action="">
+                        <!-- Search -->
+                        <div class="d-flex align-items-center flex-grow-1 w-100 px-2 py-1">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" class="text-muted-custom flex-shrink-0" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <input type="text" name="q" value="{{ query }}" class="form-control search-input" placeholder="Search articles...">
+                        </div>
+                        
+                        <div class="toolbar-divider d-none d-md-block h-50"></div>
+                        
+                        <!-- Actions -->
+                        <div class="d-flex w-100 w-md-auto mt-2 mt-md-0 gap-2 px-2">
+                            <button type="submit" class="btn btn-primary rounded-3 px-4">Search</button>
+                            {% if request.GET.q or request.GET.status %}
+                                <a href="{% url 'blog:blogs' %}" class="btn btn-light rounded-3 text-muted-custom">Clear</a>
+                            {% endif %}
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- FEATURED ARTICLE -->
+        {% if featured_blog %}
+            <article class="featured-card row g-0">
+                <div class="col-md-7 col-lg-8 order-2 order-md-1 p-4 p-lg-5 d-flex flex-column justify-content-center">
+                    <span class="badge-featured align-self-start mb-3">Featured</span>
+                    <h2 class="text-main fw-bold mb-3 display-6" style="line-height: 1.2;">{{ featured_blog.title }}</h2>
+                    <p class="text-muted-custom fs-5 mb-4">{{ featured_blog.excerpt|default:featured_blog.content|striptags|truncatewords:30 }}</p>
+                    
+                    <div class="d-flex flex-wrap align-items-center gap-3 text-muted-custom small mb-4">
+                        <span class="text-main fw-semibold">{{ featured_blog.profile.user.get_full_name|default:featured_blog.profile.user.username }}</span>
+                        <span>&bull;</span>
+                        <span>{{ featured_blog.created_at|date:"M d, Y" }}</span>
+                        {% if featured_blog.read_time %}
+                            <span>&bull;</span>
+                            <span>{{ featured_blog.read_time }} min read</span>
+                        {% endif %}
+                        <span>&bull;</span>
+                        <span>{{ featured_blog.comment_count|default:"0" }} comments</span>
+                    </div>
+
+                    <a href="" class="btn btn-primary rounded-3 px-4 py-2 fw-medium align-self-start">
+                        Read Article &rarr;
+                    </a>
+                </div>
+                <div class="col-md-5 col-lg-4 order-1 order-md-2">
+                    {% if featured_blog.image %}
+                        <img src="{{ featured_blog.image.url }}" alt="{{ featured_blog.title }}" class="featured-cover">
+                    {% else %}
+                        <div class="featured-cover cover-placeholder d-flex align-items-center justify-content-center">
+                            <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-muted-custom"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                    {% endif %}
+                </div>
+            </article>
+        {% endif %}
+
+        <!-- LATEST ARTICLES GRID -->
+        <h2 class="h4 fw-bold text-main mb-4">Latest Articles</h2>
+        
+        {% if page_obj.paginator.count > 0 %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 blog-grid" id="blog-grid-container">
+                <!-- Template partial handles rendering the columns and cards -->
+                {% include 'blog/_blog_cards.html' %}
+            </div>
+
+            <!-- INFINITE SCROLL TRIGGERS -->
+            <!-- We store the current pagination state in data attributes for JS to read -->
+            <div id="load-more-trigger" 
+                 class="load-more-trigger" 
+                 data-has-next="{% if page_obj.has_next %}true{% else %}false{% endif %}" 
+                 data-current-page="{{ page_obj.number }}">
+            </div>
+
+            <div id="loading-indicator" class="loading-spinner d-none">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <span>Loading more articles...</span>
+            </div>
+
+            <div id="end-of-content" class="end-of-content {% if page_obj.has_next %}d-none{% endif %}">
+                You're all caught up! No more articles to show.
+            </div>
+
+        {% else %}
+            <!-- EMPTY STATE -->
+            <div class="empty-state">
+                <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-muted-custom mb-3"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+                <h3 class="fw-bold text-main mb-2">No articles found</h3>
+                <p class="text-muted-custom mb-4">Try changing your search keywords or status filter.</p>
+                <a href="{% url 'blog:blogs' %}" class="btn btn-outline-primary rounded-3 px-4">Clear Filters</a>
+            </div>
+        {% endif %}
+        
+    </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'blog/js/blogs.js' %}"></script>
+{% endblock js %}
