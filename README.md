@@ -65,7 +65,16 @@ The project follows clean architecture principles, Django best practices, and a 
 ### Blog
 
 - Blog posts
+- Blog post listing
+- Blog post details
+- Blog post creation
+- Blog post editing
+- Blog post deletion
 - Blog post comments
+- Comment creation
+- Comment editing
+- Comment deletion
+- Comment replies
 - Blog post status management
 
 ### Contact
@@ -146,7 +155,16 @@ The core architecture, authentication, developer profiles, portfolio management,
 
 - [x] Blog application created
 - [x] BlogPost
+  - [x] Blog listing
+  - [x] Blog details
+  - [x] Create blog post
+  - [x] Update blog post
+  - [x] Delete blog post
 - [x] Comment
+  - [x] Create comment
+  - [x] Update comment
+  - [x] Delete comment
+  - [x] Comment replies
 
 ### Contact
 
