@@ -6,6 +6,7 @@ from accounts.models import Profile
 from django.contrib import messages
 from django.db.models import Q, Prefetch
 from portfolio.models import ProjectImage, Project, Skill
+from urllib.parse import urlparse
 
 
 def register_view(request):
@@ -94,6 +95,29 @@ def developers_view(request):
 
 
 def developer_detail_view(request, username):
+
+    profile = (
+        Profile.objects.filter(user__username=username).select_related("user").first()
+    )
+
+    if not profile:
+        messages.warning(
+            request,
+            "This user does not have a public profile yet.",
+        )
+
+        referer = request.META.get("HTTP_REFERER")
+
+        if referer:
+            parsed_referer = urlparse(referer)
+
+            if parsed_referer.netloc == request.get_host():
+                return redirect(
+                    parsed_referer.path
+                    + (f"?{parsed_referer.query}" if parsed_referer.query else "")
+                )
+
+        return redirect("accounts:developers")
 
     developer = get_object_or_404(
         Profile.objects.select_related("user").prefetch_related(
