@@ -77,10 +77,16 @@ The project follows clean architecture principles, Django best practices, and a 
 - Comment replies
 - Blog post status management
 
-### Contact
+### Messaging
 
-- Contact messages
-- Message status management
+- User-to-user messaging
+- Conversation listing
+- Conversation details
+- Send messages
+- Edit messages
+- Delete messages
+- Unread message count
+- Self-message validation
 
 ---
 
@@ -166,10 +172,16 @@ The core architecture, authentication, developer profiles, portfolio management,
   - [x] Delete comment
   - [x] Comment replies
 
-### Contact
+### Messaging
 
-- [x] Contact application created
-- [x] Message
+- [x] Messaging application created
+- [x] Message form
+- [x] Conversation listing
+- [x] Conversation details
+- [x] Send message
+- [x] Edit message
+- [x] Delete message
+- [x] Unread message count
 
 ---
 
