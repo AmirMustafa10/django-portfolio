@@ -1,0 +1,62 @@
+<!-- Hidden pagination state tracking for the JS fetch parser -->
+{% if page_obj %}
+<div class="dc-conv-pagination-meta d-none" 
+     data-has-next="{% if page_obj.has_next %}true{% else %}false{% endif %}" 
+     data-next-page="{% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}">
+</div>
+{% endif %}
+
+{% for message in chat_messages %}
+<div class="dc-conv-row dc-conv-row--{% if message.sender_id == request.user.id %}sent{% else %}received{% endif %}" id="msg-{{ message.id }}">
+    
+    <div class="dc-conv-content-wrapper">
+        
+        <!-- Main Display State -->
+        <div class="dc-conv-display">
+            <!-- Bubble: Contains ONLY message text -->
+            <div class="dc-conv-bubble">
+                <div class="dc-conv-text">{{ message.message }}</div>
+            </div>
+            
+            <!-- Meta: Timestamp and Actions OUTSIDE the bubble -->
+            <div class="dc-conv-meta">
+                <span class="dc-conv-time">{{ message.created_at|date:"M j, H:i" }}</span>
+                
+                {% if message.sender_id == request.user.id %}
+                <div class="dc-conv-menu-container">
+                    <button type="button" class="dc-conv-menu-toggle" aria-label="Message options" aria-expanded="false" aria-controls="dc-conv-menu-{{ message.id }}">
+                        &#8942;
+                    </button>
+                    
+                    <div id="dc-conv-menu-{{ message.id }}" class="dc-conv-menu d-none">
+                        <button type="button" class="dc-conv-menu-item dc-conv-edit-toggle">Edit</button>
+                        <button type="button" 
+                                class="dc-conv-menu-item btn-delete text-danger"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#deleteModal"
+                                data-delete-url="{% url 'messaging:delete_message' message.id %}"
+                                data-delete-type="Message"
+                                data-delete-name="{{ message.message|truncatechars:40 }}">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Inline Edit State (Hidden initially) -->
+        {% if message.sender_id == request.user.id %}
+        <form class="dc-conv-edit d-none" method="POST" action="{% url 'messaging:edit_message' other_user.username message.id %}">
+            {% csrf_token %}
+            <textarea name="message" class="dc-conv-edit-input" required>{{ message.message }}</textarea>
+            <div class="dc-conv-edit-actions">
+                <button type="button" class="dc-conv-edit-cancel">Cancel</button>
+                <button type="submit" class="dc-conv-edit-save">Save</button>
+            </div>
+        </form>
+        {% endif %}
+
+    </div>
+</div>
+{% endfor %}

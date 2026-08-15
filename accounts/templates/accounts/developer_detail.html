@@ -46,7 +46,7 @@
                 {% if request.user == developer.user %}
                     <a href="{% url 'accounts:edit_profile' %}" class="btn btn-primary rounded-3 px-4 py-2 fw-semibold">Edit Profile</a>
                 {% else %}
-                    <a href="" class="btn btn-primary rounded-3 px-4 py-2 fw-semibold">Send Messege</a>
+                    <a href="{% url 'messaging:conversation' developer.user.username %}" class="btn btn-primary rounded-3 px-4 py-2 fw-semibold">Send Messege</a>
                 {% endif %}
                 
                 <div class="d-flex gap-2">

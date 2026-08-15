@@ -1,0 +1,422 @@
+/* ==========================================================================
+   SCOPED PAGE STYLES: .conversation-page & .dc-conv-* Namespace
+   ========================================================================== */
+.conversation-page {
+    --bg-main: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-main);
+    min-height: calc(100vh - 60px); /* Assumes global navbar exists */
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* --- Chat Shell --- */
+.conversation-page .dc-conv-shell {
+    width: 100%;
+    max-width: 950px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 150px);
+    min-height: 860px;
+    overflow: hidden;
+    position: relative;
+}
+/* --- Chat Header --- */
+.conversation-page .dc-conv-header {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.conversation-page .dc-conv-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+    margin-right: 1.25rem;
+    padding-right: 1.25rem;
+    border-right: 1px solid var(--border-color);
+}
+.conversation-page .dc-conv-back:hover { color: var(--primary); }
+.conversation-page .dc-conv-user-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border-color);
+    margin-right: 0.75rem;
+}
+.conversation-page .dc-conv-user-avatar-placeholder {
+    background-color: #e2e8f0;
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.conversation-page .dc-conv-user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.conversation-page .dc-conv-user-name {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 1.05rem;
+    line-height: 1.2;
+}
+.conversation-page .dc-conv-user-handle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+/* --- Chat Body & Messages Container --- */
+.conversation-page .dc-conv-body {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    background-color: var(--bg-main);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.conversation-page .dc-conv-stream {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+/* Loading Indicator */
+.conversation-page .dc-conv-load-older {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    padding: 0.5rem 0 1.5rem 0;
+    margin-top: -0.5rem;
+}
+/* --- Message Structure (Strict anti-stretch constraints) --- */
+.conversation-page .dc-conv-row {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+    flex: 0 0 auto;
+    margin-bottom: 0.65rem;
+}
+
+.conversation-page .dc-conv-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: 68%; /* Max width applies here, bubble naturally sizes inside */
+}
+/* Display Views */
+.conversation-page .dc-conv-display {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* THE BUBBLE - Purely Content-Sized */
+.conversation-page .dc-conv-bubble {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    height: auto !important;
+    min-height: 0 !important;
+    flex: 0 0 auto !important;
+    
+    padding: 0.65rem 1rem;
+    border-radius: 16px;
+    box-sizing: border-box;
+}
+.conversation-page .dc-conv-text {
+    display: block;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0;
+    padding: 0;
+    flex: none !important;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    
+    /* Critical wrapping logic */
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+/* --- Meta & Three-Dot Menu (OUTSIDE THE BUBBLE) --- */
+.conversation-page .dc-conv-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.25rem;
+    padding: 0 0.25rem;
+}
+.conversation-page .dc-conv-time {
+    font-size: 0.7rem;
+    line-height: 1;
+    white-space: nowrap;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.conversation-page .dc-conv-menu-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.conversation-page .dc-conv-menu-toggle {
+    background: transparent;
+    border: none;
+    padding: 0 4px;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--text-muted);
+    opacity: 0.8;
+    transition: opacity 0.2s, color 0.2s;
+    font-size: 1rem;
+    font-weight: bold;
+}
+.conversation-page .dc-conv-menu-toggle:hover { 
+    opacity: 1; 
+    color: var(--text-main); 
+}
+
+.conversation-page .dc-conv-menu {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 0.35rem;
+    z-index: 50;
+    min-width: 120px;
+    margin-bottom: 0.25rem;
+}
+.conversation-page .dc-conv-menu-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.4rem 0.75rem;
+    border: none;
+    background: transparent;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-main);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.conversation-page .dc-conv-menu-item:hover { background-color: #f1f5f9; }
+/* --- Sent vs Received Targeting --- */
+.conversation-page .dc-conv-row--sent { justify-content: flex-end; }
+.conversation-page .dc-conv-row--sent .dc-conv-content-wrapper { align-items: flex-end; }
+.conversation-page .dc-conv-row--sent .dc-conv-bubble {
+    align-self: flex-end !important;
+    background-color: var(--primary);
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+.conversation-page .dc-conv-row--sent .dc-conv-meta { justify-content: flex-end; }
+.conversation-page .dc-conv-row--received { justify-content: flex-start; }
+.conversation-page .dc-conv-row--received .dc-conv-content-wrapper { align-items: flex-start; }
+.conversation-page .dc-conv-row--received .dc-conv-bubble {
+    align-self: flex-start !important;
+    background-color: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+}
+.conversation-page .dc-conv-row--received .dc-conv-meta { justify-content: flex-start; }
+/* --- Inline Edit Form --- */
+.conversation-page .dc-conv-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    min-width: 240px;
+}
+.conversation-page .dc-conv-edit-input {
+    width: 100%;
+    resize: vertical;
+    min-height: 40px;
+    max-height: 140px;
+    border-radius: 12px;
+    border: 1px solid var(--primary);
+    background-color: #ffffff;
+    color: var(--text-main);
+    padding: 0.65rem 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+}
+.conversation-page .dc-conv-edit-input:focus { outline: none; }
+.conversation-page .dc-conv-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+.conversation-page .dc-conv-edit-cancel,
+.conversation-page .dc-conv-edit-save {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.conversation-page .dc-conv-edit-save {
+    background-color: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+}
+.conversation-page .dc-conv-edit-cancel:hover { background-color: var(--border-color); color: var(--text-main); }
+.conversation-page .dc-conv-edit-save:hover { background-color: var(--primary-hover); }
+/* --- Go To Latest Button --- */
+.conversation-page .dc-conv-newest {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background-color: rgba(15, 23, 42, 0.85);
+    color: #ffffff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 20;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: opacity 0.2s, transform 0.2s;
+}
+.conversation-page .dc-conv-newest:hover {
+    background-color: var(--text-main);
+    transform: translateY(-2px);
+}
+/* --- Composer --- */
+.conversation-page .dc-conv-composer {
+    background-color: var(--card-bg);
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    flex-shrink: 0;
+    z-index: 10;
+}
+.conversation-page .dc-conv-composer-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+}
+.conversation-page .dc-conv-composer-input {
+    flex-grow: 1;
+    resize: none;
+    min-height: 48px;
+    max-height: 120px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    background-color: #f8fafc;
+    color: var(--text-main);
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+    overflow-y: auto;
+}
+.conversation-page .dc-conv-composer-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    background-color: #ffffff;
+}
+.conversation-page .dc-conv-send {
+    background-color: var(--primary);
+    color: #ffffff;
+    border: none;
+    border-radius: 14px;
+    height: 48px;
+    min-width: 84px;
+    padding: 0 1.25rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.conversation-page .dc-conv-send:hover {
+    background-color: var(--primary-hover);
+}
+/* --- Empty State --- */
+.conversation-page .dc-conv-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: var(--text-muted);
+}
+/* --- Responsive Constraints --- */
+@media (max-width: 768px) {
+    .conversation-page {
+        padding: 0;
+        min-height: calc(100vh - 60px);
+    }
+    .conversation-page .dc-conv-shell {
+        border-radius: 0;
+        border: none;
+        height: calc(100vh - 60px); 
+        max-height: none;
+        margin: 0;
+    }
+    .conversation-page .dc-conv-content-wrapper {
+        max-width: 88%;
+    }
+    .conversation-page .dc-conv-header {
+        padding: 0 1rem;
+    }
+    .conversation-page .dc-conv-back {
+        margin-right: 1rem;
+        padding-right: 1rem;
+    }
+    .conversation-page .dc-conv-back span {
+        display: none; 
+    }
+    .conversation-page .dc-conv-stream {
+        padding: 1rem;
+    }
+    .conversation-page .dc-conv-composer {
+        padding: 1rem;
+    }
+}

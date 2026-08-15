@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{ other_user.get_full_name|default:other_user.username }} | Messages
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'messaging/css/conversation.css' %}">
+{% endblock css %}
+
+{% block content %}
+<!-- System Flash Messages (Isolated from chat UI) -->
+{% if messages %}
+<div class="container mt-3">
+    {% for msg in messages %}
+        <div class="alert alert-{{ msg.tags|default:'info' }} rounded-3 shadow-sm border-0">{{ msg }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="conversation-page">
+    <main class="dc-conv-shell">
+        
+        <!-- HEADER -->
+        <header class="dc-conv-header">
+            <a href="{% url 'messaging:messages' %}" class="dc-conv-back" aria-label="Back to messages">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                <span class="d-none d-sm-inline">Messages</span>
+            </a>
+            
+            {% if other_user.profile.avatar %}
+                <img src="{{ other_user.profile.avatar.url }}" alt="{{ other_user.username }}" class="dc-conv-user-avatar shadow-sm">
+            {% else %}
+                <div class="dc-conv-user-avatar dc-conv-user-avatar-placeholder shadow-sm">
+                    {{ other_user.username|make_list|first|upper }}
+                </div>
+            {% endif %}
+            
+            <div class="dc-conv-user-info">
+                <span class="dc-conv-user-name">{{ other_user.get_full_name|default:other_user.username }}</span>
+                <span class="dc-conv-user-handle">@{{ other_user.username }}</span>
+            </div>
+        </header>
+
+        <!-- CHAT BODY -->
+        <section class="dc-conv-body">
+            
+            <div id="dc-conv-stream" class="dc-conv-stream" role="log" aria-live="polite">
+                
+                <!-- Loading Indicator -->
+                <div id="dc-conv-loader" class="dc-conv-load-older d-none">
+                    Loading older messages...
+                </div>
+
+                <!-- Messages Container -->
+                <div id="dc-conv-list">
+                    {% if not chat_messages %}
+                        <div class="dc-conv-empty">
+                            <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="mb-3 opacity-50"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                            <h2 class="h6 fw-bold text-main mb-1">Start the conversation</h2>
+                            <p class="small text-muted-custom m-0">Send a message to {{ other_user.username }}.</p>
+                        </div>
+                    {% else %}
+                        <!-- Reusable Messages Partial -->
+                        {% include 'messaging/_conversation_messages.html' %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- GO TO LATEST BUTTON -->
+            <button type="button" id="dc-conv-newest" class="dc-conv-newest d-none" aria-label="Scroll to newest messages">
+                &darr; Newest
+            </button>
+        </section>
+
+        <!-- COMPOSER -->
+        <footer class="dc-conv-composer">
+            <form method="POST" action="{% url 'messaging:send_message' other_user.username %}" class="dc-conv-composer-form">
+                {% csrf_token %}
+                <textarea name="message" class="dc-conv-composer-input" placeholder="Write a message..." required></textarea>
+                <button type="submit" class="dc-conv-send" aria-label="Send message">Send</button>
+            </form>
+        </footer>
+
+    </main>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'messaging/js/conversation.js' %}"></script>
+{% endblock js %}

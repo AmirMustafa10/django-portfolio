@@ -61,7 +61,11 @@ class Message(TimeStampedModel):
     def clean(self) -> None:
         super().clean()
 
-        if self.sender == self.receiver:
+        if (
+            self.sender is not None
+            and self.receiver is not None
+            and self.sender == self.receiver
+        ):
             raise ValidationError(
                 {"receiver": "You cannot send a message to yourself."}
             )
