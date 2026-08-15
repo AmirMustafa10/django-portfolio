@@ -1,88 +1,151 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const chatMessages = document.getElementById('chat-messages');
-    const messagesList = document.getElementById('messages-list');
-    const btnNewest = document.getElementById('btn-newest');
-    const loadOlderInd = document.getElementById('load-older-indicator');
+    const stream = document.getElementById('dc-conv-stream');
+    const list = document.getElementById('dc-conv-list');
+    const btnNewest = document.getElementById('dc-conv-newest');
+    const loader = document.getElementById('dc-conv-loader');
     
-    if (!chatMessages || !messagesList) return;
-    // 15. INITIAL LOAD SCROLL (Bottom)
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    if (!stream || !list) return;
+    // --- 1. INITIAL SCROLL TO BOTTOM ---
+    stream.scrollTop = stream.scrollHeight;
     let isLoadingOlder = false;
-    // SCROLL EVENT: Top & Bottom detection
-    chatMessages.addEventListener('scroll', async () => {
+    let hasNextPage = false;
+    let nextPageNum = 2;
+    // Helper to grab pagination state from injected meta element
+    const updatePaginationState = () => {
+        const meta = list.querySelector('.dc-conv-pagination-meta');
+        if (meta) {
+            hasNextPage = meta.dataset.hasNext === "true";
+            nextPageNum = meta.dataset.nextPage;
+            meta.remove(); // Keep DOM clean
+        }
+    };
+    updatePaginationState();
+    // --- 2. SCROLL EVENT LISTENER ---
+    stream.addEventListener('scroll', async () => {
         
-        // 23. GO TO LATEST DETECTION
-        const distFromBottom = chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight;
+        // Toggle 'Newest' Button visibility
+        const distFromBottom = stream.scrollHeight - stream.scrollTop - stream.clientHeight;
         if (distFromBottom > 250) {
             btnNewest.classList.remove('d-none');
         } else {
             btnNewest.classList.add('d-none');
         }
-        // 16. LOAD OLDER MESSAGES
-        const hasNext = messagesList.dataset.hasNext === "true";
-        if (chatMessages.scrollTop < 50 && !isLoadingOlder && hasNext) {
-            
-            // 22. Duplicate Request Protection
+        // Load Older Messages
+        if (stream.scrollTop < 50 && !isLoadingOlder && hasNextPage) {
             isLoadingOlder = true;
-            loadOlderInd.classList.remove('d-none');
-            const nextPage = messagesList.dataset.nextPage;
+            loader.classList.remove('d-none');
             
-            // 17. Load Older URL (preserve current path)
             const url = new URL(window.location.href);
-            url.searchParams.set('page', nextPage);
+            url.searchParams.set('page', nextPageNum);
             try {
                 const response = await fetch(url);
                 if (response.ok) {
                     const html = await response.text();
                     
-                    // Parse safely to extract only message rows
+                    // Safely parse the HTML response
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
-                    const olderList = doc.getElementById('messages-list');
+                    const olderList = doc.getElementById('dc-conv-list');
                     if (olderList) {
-                        // 19. PRESERVE SCROLL POSITION
-                        const oldHeight = chatMessages.scrollHeight;
+                        // Anchor viewport to prevent jumping
+                        const oldHeight = stream.scrollHeight;
                         
-                        // Insert older HTML directly at the top of the history list
-                        messagesList.insertAdjacentHTML('afterbegin', olderList.innerHTML);
+                        // Insert directly ABOVE current history
+                        list.insertAdjacentHTML('afterbegin', olderList.innerHTML);
                         
-                        // Anchor viewport
-                        chatMessages.scrollTop += (chatMessages.scrollHeight - oldHeight);
+                        // Adjust scroll position to counter the new height
+                        stream.scrollTop += (stream.scrollHeight - oldHeight);
                         
-                        // Update tracking state
-                        messagesList.dataset.hasNext = olderList.dataset.hasNext;
-                        messagesList.dataset.nextPage = olderList.dataset.nextPage;
+                        // Sync pagination
+                        updatePaginationState();
                     }
                 }
             } catch (e) {
                 console.error("Failed to load older messages:", e);
             } finally {
                 isLoadingOlder = false;
-                loadOlderInd.classList.add('d-none');
-                
-                // 21. Stop loading
-                if (messagesList.dataset.hasNext === "false") {
-                    // History exhausted. Optional subtle visual indicator could go here.
-                }
+                loader.classList.add('d-none');
             }
         }
     });
-    // 24. GO TO LATEST BEHAVIOR
+    // --- 3. GO TO LATEST CLICK ---
     if (btnNewest) {
         btnNewest.addEventListener('click', () => {
-            chatMessages.scrollTo({
-                top: chatMessages.scrollHeight,
+            stream.scrollTo({
+                top: stream.scrollHeight,
                 behavior: 'smooth'
             });
         });
     }
     
-    // Auto-expand textarea slightly on typing (Optional UI enhancement)
-    const textarea = document.querySelector('.composer-textarea');
-    if(textarea) {
-        textarea.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
-        });
-    }
+    // --- 4. MESSAGE ACTIONS & INLINE EDITING (Event Delegation) ---
+    document.addEventListener('click', (e) => {
+        
+        // Close all dropdowns if clicking outside
+        if (!e.target.closest('.dc-conv-menu-container')) {
+            document.querySelectorAll('.dc-conv-menu').forEach(dd => {
+                dd.classList.add('d-none');
+                const toggle = dd.previousElementSibling;
+                if (toggle) toggle.setAttribute('aria-expanded', 'false');
+            });
+        }
+        // Toggle Dropdown Menu
+        const menuToggle = e.target.closest('.dc-conv-menu-toggle');
+        if (menuToggle) {
+            const dropdown = menuToggle.nextElementSibling;
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+            
+            // Close others
+            document.querySelectorAll('.dc-conv-menu').forEach(dd => {
+                dd.classList.add('d-none');
+                const toggleBtn = dd.previousElementSibling;
+                if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+            });
+            if (!isExpanded) {
+                dropdown.classList.remove('d-none');
+                menuToggle.setAttribute('aria-expanded', 'true');
+            }
+            return;
+        }
+        // Open Inline Edit
+        const btnEditToggle = e.target.closest('.dc-conv-edit-toggle');
+        if (btnEditToggle) {
+            const row = btnEditToggle.closest('.dc-conv-content-wrapper');
+            const displayView = row.querySelector('.dc-conv-display');
+            const editForm = row.querySelector('.dc-conv-edit');
+            
+            if(displayView && editForm) {
+                displayView.classList.add('d-none');
+                editForm.classList.remove('d-none');
+                const textarea = editForm.querySelector('textarea');
+                if (textarea) {
+                    textarea.focus();
+                    // Auto-expand textarea
+                    textarea.style.height = 'auto';
+                    textarea.style.height = (textarea.scrollHeight) + 'px';
+                }
+            }
+            return;
+        }
+        // Cancel Inline Edit
+        const btnCancelEdit = e.target.closest('.dc-conv-edit-cancel');
+        if (btnCancelEdit) {
+            const row = btnCancelEdit.closest('.dc-conv-content-wrapper');
+            const displayView = row.querySelector('.dc-conv-display');
+            const editForm = row.querySelector('.dc-conv-edit');
+            
+            if(displayView && editForm) {
+                editForm.classList.add('d-none');
+                displayView.classList.remove('d-none');
+            }
+            return;
+        }
+    });
+    // Dynamic Textarea Sizing (Composer & Edit)
+    document.addEventListener('input', (e) => {
+        if (e.target.classList.contains('dc-conv-composer-input') || e.target.classList.contains('dc-conv-edit-input')) {
+            e.target.style.height = 'auto';
+            e.target.style.height = (e.target.scrollHeight) + 'px';
+        }
+    });
 });

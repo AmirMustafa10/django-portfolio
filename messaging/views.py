@@ -1,3 +1,4 @@
+from django.http import HttpResponseNotAllowed
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model
@@ -5,6 +6,9 @@ from django.db.models import Count, Exists, OuterRef, Q, Subquery
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
 from .models import Message
+from urllib.parse import urlparse
+from django.contrib import messages
+from .forms import MessageForm
 
 User = get_user_model()
 
@@ -70,10 +74,6 @@ def messages_view(request):
 
 @login_required
 def conversation_view(request, username):
-
-    if not hasattr(request.user, "profile"):
-        return redirect("accounts:create_profile")
-
     other_user = get_object_or_404(
         User,
         username=username,
@@ -81,7 +81,11 @@ def conversation_view(request, username):
     )
 
     if other_user == request.user:
-        return redirect("blog:messages")
+        messages.warning(
+            request,
+            ("You cannot send a message to yourself."),
+        )
+        return redirect("messaging:messages")
 
     # Mark incoming unread messages as read
     Message.objects.filter(
@@ -122,3 +126,100 @@ def conversation_view(request, username):
             "other_user": other_user,
         },
     )
+
+
+@login_required
+def send_message_view(request, username):
+
+    other_user = get_object_or_404(
+        User,
+        username=username,
+        is_active=True,
+    )
+
+    if other_user == request.user:
+        messages.warning(
+            request,
+            ("You cannot send a message to yourself."),
+        )
+        return redirect("messaging:messages")
+
+    if request.method == "POST":
+        form = MessageForm(request.POST)
+
+        if form.is_valid():
+            message = form.save(commit=False)
+
+            message.sender = request.user
+            message.receiver = other_user
+
+            message.save()
+
+            return redirect(
+                "messaging:conversation",
+                username=other_user.username,
+            )
+
+    return redirect(
+        "messaging:conversation",
+        username=other_user.username,
+    )
+
+
+@login_required
+def edit_message_view(request, username, id):
+    message = get_object_or_404(
+        Message,
+        id=id,
+        sender=request.user,
+    )
+
+    if request.method == "POST":
+        form = MessageForm(
+            request.POST,
+            instance=message,
+        )
+
+        if form.is_valid():
+            form.save()
+
+            referer = request.META.get("HTTP_REFERER")
+
+            if referer:
+                parsed_referer = urlparse(referer)
+
+                if parsed_referer.netloc == request.get_host():
+                    return redirect(
+                        parsed_referer.path
+                        + (f"?{parsed_referer.query}" if parsed_referer.query else "")
+                    )
+
+    return redirect(
+        "messaging:conversation",
+        username=username,
+    )
+
+
+@login_required
+def delete_message_view(request, id):
+    message = get_object_or_404(
+        Message,
+        id=id,
+        sender=request.user,
+    )
+
+    if request.method == "POST":
+        message.delete()
+
+        referer = request.META.get("HTTP_REFERER")
+
+        if referer:
+            parsed_referer = urlparse(referer)
+
+            if parsed_referer.netloc == request.get_host():
+                return redirect(
+                    parsed_referer.path
+                    + (f"?{parsed_referer.query}" if parsed_referer.query else "")
+                )
+
+    return HttpResponseNotAllowed(["POST"])

@@ -10,81 +10,81 @@
 {% endblock css %}
 
 {% block content %}
-<br><br><br>
+<!-- System Flash Messages (Isolated from chat UI) -->
+{% if messages %}
+<div class="container mt-3">
+    {% for msg in messages %}
+        <div class="alert alert-{{ msg.tags|default:'info' }} rounded-3 shadow-sm border-0">{{ msg }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="conversation-page">
-    <main class="chat-shell">
+    <main class="dc-conv-shell">
         
-        <!-- 5. CHAT HEADER -->
-        <header class="chat-header">
-            <a href="{% url 'messaging:messages' %}" class="back-btn" aria-label="Back to messages">
+        <!-- HEADER -->
+        <header class="dc-conv-header">
+            <a href="{% url 'messaging:messages' %}" class="dc-conv-back" aria-label="Back to messages">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                <span>Messages</span>
+                <span class="d-none d-sm-inline">Messages</span>
             </a>
             
-            <!-- 6. AVATAR -->
             {% if other_user.profile.avatar %}
-            <a href="{% url 'accounts:developer_detail' other_user.username %}">
-                <img src="{{ other_user.profile.avatar.url }}" alt="{{ other_user.username }}" class="header-avatar shadow-sm">
-                {% else %}
-                <div class="header-avatar header-avatar-placeholder shadow-sm">
+                <img src="{{ other_user.profile.avatar.url }}" alt="{{ other_user.username }}" class="dc-conv-user-avatar shadow-sm">
+            {% else %}
+                <div class="dc-conv-user-avatar dc-conv-user-avatar-placeholder shadow-sm">
                     {{ other_user.username|make_list|first|upper }}
                 </div>
-                {% endif %}
-            </a>
-            <a href="{% url 'accounts:developer_detail' other_user.username %}">
-            <div class="header-info">
-                <span class="header-name">{{ other_user.get_full_name|default:other_user.username }}</span>
-                <span class="header-username">@{{ other_user.username }}</span>
+            {% endif %}
+            
+            <div class="dc-conv-user-info">
+                <span class="dc-conv-user-name">{{ other_user.get_full_name|default:other_user.username }}</span>
+                <span class="dc-conv-user-handle">@{{ other_user.username }}</span>
             </div>
-            </a>
         </header>
 
-        <!-- 7. CHAT BODY -->
-        <section class="chat-body">
-            <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
+        <!-- CHAT BODY -->
+        <section class="dc-conv-body">
+            
+            <div id="dc-conv-stream" class="dc-conv-stream" role="log" aria-live="polite">
                 
-                <!-- 20. Loading Indicator -->
-                <div id="load-older-indicator" class="load-older d-none">
+                <!-- Loading Indicator -->
+                <div id="dc-conv-loader" class="dc-conv-load-older d-none">
                     Loading older messages...
                 </div>
 
-                <!-- Messages Container (Tracking Pagination) -->
-                <div id="messages-list" 
-                     data-has-next="{% if page_obj.has_next %}true{% else %}false{% endif %}" 
-                     data-next-page="{% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}">
-                    
+                <!-- Messages Container -->
+                <div id="dc-conv-list">
                     {% if not chat_messages %}
-                        <!-- 28. EMPTY CONVERSATION -->
-                        <div class="empty-conversation">
-                            <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="empty-icon"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                        <div class="dc-conv-empty">
+                            <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="mb-3 opacity-50"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                             <h2 class="h6 fw-bold text-main mb-1">Start the conversation</h2>
                             <p class="small text-muted-custom m-0">Send a message to {{ other_user.username }}.</p>
                         </div>
                     {% else %}
-                        <!-- 13 & 18. MESSAGE BUBBLES -->
+                        <!-- Reusable Messages Partial -->
                         {% include 'messaging/_conversation_messages.html' %}
                     {% endif %}
                 </div>
             </div>
 
-            <!-- 23. GO TO LATEST BUTTON -->
-            <button type="button" id="btn-newest" class="go-to-latest d-none" aria-label="Scroll to newest messages">
+            <!-- GO TO LATEST BUTTON -->
+            <button type="button" id="dc-conv-newest" class="dc-conv-newest d-none" aria-label="Scroll to newest messages">
                 &darr; Newest
             </button>
         </section>
 
-        <!-- 25. MESSAGE COMPOSER -->
-        <footer class="chat-composer">
-            <form method="POST" action="" class="composer-form">
+        <!-- COMPOSER -->
+        <footer class="dc-conv-composer">
+            <form method="POST" action="{% url 'messaging:send_message' other_user.username %}" class="dc-conv-composer-form">
                 {% csrf_token %}
-                <textarea name="content" class="composer-textarea" placeholder="Write a message..." required></textarea>
-                <button type="submit" class="btn-send" aria-label="Send message">Send</button>
+                <textarea name="message" class="dc-conv-composer-input" placeholder="Write a message..." required></textarea>
+                <button type="submit" class="dc-conv-send" aria-label="Send message">Send</button>
             </form>
         </footer>
 
     </main>
 </div>
-<br><br><br>
 {% endblock content %}
 
 {% block js %}
