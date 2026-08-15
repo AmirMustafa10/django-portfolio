@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.db.models import Q, Count
 from .models import BlogPost, Comment
 from .form import BlogForm, CommentForm
+from core.models import Activity
 
 
 # Blog views
@@ -112,6 +113,12 @@ def add_comment_view(request, blog_slug):
             comment.parent = parent
             comment.save()
 
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.CREATED,
+                target=comment,
+            )
+
             messages.success(
                 request,
                 (
@@ -163,6 +170,12 @@ def edit_comment_view(request, blog_slug, comment_id):
         if form.is_valid():
             form.save()
 
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.UPDATED,
+                target=comment,
+            )
+
             messages.success(
                 request,
                 "Comment edited successfully.",
@@ -189,6 +202,12 @@ def delete_comment_view(request, pk):
 
     if request.method == "POST":
         comment.delete()
+
+        Activity.objects.create(
+            user=request.user,
+            action=Activity.Action.DELETED,
+            target=comment,
+        )
 
         messages.success(request, "Comment deleted successfully.")
 
@@ -249,6 +268,12 @@ def add_blog_view(request):
             blog.profile = profile
             blog.save()
 
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.CREATED,
+                target=blog,
+            )
+
             messages.success(
                 request,
                 "Blog added successfully.",
@@ -282,6 +307,12 @@ def edit_blog_view(request, blog_slug):
         if form.is_valid():
             form.save()
 
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.UPDATED,
+                target=blog,
+            )
+
             messages.success(
                 request,
                 "Blog edited successfully.",
@@ -314,6 +345,12 @@ def delete_blog_view(request, pk):
 
     if request.method == "POST":
         blog.delete()
+
+        Activity.objects.create(
+            user=request.user,
+            action=Activity.Action.DELETED,
+            target=blog,
+        )
 
         messages.success(request, "Blog deleted successfully.")
 

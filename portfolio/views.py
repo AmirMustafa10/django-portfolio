@@ -5,6 +5,7 @@ from .models import Experience, Education, Project, Skill, ProjectImage
 from .forms import EducationForm, ExperienceForm, ProjectForm
 from django.contrib import messages
 from django.db.models import Q
+from core.models import Activity
 
 
 # Experience views
@@ -18,6 +19,12 @@ def delete_experience_view(request, pk):
 
     if request.method == "POST":
         experience.delete()
+
+        Activity.objects.create(
+            user=request.user,
+            action=Activity.Action.DELETED,
+            target=experience,
+        )
 
         messages.success(request, "Experience deleted successfully.")
 
@@ -39,6 +46,12 @@ def edit_experience_view(request, pk):
 
         if form.is_valid():
             form.save()
+
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.UPDATED,
+                target=experience,
+            )
 
             messages.success(request, "Experience updated successfully.")
 
@@ -66,6 +79,12 @@ def add_experience_view(request):
             experience = form.save(commit=False)
             experience.profile = request.user.profile
             experience.save()
+
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.CREATED,
+                target=experience,
+            )
 
             messages.success(request, "Experience added successfully.")
 
@@ -95,6 +114,12 @@ def delete_education_view(request, pk):
     if request.method == "POST":
         education.delete()
 
+        Activity.objects.create(
+            user=request.user,
+            action=Activity.Action.DELETED,
+            target=education,
+        )
+
         messages.success(request, "Education deleted successfully.")
 
         return redirect("accounts:edit_profile")
@@ -115,6 +140,12 @@ def edit_education_view(request, pk):
 
         if form.is_valid():
             form.save()
+
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.UPDATED,
+                target=education,
+            )
 
             messages.success(request, "Education updated successfully.")
 
@@ -142,6 +173,12 @@ def add_education_view(request):
             education = form.save(commit=False)
             education.profile = request.user.profile
             education.save()
+
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.CREATED,
+                target=education,
+            )
 
             messages.success(request, "Education added successfully.")
 
@@ -249,6 +286,12 @@ def add_project_view(request):
 
             project.save()
 
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.CREATED,
+                target=project,
+            )
+
             selected_skill_ids = request.POST.getlist("skills")
             project.skills.set(selected_skill_ids)
 
@@ -302,6 +345,12 @@ def edit_project_view(request, slug):
 
         if form.is_valid():
             project = form.save()
+
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.UPDATED,
+                target=project,
+            )
 
             selected_skill_values = request.POST.getlist("skills")
             new_skill_names = request.POST.getlist("new_skills")
@@ -364,6 +413,12 @@ def delete_project_view(request, slug):
 
     if request.method == "POST":
         project.delete()
+
+        Activity.objects.create(
+            user=request.user,
+            action=Activity.Action.DELETED,
+            target=project,
+        )
 
         messages.success(request, "Project deleted successfully.")
 

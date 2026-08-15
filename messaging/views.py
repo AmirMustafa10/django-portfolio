@@ -9,6 +9,7 @@ from .models import Message
 from urllib.parse import urlparse
 from django.contrib import messages
 from .forms import MessageForm
+from core.models import Activity
 
 User = get_user_model()
 
@@ -155,6 +156,12 @@ def send_message_view(request, username):
 
             message.save()
 
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.CREATED,
+                target=message,
+            )
+
             return redirect(
                 "messaging:conversation",
                 username=other_user.username,
@@ -183,6 +190,12 @@ def edit_message_view(request, username, id):
         if form.is_valid():
             form.save()
 
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.UPDATED,
+                target=message,
+            )
+
             referer = request.META.get("HTTP_REFERER")
 
             if referer:
@@ -210,6 +223,12 @@ def delete_message_view(request, id):
 
     if request.method == "POST":
         message.delete()
+
+        Activity.objects.create(
+            user=request.user,
+            action=Activity.Action.DELETED,
+            target=message,
+        )
 
         referer = request.META.get("HTTP_REFERER")
 

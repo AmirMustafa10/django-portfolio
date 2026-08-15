@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.db.models import Q, Prefetch
 from portfolio.models import ProjectImage, Project, Skill
 from urllib.parse import urlparse
+from core.models import Activity
 
 
 def register_view(request):
@@ -19,6 +20,12 @@ def register_view(request):
 
         if form.is_valid():
             user = form.save()
+
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.CREATED,
+                target=user,
+            )
 
             login(request, user)
 
@@ -174,6 +181,12 @@ def create_profile_view(request):
             profile.user = user
             profile.save()
             user_form.save()
+            
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.CREATED,
+                target=profile,
+            )
 
             selected_skill_values = request.POST.getlist("skills")
             new_skill_names = request.POST.getlist("new_skills")
@@ -242,6 +255,12 @@ def edit_profile_view(request):
 
             form1.save()
             form2.save()
+
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.UPDATED,
+                target=profile,
+            )
 
             selected_skill_values = request.POST.getlist("skills")
             new_skill_names = request.POST.getlist("new_skills")
