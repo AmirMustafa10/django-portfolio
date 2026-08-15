@@ -36,6 +36,34 @@
                 <div class="nav-actions">
                     {% if user.is_authenticated %}
                         <a href="" class="btn btn-ghost">Dashboard</a>
+                        <a
+                            href="{% url 'messaging:messages' %}"
+                            class="position-relative text-decoration-none d-inline-flex align-items-center justify-content-center"
+                            aria-label="Messages"
+                        >
+                            <svg
+                                width="22"
+                                height="22"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-4.3-1.17L3 20l1.17-4.7A8.5 8.5 0 1 1 21 11.5z"/>
+                            </svg>
+                        
+                            {% if unread_messages_count %}
+                                <span
+                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                    style="font-size: 0.65rem;"
+                                >
+                                    {{ unread_messages_count }}
+                                </span>
+                            {% endif %}
+                        </a>
                         <a href="{% url 'blog:my_blogs' %}" class="btn btn-ghost">My Blogs</a>
                         <a href="{% url 'portfolio:my_projects' %}" class="btn btn-ghost">My Projects</a>
                         <a href="{% url 'accounts:create_profile'%}" class="btn btn-outline"><i class="bi bi-person">
@@ -81,6 +109,34 @@
             <div class="mobile-actions">
                 {% if user.is_authenticated %}
                     <a href="" class="btn btn-outline" style="text-align:center;">Dashboard</a>
+                    <a
+                        href="{% url 'messaging:messages' %}"
+                        class="position-relative text-decoration-none d-inline-flex align-items-center justify-content-center"
+                        aria-label="Messages"
+                    >
+                        <svg
+                            width="22"
+                            height="22"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-4.3-1.17L3 20l1.17-4.7A8.5 8.5 0 1 1 21 11.5z"/>
+                        </svg>
+                    
+                        {% if unread_messages_count %}
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                style="font-size: 0.65rem;"
+                            >
+                                {{ unread_messages_count }}
+                            </span>
+                        {% endif %}
+                    </a>
                     <a href="{% url 'blog:my_blogs' %}" class="btn btn-ghost">My Blogs</a>
                     <a href="{% url 'portfolio:my_projects' %}" class="btn btn-outline" style="text-align:center;">My Projects</a>
                     <a href="{% url 'accounts:developer_detail' request.user.username %}" class="btn btn-outline" style="text-align:center;">My Profile</a>
