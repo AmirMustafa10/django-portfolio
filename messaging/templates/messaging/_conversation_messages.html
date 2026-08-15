@@ -1,0 +1,8 @@
+{% for message in chat_messages %}
+    <div class="message-row {% if message.sender_id == request.user.id %}message-sent{% else %}message-received{% endif %}">
+        <div class="message-bubble">
+            <div class="message-content">{{ message.message }}</div>
+            <span class="message-time">{{ message.created_at|date:"M j, H:i" }}</span>
+        </div>
+    </div>
+{% endfor %}
