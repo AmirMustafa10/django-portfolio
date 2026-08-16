@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Activity | DevConnect{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'core/css/activity.css' %}">
+{% endblock css %}
+
+{% block content %}
+<main class="dc-activity-page">
+    <div class="container dc-activity-container">
+        
+        <!-- ==========================================================
+            PAGE HEADER
+            ========================================================== -->
+        <header class="dc-activity-header">
+            <div class="dc-activity-header-content">
+                <h1 class="dc-activity-title">Activity</h1>
+                <p class="dc-activity-subtitle">Your recent activity across DevConnect.</p>
+            </div>
+            <a href="{% url 'dashboard' %}" class="dc-activity-back" aria-label="Back to Dashboard">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Dashboard
+            </a>
+        </header>
+
+        <!-- ==========================================================
+             ACTIVITY FEED
+             ========================================================== -->
+        <section class="dc-activity-feed-wrapper">
+            {% if page_obj %}
+                <div class="dc-activity-feed">
+                    {% for activity in page_obj %}
+                        
+                        <!-- Initialize variables safely -->
+                        {% with ctype=activity.target_content_type.model|lower action=activity.action|lower target=activity.target %}
+                        
+                        <article class="dc-activity-item">
+                            
+                            <!-- Timeline Marker -->
+                            <div class="dc-activity-marker dc-activity-marker--{{ action }}" aria-hidden="true">
+                                <span class="dc-activity-icon">
+                                    {% if action == 'created' %}
+                                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                                    {% elif action == 'published' %}
+                                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                                    {% elif action == 'updated' %}
+                                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                    {% elif action == 'deleted' %}
+                                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    {% else %}
+                                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            <!-- Activity Content -->
+                            <div class="dc-activity-content">
+                                
+                                <div class="dc-activity-title">
+                                    <!-- Target Safely Exists -->
+                                    {% if target %}
+                                        
+                                        {% if ctype == 'project' %}
+                                            {% if action == 'created' %}Created project <a href="{% url 'portfolio:project_details' target.slug %}" class="dc-activity-link">"{{ target.title }}"</a>
+                                            {% elif action == 'updated' %}Updated project <a href="{% url 'portfolio:project_details' target.slug %}" class="dc-activity-link">"{{ target.title }}"</a>
+                                            {% else %}{{ action|title }} a project{% endif %}
+                                            
+                                        {% elif ctype == 'blogpost' %}
+                                            {% if action == 'created' %}Drafted article <a href="{% url 'blog:blog_details' target.slug %}" class="dc-activity-link">"{{ target.title }}"</a>
+                                            {% elif action == 'published' %}Published article <a href="{% url 'blog:blog_details' target.slug %}" class="dc-activity-link">"{{ target.title }}"</a>
+                                            {% elif action == 'updated' %}Updated article <a href="{% url 'blog:blog_details' target.slug %}" class="dc-activity-link">"{{ target.title }}"</a>
+                                            {% else %}{{ action|title }} an article{% endif %}
+                                            
+                                        {% elif ctype == 'profile' %}
+                                            Updated your profile
+                                            
+                                        {% elif ctype == 'experience' %}
+                                            {% if action == 'created' %}Added a new experience{% elif action == 'updated' %}Updated an experience{% else %}Deleted an experience{% endif %}
+                                            
+                                        {% elif ctype == 'education' %}
+                                            {% if action == 'created' %}Added a new education{% elif action == 'updated' %}Updated an education{% else %}Deleted an education{% endif %}
+                                            
+                                        {% else %}
+                                            {{ action|title }} an item
+                                        {% endif %}
+                                        
+                                    <!-- Target Deleted or Missing -->
+                                    {% else %}
+                                        
+                                        {% if ctype == 'project' %}
+                                            {{ action|title }} a project
+                                        {% elif ctype == 'blogpost' %}
+                                            {{ action|title }} an article
+                                        {% elif ctype == 'experience' %}
+                                            {{ action|title }} an experience
+                                        {% elif ctype == 'education' %}
+                                            {{ action|title }} an education
+                                        {% elif ctype == 'profile' %}
+                                            {{ action|title }} your profile
+                                        {% else %}
+                                            {{ action|title }} an item
+                                        {% endif %}
+                                        
+                                    {% endif %}
+                                </div>
+
+                                <!-- Activity Meta -->
+                                <div class="dc-activity-meta">
+                                    {% if ctype %}
+                                        <span class="dc-activity-target-type">
+                                            {% if ctype == 'blogpost' %}Blog{% else %}{{ ctype|title }}{% endif %}
+                                        </span>
+                                        <span class="dc-activity-separator" aria-hidden="true">&bull;</span>
+                                    {% endif %}
+                                    <time class="dc-activity-time" datetime="{{ activity.created_at|date:'c' }}">
+                                        {{ activity.created_at|timesince }} ago
+                                    </time>
+                                </div>
+                                
+                            </div>
+                        </article>
+                        
+                        {% endwith %}
+                        
+                    {% endfor %}
+                </div>
+
+                <!-- ==========================================================
+                     PAGINATION
+                     ========================================================== -->
+                {% if page_obj.has_other_pages %}
+                <nav class="dc-activity-pagination d-flex justify-content-center" aria-label="Activity pagination">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">Previous</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link" aria-hidden="true">Previous</span>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active" aria-current="page">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">Next</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link" aria-hidden="true">Next</span>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                
+            {% else %}
+                <!-- ==========================================================
+                    EMPTY STATE
+                    ========================================================== -->
+                <div class="dc-activity-empty">
+                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="dc-activity-empty-icon opacity-50" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <h2 class="h5 fw-bold text-main mb-2">No activity yet</h2>
+                    <p class="text-muted-custom mb-4">Your important actions will appear here as you use DevConnect.</p>
+                    <a href="{% url 'dashboard' %}" class="btn btn-primary rounded-3 px-4 fw-medium">
+                        &larr; Dashboard
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+</main>
+{% endblock content %}

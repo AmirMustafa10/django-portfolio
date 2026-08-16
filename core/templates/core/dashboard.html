@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | DevConnect{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
+{% endblock css %}
+
+{% block content %}
+<main class="dc-dashboard-page">
+    <div class="container dc-dash-container">
+        
+        <!-- ==========================================================
+            1. WELCOME HEADER
+            ========================================================== -->
+        <header class="dc-dash-header">
+            <div class="dc-dash-welcome">
+                <h1>Welcome back, {{ request.user.get_full_name|default:request.user.username }} 👋</h1>
+                <p>Here's what's happening with your DevConnect profile.</p>
+            </div>
+            <div class="dc-dash-header-actions">
+                {% if profile %}
+                    <a href="{% url 'accounts:developer_detail' request.user.username %}" class="dc-dash-btn dc-dash-btn--secondary">View Profile</a>
+                {% endif %}
+                <a href="{% url 'accounts:edit_profile' %}" class="dc-dash-btn dc-dash-btn--primary">Edit Profile</a>
+            </div>
+        </header>
+
+        <!-- ==========================================================
+            2. PROFILE OVERVIEW
+            ========================================================== -->
+        {% if profile %}
+        <section class="dc-dash-section dc-dash-profile-section">
+            <div class="dc-dash-profile">
+                <div class="dc-dash-profile-main">
+                    <div class="dc-dash-profile-avatar-wrapper">
+                        {% if profile.avatar %}
+                            <img src="{{ profile.avatar.url }}" alt="{{ request.user.username }}" class="dc-dash-profile-avatar">
+                        {% else %}
+                            <div class="dc-dash-profile-avatar dc-dash-profile-avatar-fallback">
+                                {{ request.user.username|make_list|first|upper }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="dc-dash-profile-info">
+                        <h2>{{ request.user.get_full_name|default:request.user.username }}</h2>
+                        <span class="dc-dash-profile-username">@{{ request.user.username }}</span>
+                        
+                        {% if profile.job_title %}
+                            <p class="dc-dash-profile-role">{{ profile.job_title }}</p>
+                        {% endif %}
+
+                        <div class="dc-dash-profile-meta">
+                            {% if profile.location %}
+                                <span class="dc-dash-profile-meta-item">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    {{ profile.location }}
+                                </span>
+                            {% endif %}
+                            
+                            {% if profile.available_for_work %}
+                                <span class="dc-dash-profile-badge dc-dash-profile-badge--success">
+                                    <span class="dc-dash-dot"></span> Available for work
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        {% if profile.bio %}
+                            <p class="dc-dash-profile-bio">{{ profile.bio|truncatechars:140 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="dc-dash-profile-actions">
+                    <a href="{% url 'accounts:developer_detail' request.user.username %}" class="dc-dash-link-action">View Public Profile &rarr;</a>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- ==========================================================
+            3. QUICK ACTIONS & KEY STATISTICS (Two Column Grid)
+            ========================================================== -->
+        <div class="dc-dash-grid-split">
+            
+            <!-- Quick Actions -->
+            <section class="dc-dash-section">
+                <div class="dc-dash-section-header">
+                    <h3>Quick Actions</h3>
+                </div>
+                <div class="dc-dash-actions">
+                    <a href="{% url 'portfolio:add_project' %}" class="dc-dash-action">
+                        <div class="dc-dash-action-icon dc-dash-action-icon--blue">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        </div>
+                        <div class="dc-dash-action-text">
+                            <strong>New Project</strong>
+                            <span>Showcase your recent work</span>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'blog:add_blog' %}" class="dc-dash-action">
+                        <div class="dc-dash-action-icon dc-dash-action-icon--purple">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        </div>
+                        <div class="dc-dash-action-text">
+                            <strong>New Article</strong>
+                            <span>Share your knowledge</span>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'messaging:messages' %}" class="dc-dash-action">
+                        <div class="dc-dash-action-icon dc-dash-action-icon--green">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                        </div>
+                        <div class="dc-dash-action-text">
+                            <strong>Messages</strong>
+                            <span>View your conversations</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Key Statistics -->
+            {% if stats %}
+            <section class="dc-dash-section">
+                <div class="dc-dash-section-header">
+                    <h3>Overview</h3>
+                </div>
+                <div class="dc-dash-stats">
+                    {% if stats.projects_count is not None %}
+                    <div class="dc-dash-stat">
+                        <span class="dc-dash-stat-value">{{ stats.projects_count }}</span>
+                        <span class="dc-dash-stat-label">Projects</span>
+                    </div>
+                    {% endif %}
+
+                    {% if stats.published_blogs_count is not None %}
+                    <div class="dc-dash-stat">
+                        <span class="dc-dash-stat-value">{{ stats.published_blogs_count }}</span>
+                        <span class="dc-dash-stat-label">Published Articles</span>
+                    </div>
+                    {% endif %}
+
+                    {% if stats.draft_blogs_count is not None %}
+                    <div class="dc-dash-stat">
+                        <span class="dc-dash-stat-value">{{ stats.draft_blogs_count }}</span>
+                        <span class="dc-dash-stat-label">Draft Articles</span>
+                    </div>
+                    {% endif %}
+
+                    {% if stats.skills_count is not None %}
+                    <div class="dc-dash-stat">
+                        <span class="dc-dash-stat-value">{{ stats.skills_count }}</span>
+                        <span class="dc-dash-stat-label">Skills</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+            {% endif %}
+
+        </div>
+
+        <!-- ==========================================================
+            4. RECENT PROJECTS & RECENT ARTICLES
+            ========================================================== -->
+        <div class="dc-dash-grid-split">
+            
+            <!-- Recent Projects -->
+            <section class="dc-dash-section">
+                <div class="dc-dash-section-header">
+                    <h3>Recent Projects</h3>
+                    <a href="{% url 'portfolio:my_projects' %}" class="dc-dash-view-all">View All</a>
+                </div>
+
+                <div class="dc-dash-projects">
+                    {% for project in recent_projects %}
+                        <article class="dc-dash-project">
+                            <div class="dc-dash-project-content">
+                                <h4>
+                                    <a href="{% url 'portfolio:project_details' project.slug %}">{{ project.title }}</a>
+                                </h4>
+                                <p>{{ project.description|truncatechars:80 }}</p>
+                            </div>
+                            <time class="dc-dash-project-date">{{ project.created_at|date:"M j, Y" }}</time>
+                        </article>
+                    {% empty %}
+                        <div class="dc-dash-empty">
+                            <p>No projects yet.</p>
+                            <a href="{% url 'portfolio:add_project' %}" class="dc-dash-link-action">Create your first project</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- Recent Articles -->
+            <section class="dc-dash-section">
+                <div class="dc-dash-section-header">
+                    <h3>Recent Articles</h3>
+                    <a href="{% url 'blog:my_blogs' %}" class="dc-dash-view-all">View All</a>
+                </div>
+
+                <div class="dc-dash-blogs">
+                    {% for blog in recent_blogs %}
+                        <article class="dc-dash-blog">
+                            <div class="dc-dash-blog-content">
+                                <h4>
+                                    <a href="{% url 'blog:blog_details' blog.slug %}">{{ blog.title }}</a>
+                                </h4>
+                                <div class="dc-dash-blog-meta">
+                                    <span class="dc-dash-badge {% if blog.get_status_display|lower == 'published' %}dc-dash-badge--success{% else %}dc-dash-badge--muted{% endif %}">
+                                        {{ blog.get_status_display|default:blog.status }}
+                                    </span>
+                                    <span>&bull;</span>
+                                    <span>{{ blog.created_at|date:"M j, Y" }}</span>
+                                </div>
+                            </div>
+                        </article>
+                    {% empty %}
+                        <div class="dc-dash-empty">
+                            <p>No articles yet.</p>
+                            <a href="{% url 'blog:add_blog' %}" class="dc-dash-link-action">Write your first article</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ==========================================================
+            5. RECENT ACTIVITY
+            ========================================================== -->
+        <section class="dc-dash-section">
+            <div class="dc-dash-section-header">
+                <h3>Recent Activity</h3>
+                <a href="{% url 'activity' %}" class="dc-dash-view-all">View All Activity</a>
+            </div>
+
+            <div class="dc-dash-activity">
+                {% for activity in recent_activities %}
+                    
+                    {% with ctype=activity.target_content_type.model|lower action=activity.action|lower target=activity.target %}
+                    <article class="dc-dash-activity-item">
+                        <div class="dc-dash-activity-marker dc-dash-activity-marker--{{ action }}" aria-hidden="true"></div>
+                        
+                        <div class="dc-dash-activity-body">
+                            <p class="dc-dash-activity-text">
+                                {% if activity.target %}
+                                    {% if ctype == 'project' %}
+                                        {% if action == 'created' %}Created project <a href="{% url 'portfolio:project_details' target.slug %}">{{ target.title }}</a>
+                                        {% elif action == 'updated' %}Updated project <a href="{% url 'portfolio:project_details' target.slug %}">{{ target.title }}</a>
+                                        {% else %}{{ action|title }} a project{% endif %}
+                                    {% elif ctype == 'blogpost' %}
+                                        {% if action == 'created' %}Drafted article <a href="{% url 'blog:blog_details' target.slug %}">{{ target.title }}</a>
+                                        {% elif action == 'published' %}Published article <a href="{% url 'blog:blog_details' target.slug %}">{{ target.title }}</a>
+                                        {% elif action == 'updated' %}Updated article <a href="{% url 'blog:blog_details' target.slug %}">{{ target.title }}</a>
+                                        {% else %}{{ action|title }} an article{% endif %}
+                                    {% elif ctype == 'profile' %}
+                                        Updated your profile
+                                    {% elif ctype == 'experience' %}
+                                        {{ action|title }} an experience entry
+                                    {% elif ctype == 'education' %}
+                                        {{ action|title }} an education entry
+                                    {% else %}
+                                        {{ action|title }} an item
+                                    {% endif %}
+                                {% else %}
+                                    {% if ctype == 'project' %}{{ action|title }} a project
+                                    {% elif ctype == 'blogpost' %}{{ action|title }} an article
+                                    {% elif ctype == 'experience' %}{{ action|title }} an experience entry
+                                    {% elif ctype == 'education' %}{{ action|title }} an education entry
+                                    {% elif ctype == 'profile' %}{{ action|title }} your profile
+                                    {% else %}{{ action|title }} an item{% endif %}
+                                {% endif %}
+                            </p>
+                            <time class="dc-dash-activity-time">{{ activity.created_at|timesince }} ago</time>
+                        </div>
+                    </article>
+                    {% endwith %}
+
+                {% empty %}
+                    <div class="dc-dash-empty">
+                        <p>No recent activity.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+    </div>
+</main>
+{% endblock content %}

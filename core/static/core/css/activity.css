@@ -1,0 +1,274 @@
+/* ==========================================================================
+   core/static/core/css/activity.css
+   ========================================================================== */
+
+/* Page Wrapper & Variables */
+.dc-activity-page {
+    --bg-main: #f8fafc;
+    --surface: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --success: #16a34a;
+    --danger: #ef4444;
+
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-main);
+    min-height: calc(100vh - 70px);
+    padding: 3rem 1.5rem 5rem 1.5rem;
+}
+
+.dc-activity-container {
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+/* Header */
+.dc-activity-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 3.5rem;
+}
+@media (min-width: 576px) {
+    .dc-activity-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+}
+
+.dc-activity-header-content {
+    display: flex;
+    flex-direction: column;
+}
+.dc-activity-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0 0 0.25rem 0;
+    letter-spacing: -0.02em;
+}
+.dc-activity-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.dc-activity-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 10px;
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+.dc-activity-back:hover {
+    color: var(--primary);
+    background-color: #f1f5f9;
+}
+
+/* Feed Wrapper & Timeline Base */
+.dc-activity-feed-wrapper {
+    position: relative;
+}
+.dc-activity-feed {
+    position: relative;
+    padding-left: 0.75rem;
+    padding-bottom: 1rem;
+}
+
+/* Vertical Timeline Line */
+.dc-activity-feed::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 23px; /* 0.75rem (12px) padding + half marker width (11px) */
+    width: 2px;
+    background-color: var(--border-color);
+    z-index: 1;
+}
+
+/* Activity Item */
+.dc-activity-item {
+    position: relative;
+    padding-left: 3.5rem;
+    margin-bottom: 2.25rem;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.dc-activity-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Marker / Icon Container */
+.dc-activity-marker {
+    position: absolute;
+    left: 0.75rem;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--surface);
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    box-shadow: 0 0 0 4px var(--bg-main);
+}
+.dc-activity-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+/* Marker Modifiers by Action */
+.dc-activity-marker--created {
+    border-color: var(--success);
+}
+.dc-activity-marker--created .dc-activity-icon {
+    color: var(--success);
+}
+.dc-activity-marker--published {
+    border-color: var(--primary);
+}
+.dc-activity-marker--published .dc-activity-icon {
+    color: var(--primary);
+}
+.dc-activity-marker--updated {
+    border-color: var(--text-muted);
+}
+.dc-activity-marker--deleted {
+    border-color: var(--danger);
+}
+.dc-activity-marker--deleted .dc-activity-icon {
+    color: var(--danger);
+}
+
+/* Content & Typography */
+.dc-activity-content {
+    display: flex;
+    flex-direction: column;
+}
+.dc-activity-title {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--text-main);
+    margin: 0 0 0.35rem 0;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.dc-activity-link {
+    color: var(--text-main);
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.dc-activity-link:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+/* Meta Data */
+.dc-activity-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+}
+.dc-activity-target-type {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+.dc-activity-time {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+.dc-activity-separator {
+    color: var(--border-color);
+}
+
+/* Empty State */
+.dc-activity-empty {
+    text-align: center;
+    background-color: var(--surface);
+    border: 1px dashed var(--border-color);
+    border-radius: 16px;
+    padding: 4rem 1.5rem;
+    margin-top: 1rem;
+}
+.dc-activity-empty-icon {
+    color: var(--border-color);
+    margin-bottom: 1rem;
+}
+
+/* Pagination Overrides */
+.dc-activity-pagination {
+    margin-top: 4rem;
+}
+.dc-activity-pagination .page-link {
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    margin: 0 0.2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s;
+    background-color: var(--surface);
+}
+.dc-activity-pagination .page-link:hover {
+    background-color: #f1f5f9;
+    color: var(--primary);
+    border-color: #cbd5e1;
+}
+.dc-activity-pagination .page-item.active .page-link {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+}
+.dc-activity-pagination .page-item.disabled .page-link {
+    color: #94a3b8;
+    background-color: var(--bg-main);
+    border-color: var(--border-color);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    .dc-activity-page {
+        padding: 2rem 1rem 4rem 1rem;
+    }
+    .dc-activity-header {
+        margin-bottom: 2.5rem;
+    }
+    .dc-activity-feed {
+        padding-left: 0;
+    }
+    .dc-activity-feed::before {
+        left: 11px;
+    }
+    .dc-activity-marker {
+        left: 0;
+    }
+    .dc-activity-item {
+        padding-left: 2.5rem;
+        margin-bottom: 2rem;
+    }
+    .dc-activity-title {
+        font-size: 1rem;
+    }
+}
