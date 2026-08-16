@@ -92,70 +92,528 @@ ul { list-style: none; }
     padding: 1.5rem;
     box-shadow: var(--shadow-sm);
 }
-/* ==========================================================================
-   NAVIGATION BAR
-   ========================================================================== */
-.navbar {
-    background-color: var(--bg-surface);
-    border-bottom: 1px solid var(--border-light);
+/* =========================================================
+   DEVCONNECT GLOBAL NAVIGATION
+   ========================================================= */
+
+:root {
+    --dc-nav-bg: #ffffff;
+    --dc-nav-text: #0f172a;
+    --dc-nav-muted: #64748b;
+    --dc-nav-border: #e2e8f0;
+    --dc-nav-primary: #2563eb;
+    --dc-nav-primary-hover: #1d4ed8;
+    --dc-nav-hover: #f8fafc;
+}
+
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+
+.dc-nav {
     position: sticky;
     top: 0;
-    z-index: 50;
+    z-index: 1000;
+
+    width: 100%;
+
+    background: rgba(255, 255, 255, 0.94);
+    border-bottom: 1px solid var(--dc-nav-border);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 }
-.nav-container {
+
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
+.dc-nav__container {
+    min-height: 78px;
+
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-    height: 4.5rem;
-}
-.nav-left, .nav-right {
-    display: flex;
-    align-items: center;
+
     gap: 2rem;
 }
-.brand {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--text-main);
-    letter-spacing: -0.5px;
-}
-.brand span { color: var(--accent-primary); }
-.nav-links {
+
+
+/* =========================================================
+   BRAND AREA
+   ========================================================= */
+
+.dc-nav__brand-area {
     display: flex;
-    gap: 1.5rem;
+    align-items: center;
+    gap: 3rem;
+
+    min-width: 0;
 }
-.nav-links a {
-    font-weight: 500;
-    font-size: 0.95rem;
-    color: var(--text-muted);
+
+
+.dc-nav__brand {
+    flex-shrink: 0;
+
+    color: #0f172a;
+    text-decoration: none;
+
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+
+    line-height: 1;
 }
-.nav-links a:hover, .nav-links a.active { color: var(--text-main); }
-.nav-actions { display: flex; gap: 0.75rem; align-items: center; }
-/* Mobile Menu Button */
-.mobile-menu-btn {
-    display: none;
-    background: none;
-    border: none;
+
+
+.dc-nav__brand span {
+    color: var(--dc-nav-primary);
+}
+
+
+/* =========================================================
+   DESKTOP LINKS
+   ========================================================= */
+
+.dc-nav__links {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+
+.dc-nav__links a,
+.dc-nav__link-button {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 42px;
+    padding: 0.55rem 0.85rem;
+
+    border: 0;
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: var(--dc-nav-muted);
+    text-decoration: none;
+
+    font-size: 0.92rem;
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.dc-nav__links a:hover,
+.dc-nav__link-button:hover {
+    background: var(--dc-nav-hover);
+    color: var(--dc-nav-text);
+}
+
+
+/* =========================================================
+   RIGHT SIDE
+   ========================================================= */
+
+.dc-nav__right {
+    display: flex;
+    align-items: center;
+}
+
+
+.dc-nav__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+
+/* =========================================================
+   ICON BUTTON
+   ========================================================= */
+
+.dc-nav__icon-button {
+    position: relative;
+
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid transparent;
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: var(--dc-nav-text);
+    text-decoration: none;
+
     cursor: pointer;
-    color: var(--text-main);
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
 }
-.mobile-menu-btn svg { width: 24px; height: 24px; }
-/* Mobile Dropdown */
-.mobile-menu {
+
+
+.dc-nav__icon-button:hover {
+    background: var(--dc-nav-hover);
+    border-color: var(--dc-nav-border);
+}
+
+
+/* =========================================================
+   MESSAGE BADGE
+   ========================================================= */
+
+.dc-nav__badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+
+    min-width: 18px;
+    height: 18px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 4px;
+
+    border: 2px solid #ffffff;
+    border-radius: 999px;
+
+    background: #ef4444;
+    color: #ffffff;
+
+    font-size: 0.62rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   PROFILE BUTTON
+   ========================================================= */
+
+.dc-nav__profile-button {
+    width: 44px;
+    height: 44px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-left: 0.25rem;
+
+    border: 1px solid var(--dc-nav-border);
+    border-radius: 11px;
+
+    background: #ffffff;
+    color: var(--dc-nav-text);
+
+    text-decoration: none;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.dc-nav__profile-button:hover {
+    background: var(--dc-nav-hover);
+    border-color: #cbd5e1;
+}
+
+
+/* =========================================================
+   LOGOUT FORM
+   ========================================================= */
+
+.dc-nav__logout-form {
+    margin: 0;
+}
+
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
+
+.dc-nav__primary-button {
+    min-height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0.55rem 1rem;
+
+    border-radius: 10px;
+
+    background: var(--dc-nav-primary);
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 0.9rem;
+    font-weight: 700;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.dc-nav__primary-button:hover {
+    background: var(--dc-nav-primary-hover);
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   MOBILE TOGGLE
+   ========================================================= */
+
+.dc-nav__mobile-toggle {
     display: none;
-    background-color: var(--bg-surface);
-    border-bottom: 1px solid var(--border-light);
-    padding: 1rem var(--container-padding);
+
+    width: 42px;
+    height: 42px;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid var(--dc-nav-border);
+    border-radius: 10px;
+
+    background: #ffffff;
+    color: var(--dc-nav-text);
+
+    cursor: pointer;
 }
-.mobile-menu.active { display: flex; flex-direction: column; gap: 1rem; }
-.mobile-menu a { display: block; padding: 0.5rem 0; font-weight: 500; }
-.mobile-actions {
-    display: flex; flex-direction: column; gap: 0.5rem;
-    padding-top: 1rem; border-top: 1px solid var(--border-light);
+
+
+.dc-nav__mobile-toggle svg {
+    width: 22px;
+    height: 22px;
 }
+
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+
+.dc-nav__mobile {
+    display: none;
+
+    border-top: 1px solid var(--dc-nav-border);
+
+    background: #ffffff;
+
+    padding: 0.75rem 1rem 1.25rem;
+}
+
+
+.dc-nav__mobile-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+
+.dc-nav__mobile-links a,
+.dc-nav__mobile-actions > a,
+.dc-nav__mobile-actions > form > button {
+    width: 100%;
+
+    min-height: 46px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0.7rem 0.85rem;
+
+    border: 1px solid transparent;
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: var(--dc-nav-text);
+    text-decoration: none;
+
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.dc-nav__mobile-links a:hover,
+.dc-nav__mobile-actions > a:hover,
+.dc-nav__mobile-actions > form > button:hover {
+    background: var(--dc-nav-hover);
+    border-color: var(--dc-nav-border);
+}
+
+
+/* =========================================================
+   MOBILE DIVIDER
+   ========================================================= */
+
+.dc-nav__mobile-divider {
+    height: 1px;
+    margin: 0.7rem 0;
+
+    background: var(--dc-nav-border);
+}
+
+
+/* =========================================================
+   MOBILE ACTIONS
+   ========================================================= */
+
+.dc-nav__mobile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+
+.dc-nav__mobile-actions form {
+    margin: 0;
+}
+
+
+.dc-nav__mobile-actions > form > button {
+    cursor: pointer;
+    text-align: left;
+}
+
+
+/* =========================================================
+   MOBILE MESSAGE BADGE
+   ========================================================= */
+
+.dc-nav__mobile-actions > a {
+    justify-content: space-between;
+}
+
+
+.dc-nav__mobile-badge {
+    min-width: 20px;
+    height: 20px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 6px;
+
+    border-radius: 999px;
+
+    background: #ef4444;
+    color: #ffffff;
+
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 992px) {
+
+    .dc-nav__brand-area {
+        gap: 1.5rem;
+    }
+
+    .dc-nav__links {
+        gap: 0.15rem;
+    }
+
+    .dc-nav__links a,
+    .dc-nav__link-button {
+        padding-inline: 0.65rem;
+        font-size: 0.87rem;
+    }
+
+    .dc-nav__actions {
+        gap: 0.25rem;
+    }
+}
+
+
 @media (max-width: 768px) {
-    .nav-links, .nav-actions { display: none; }
-    .mobile-menu-btn { display: block; }
+
+    .dc-nav__container {
+        min-height: 68px;
+    }
+
+    .dc-nav__brand-area {
+        gap: 0;
+    }
+
+    .dc-nav__links,
+    .dc-nav__actions {
+        display: none;
+    }
+
+    .dc-nav__mobile-toggle {
+        display: inline-flex;
+    }
+
+    .dc-nav__mobile.active {
+        display: block;
+    }
+
+    .dc-nav__brand {
+        font-size: 1.35rem;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+    .dc-nav__container {
+        padding-inline: 0.9rem;
+    }
+
+    .dc-nav__brand {
+        font-size: 1.25rem;
+    }
+
+    .dc-nav__mobile {
+        padding-inline: 0.9rem;
+    }
 }
 /* ==========================================================================
    MAIN CONTENT & MESSAGES

@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
-from django.http import HttpResponseNotAllowed
+from django.http import HttpResponseNotAllowed, Http404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q, Count
 from .models import BlogPost, Comment
 from .form import BlogForm, CommentForm
+from core.models import Activity
 
 
 # Blog views
@@ -48,8 +49,10 @@ def blogpost_details_view(request, slug):
     blog = get_object_or_404(
         BlogPost,
         slug=slug,
-        status=BlogPost.Status.PUBLISHED,
     )
+
+    if blog.status == BlogPost.Status.DRAFT and blog.profile.user != request.user:
+        raise Http404
 
     comments = (
         blog.comments.filter(parent__isnull=True)  # type: ignore
@@ -112,6 +115,12 @@ def add_comment_view(request, blog_slug):
             comment.parent = parent
             comment.save()
 
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.CREATED,
+                target=comment,
+            )
+
             messages.success(
                 request,
                 (
@@ -163,6 +172,12 @@ def edit_comment_view(request, blog_slug, comment_id):
         if form.is_valid():
             form.save()
 
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.UPDATED,
+                target=comment,
+            )
+
             messages.success(
                 request,
                 "Comment edited successfully.",
@@ -189,6 +204,12 @@ def delete_comment_view(request, pk):
 
     if request.method == "POST":
         comment.delete()
+
+        Activity.objects.create(
+            user=request.user,
+            action=Activity.Action.DELETED,
+            target=comment,
+        )
 
         messages.success(request, "Comment deleted successfully.")
 
@@ -249,6 +270,12 @@ def add_blog_view(request):
             blog.profile = profile
             blog.save()
 
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.CREATED,
+                target=blog,
+            )
+
             messages.success(
                 request,
                 "Blog added successfully.",
@@ -282,6 +309,12 @@ def edit_blog_view(request, blog_slug):
         if form.is_valid():
             form.save()
 
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.UPDATED,
+                target=blog,
+            )
+
             messages.success(
                 request,
                 "Blog edited successfully.",
@@ -314,6 +347,12 @@ def delete_blog_view(request, pk):
 
     if request.method == "POST":
         blog.delete()
+
+        Activity.objects.create(
+            user=request.user,
+            action=Activity.Action.DELETED,
+            target=blog,
+        )
 
         messages.success(request, "Blog deleted successfully.")
 

@@ -6,7 +6,10 @@ from accounts.models import Profile
 from django.contrib import messages
 from django.db.models import Q, Prefetch
 from portfolio.models import ProjectImage, Project, Skill
-from urllib.parse import urlparse
+from core.models import Activity
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 def register_view(request):
@@ -19,6 +22,12 @@ def register_view(request):
 
         if form.is_valid():
             user = form.save()
+
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.CREATED,
+                target=user,
+            )
 
             login(request, user)
 
@@ -95,29 +104,13 @@ def developers_view(request):
 
 
 def developer_detail_view(request, username):
-
-    profile = (
-        Profile.objects.filter(user__username=username).select_related("user").first()
+    user = get_object_or_404(
+        User,
+        username__iexact=username,
     )
-
-    if not profile:
-        messages.warning(
-            request,
-            "This user does not have a public profile yet.",
-        )
-
-        referer = request.META.get("HTTP_REFERER")
-
-        if referer:
-            parsed_referer = urlparse(referer)
-
-            if parsed_referer.netloc == request.get_host():
-                return redirect(
-                    parsed_referer.path
-                    + (f"?{parsed_referer.query}" if parsed_referer.query else "")
-                )
-
-        return redirect("accounts:developers")
+    if user == request.user:
+        if not hasattr(user, "profile"):
+            return redirect("accounts:create_profile")
 
     developer = get_object_or_404(
         Profile.objects.select_related("user").prefetch_related(
@@ -133,12 +126,12 @@ def developer_detail_view(request, username):
                             queryset=ProjectImage.objects.order_by("display_order")[:1],
                             to_attr="cover_images",
                         )
-                    )[:2]
+                    ).filter(is_featured=True)[:2]
                 ),
                 to_attr="preview_projects",
             ),
         ),
-        user__username__iexact=username,
+        user=user,
     )
 
     projects_count = developer.projects.count()  # type: ignore
@@ -174,6 +167,12 @@ def create_profile_view(request):
             profile.user = user
             profile.save()
             user_form.save()
+
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.CREATED,
+                target=profile,
+            )
 
             selected_skill_values = request.POST.getlist("skills")
             new_skill_names = request.POST.getlist("new_skills")
@@ -242,6 +241,12 @@ def edit_profile_view(request):
 
             form1.save()
             form2.save()
+
+            Activity.objects.create(
+                user=request.user,
+                action=Activity.Action.UPDATED,
+                target=profile,
+            )
 
             selected_skill_values = request.POST.getlist("skills")
             new_skill_names = request.POST.getlist("new_skills")
