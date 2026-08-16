@@ -90,6 +90,14 @@ The project follows clean architecture principles, Django best practices, and a 
 
 ---
 
+### Dashboard
+
+- Dashboard overview
+- Activity tracking
+- Activity history
+
+---
+
 ## Planned
 
 - Developer search and filtering
@@ -182,6 +190,17 @@ The core architecture, authentication, developer profiles, portfolio management,
 - [x] Edit message
 - [x] Delete message
 - [x] Unread message count
+
+---
+
+### Dashboard
+
+- [x] Dashboard application created
+- [x] Activity tracking
+- [x] Dashboard view
+- [x] Activity view
+- [x] Dashboard templates
+- [x] Activity templates
 
 ---
 
