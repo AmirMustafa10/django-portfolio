@@ -43,42 +43,6 @@
     </header>
 
     <div class="container">
-        <!-- FEATURED ARTICLE -->
-        {% if featured_blog %}
-            <article class="featured-card row g-0">
-                <div class="col-md-7 col-lg-8 order-2 order-md-1 p-4 p-lg-5 d-flex flex-column justify-content-center">
-                    <span class="badge-featured align-self-start mb-3">Featured</span>
-                    <h2 class="text-main fw-bold mb-3 display-6" style="line-height: 1.2;">{{ featured_blog.title }}</h2>
-                    <p class="text-muted-custom fs-5 mb-4">{{ featured_blog.excerpt|default:featured_blog.content|striptags|truncatewords:30 }}</p>
-                    
-                    <div class="d-flex flex-wrap align-items-center gap-3 text-muted-custom small mb-4">
-                        <span class="text-main fw-semibold">{{ featured_blog.profile.user.get_full_name|default:featured_blog.profile.user.username }}</span>
-                        <span>&bull;</span>
-                        <span>{{ featured_blog.created_at|date:"M d, Y" }}</span>
-                        {% if featured_blog.read_time %}
-                            <span>&bull;</span>
-                            <span>{{ featured_blog.read_time }} min read</span>
-                        {% endif %}
-                        <span>&bull;</span>
-                        <span>{{ featured_blog.comment_count|default:"0" }} comments</span>
-                    </div>
-
-                    <a href="" class="btn btn-primary rounded-3 px-4 py-2 fw-medium align-self-start">
-                        Read Article &rarr;
-                    </a>
-                </div>
-                <div class="col-md-5 col-lg-4 order-1 order-md-2">
-                    {% if featured_blog.image %}
-                        <img src="{{ featured_blog.image.url }}" alt="{{ featured_blog.title }}" class="featured-cover">
-                    {% else %}
-                        <div class="featured-cover cover-placeholder d-flex align-items-center justify-content-center">
-                            <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-muted-custom"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        </div>
-                    {% endif %}
-                </div>
-            </article>
-        {% endif %}
-
         <!-- LATEST ARTICLES GRID -->
         <h2 class="h4 fw-bold text-main mb-4">Latest Articles</h2>
         
@@ -91,9 +55,9 @@
             <!-- INFINITE SCROLL TRIGGERS -->
             <!-- We store the current pagination state in data attributes for JS to read -->
             <div id="load-more-trigger" 
-                 class="load-more-trigger" 
-                 data-has-next="{% if page_obj.has_next %}true{% else %}false{% endif %}" 
-                 data-current-page="{{ page_obj.number }}">
+                class="load-more-trigger" 
+                data-has-next="{% if page_obj.has_next %}true{% else %}false{% endif %}" 
+                data-current-page="{{ page_obj.number }}">
             </div>
 
             <div id="loading-indicator" class="loading-spinner d-none">

@@ -45,7 +45,7 @@ The project follows clean architecture principles, Django best practices, and a 
 ### Developer Profiles
 
 - Developer profiles
-- Developer listing
+- Paginated Developer listing
 - Developer details
 - Profile editing
 - Featured developers on the homepage
@@ -61,11 +61,12 @@ The project follows clean architecture principles, Django best practices, and a 
 - Project gallery
 - Project images
 - Project skills
+- Paginated project listing
 
 ### Blog
 
 - Blog posts
-- Blog post listing
+- Paginated Blog post listing
 - Blog post details
 - Blog post creation
 - Blog post editing
@@ -80,7 +81,7 @@ The project follows clean architecture principles, Django best practices, and a 
 ### Messaging
 
 - User-to-user messaging
-- Conversation listing
+- Paginated Conversation listing
 - Conversation details
 - Send messages
 - Edit messages

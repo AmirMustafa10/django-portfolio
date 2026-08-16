@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib import messages
 from accounts.models import Profile
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
@@ -29,6 +30,13 @@ def home(request):
 
 @login_required
 def dashboard_view(request):
+    if not hasattr(request.user, "profile"):
+        messages.warning(
+            request,
+            "Create your profile first before view your dashboard.",
+        )
+        return redirect("accounts:create_profile")
+
     profile = get_object_or_404(
         Profile.objects.select_related("user"),
         user=request.user,
@@ -72,6 +80,13 @@ def dashboard_view(request):
 
 @login_required
 def activity_view(request):
+    if not hasattr(request.user, "profile"):
+        messages.warning(
+            request,
+            "Create your profile first before view your activity.",
+        )
+        return redirect("accounts:create_profile")
+
     activities = (
         Activity.objects.filter(user=request.user)
         .select_related("target_content_type")

@@ -212,3 +212,10 @@
     word-break: break-word;
     white-space: normal;
 }
+
+.blog-content .blog-excerpt {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}

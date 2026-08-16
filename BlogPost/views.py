@@ -203,13 +203,14 @@ def delete_comment_view(request, pk):
     )
 
     if request.method == "POST":
-        comment.delete()
 
         Activity.objects.create(
             user=request.user,
             action=Activity.Action.DELETED,
             target=comment,
         )
+
+        comment.delete()
 
         messages.success(request, "Comment deleted successfully.")
 
@@ -222,6 +223,10 @@ def delete_comment_view(request, pk):
 @login_required
 def my_blogs_view(request):
     if not hasattr(request.user, "profile"):
+        messages.warning(
+            request,
+            "Create your profile first before view your blogs.",
+        )
         return redirect("accounts:create_profile")
 
     status = request.GET.get("status", "").strip()
@@ -346,13 +351,14 @@ def delete_blog_view(request, pk):
     )
 
     if request.method == "POST":
-        blog.delete()
 
         Activity.objects.create(
             user=request.user,
             action=Activity.Action.DELETED,
             target=blog,
         )
+
+        blog.delete()
 
         messages.success(request, "Blog deleted successfully.")
 

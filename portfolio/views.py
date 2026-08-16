@@ -5,6 +5,7 @@ from .models import Experience, Education, Project, Skill, ProjectImage
 from .forms import EducationForm, ExperienceForm, ProjectForm
 from django.contrib import messages
 from django.db.models import Q
+from django.core.paginator import Paginator
 from core.models import Activity
 
 
@@ -18,13 +19,14 @@ def delete_experience_view(request, pk):
     )
 
     if request.method == "POST":
-        experience.delete()
 
         Activity.objects.create(
             user=request.user,
             action=Activity.Action.DELETED,
             target=experience,
         )
+
+        experience.delete()
 
         messages.success(request, "Experience deleted successfully.")
 
@@ -112,13 +114,14 @@ def delete_education_view(request, pk):
     )
 
     if request.method == "POST":
-        education.delete()
 
         Activity.objects.create(
             user=request.user,
             action=Activity.Action.DELETED,
             target=education,
         )
+
+        education.delete()
 
         messages.success(request, "Education deleted successfully.")
 
@@ -214,11 +217,17 @@ def projects_view(request):
 
     projects = projects.distinct()
 
+    paginator = Paginator(projects, 9)
+
+    page_number = request.GET.get("page", 1)
+
+    page_obj = paginator.get_page(page_number)
+
     return render(
         request,
         "portfolio/project/Projects.html",
         {
-            "Projects": projects,
+            "Projects": page_obj,
             "query": query,
         },
     )
@@ -257,11 +266,17 @@ def my_projects_view(request):
         .prefetch_related("images", "skills")
     )
 
+    paginator = Paginator(projects, 9)
+
+    page_number = request.GET.get("page", 1)
+
+    page_obj = paginator.get_page(page_number)
+
     return render(
         request,
         "portfolio/project/my_projects.html",
         {
-            "projects": projects,
+            "projects": page_obj,
         },
     )
 
@@ -412,13 +427,14 @@ def delete_project_view(request, slug):
     )
 
     if request.method == "POST":
-        project.delete()
 
         Activity.objects.create(
             user=request.user,
             action=Activity.Action.DELETED,
             target=project,
         )
+
+        project.delete()
 
         messages.success(request, "Project deleted successfully.")
 

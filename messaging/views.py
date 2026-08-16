@@ -222,13 +222,14 @@ def delete_message_view(request, id):
     )
 
     if request.method == "POST":
-        message.delete()
 
         Activity.objects.create(
             user=request.user,
             action=Activity.Action.DELETED,
             target=message,
         )
+
+        message.delete()
 
         referer = request.META.get("HTTP_REFERER")
 
