@@ -223,6 +223,10 @@ def delete_comment_view(request, pk):
 @login_required
 def my_blogs_view(request):
     if not hasattr(request.user, "profile"):
+        messages.warning(
+            request,
+            "Create your profile first before view your blogs.",
+        )
         return redirect("accounts:create_profile")
 
     status = request.GET.get("status", "").strip()
