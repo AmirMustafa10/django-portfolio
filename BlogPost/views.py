@@ -203,13 +203,14 @@ def delete_comment_view(request, pk):
     )
 
     if request.method == "POST":
-        comment.delete()
 
         Activity.objects.create(
             user=request.user,
             action=Activity.Action.DELETED,
             target=comment,
         )
+
+        comment.delete()
 
         messages.success(request, "Comment deleted successfully.")
 
@@ -346,13 +347,14 @@ def delete_blog_view(request, pk):
     )
 
     if request.method == "POST":
-        blog.delete()
 
         Activity.objects.create(
             user=request.user,
             action=Activity.Action.DELETED,
             target=blog,
         )
+
+        blog.delete()
 
         messages.success(request, "Blog deleted successfully.")
 

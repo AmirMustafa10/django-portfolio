@@ -18,13 +18,14 @@ def delete_experience_view(request, pk):
     )
 
     if request.method == "POST":
-        experience.delete()
 
         Activity.objects.create(
             user=request.user,
             action=Activity.Action.DELETED,
             target=experience,
         )
+
+        experience.delete()
 
         messages.success(request, "Experience deleted successfully.")
 
@@ -112,13 +113,14 @@ def delete_education_view(request, pk):
     )
 
     if request.method == "POST":
-        education.delete()
 
         Activity.objects.create(
             user=request.user,
             action=Activity.Action.DELETED,
             target=education,
         )
+
+        education.delete()
 
         messages.success(request, "Education deleted successfully.")
 
@@ -412,13 +414,14 @@ def delete_project_view(request, slug):
     )
 
     if request.method == "POST":
-        project.delete()
 
         Activity.objects.create(
             user=request.user,
             action=Activity.Action.DELETED,
             target=project,
         )
+
+        project.delete()
 
         messages.success(request, "Project deleted successfully.")
 
