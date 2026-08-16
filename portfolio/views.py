@@ -5,6 +5,7 @@ from .models import Experience, Education, Project, Skill, ProjectImage
 from .forms import EducationForm, ExperienceForm, ProjectForm
 from django.contrib import messages
 from django.db.models import Q
+from django.core.paginator import Paginator
 from core.models import Activity
 
 
@@ -216,11 +217,17 @@ def projects_view(request):
 
     projects = projects.distinct()
 
+    paginator = Paginator(projects, 9)
+
+    page_number = request.GET.get("page", 1)
+
+    page_obj = paginator.get_page(page_number)
+
     return render(
         request,
         "portfolio/project/Projects.html",
         {
-            "Projects": projects,
+            "Projects": page_obj,
             "query": query,
         },
     )
@@ -259,11 +266,17 @@ def my_projects_view(request):
         .prefetch_related("images", "skills")
     )
 
+    paginator = Paginator(projects, 9)
+
+    page_number = request.GET.get("page", 1)
+
+    page_obj = paginator.get_page(page_number)
+
     return render(
         request,
         "portfolio/project/my_projects.html",
         {
-            "projects": projects,
+            "projects": page_obj,
         },
     )
 

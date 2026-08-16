@@ -8,6 +8,7 @@ from django.db.models import Q, Prefetch
 from portfolio.models import ProjectImage, Project, Skill
 from core.models import Activity
 from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator
 
 User = get_user_model()
 
@@ -92,11 +93,17 @@ def developers_view(request):
 
     devs = devs.distinct()
 
+    paginator = Paginator(devs, 9)
+
+    page_number = request.GET.get("page", 1)
+
+    page_obj = paginator.get_page(page_number)
+
     return render(
         request,
         "accounts/developers.html",
         {
-            "developers": devs,
+            "developers": page_obj,
             "query": query,
             "availability": availability,
         },
@@ -120,13 +127,15 @@ def developer_detail_view(request, username):
             Prefetch(
                 "projects",
                 queryset=(
-                    Project.objects.order_by("-created_at").prefetch_related(
+                    Project.objects.order_by("-created_at")
+                    .prefetch_related(
                         Prefetch(
                             "images",
                             queryset=ProjectImage.objects.order_by("display_order")[:1],
                             to_attr="cover_images",
                         )
-                    ).filter(is_featured=True)[:2]
+                    )
+                    .filter(is_featured=True)[:2]
                 ),
                 to_attr="preview_projects",
             ),
