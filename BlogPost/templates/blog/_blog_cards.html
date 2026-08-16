@@ -23,7 +23,7 @@
         <div class="blog-content p-4 d-flex flex-column flex-grow-1 bg-surface">
             <h3 class="blog-title text-main fw-bold mb-2">{{ blog.title }}</h3>
             <p class="blog-excerpt text-muted-custom small mb-4 flex-grow-1">
-                {{ blog.excerpt|default:blog.content|striptags|truncatewords:20 }}
+                {{ blog.content }}
             </p>
 
             <!-- Author Information -->
