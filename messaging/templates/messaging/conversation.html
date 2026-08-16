@@ -10,15 +10,6 @@
 {% endblock css %}
 
 {% block content %}
-<!-- System Flash Messages (Isolated from chat UI) -->
-{% if messages %}
-<div class="container mt-3">
-    {% for msg in messages %}
-        <div class="alert alert-{{ msg.tags|default:'info' }} rounded-3 shadow-sm border-0">{{ msg }}</div>
-    {% endfor %}
-</div>
-{% endif %}
-
 <div class="conversation-page">
     <main class="dc-conv-shell">
         
@@ -29,6 +20,7 @@
                 <span class="d-none d-sm-inline">Messages</span>
             </a>
             
+            <a href="{% url 'accounts:developer_detail' other_user.username %}">
             {% if other_user.profile.avatar %}
                 <img src="{{ other_user.profile.avatar.url }}" alt="{{ other_user.username }}" class="dc-conv-user-avatar shadow-sm">
             {% else %}
@@ -36,11 +28,13 @@
                     {{ other_user.username|make_list|first|upper }}
                 </div>
             {% endif %}
-            
+            </a>
+            <a href="{% url 'accounts:developer_detail' other_user.username %}">
             <div class="dc-conv-user-info">
                 <span class="dc-conv-user-name">{{ other_user.get_full_name|default:other_user.username }}</span>
                 <span class="dc-conv-user-handle">@{{ other_user.username }}</span>
             </div>
+            </a>
         </header>
 
         <!-- CHAT BODY -->
