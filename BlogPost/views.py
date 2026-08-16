@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
-from django.http import HttpResponseNotAllowed
+from django.http import HttpResponseNotAllowed, Http404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q, Count
@@ -49,8 +49,10 @@ def blogpost_details_view(request, slug):
     blog = get_object_or_404(
         BlogPost,
         slug=slug,
-        status=BlogPost.Status.PUBLISHED,
     )
+
+    if blog.status == BlogPost.Status.DRAFT and blog.profile.user != request.user:
+        raise Http404
 
     comments = (
         blog.comments.filter(parent__isnull=True)  # type: ignore
