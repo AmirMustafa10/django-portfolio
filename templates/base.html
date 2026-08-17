@@ -1,423 +1,378 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Developer Discovery Platform{% endblock %} | DevConnect</title>
-    
-    <!-- Google Fonts: Inter for a clean, modern, developer-oriented look -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet"  href="{% static 'css/base.css' %}">
-{% block css %}
-{% endblock css %}
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}Developer Discovery Platform{% endblock %} | DevConnect
+    </title>
 
+    <!-- Google Fonts: Inter for a clean, modern, developer-oriented look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    {% block css %} {% endblock css %}
+  </head>
+  <body>
     <!-- NAVBAR -->
     <header class="dc-nav">
-        <div class="container dc-nav__container">
-        
-            <!-- Brand + Desktop Navigation -->
-            <div class="dc-nav__brand-area">
-            
-                <a href="{% url 'home' %}" class="dc-nav__brand">
-                    Dev<span>Connect</span>
-                </a>
-            
-                <nav class="dc-nav__links" aria-label="Primary navigation">
-                    <a href="{% url 'home' %}">Home</a>
-                    <a href="{% url 'accounts:developers' %}">Developers</a>
-                    <a href="{% url 'portfolio:projects' %}">Projects</a>
-                    <a href="{% url 'blog:blogs' %}">Blog</a>
-                </nav>
-            
-            </div>
-        
-            <!-- Desktop Actions -->
-            <div class="dc-nav__right">
-            
-                {% if user.is_authenticated %}
-            
-                    <div class="dc-nav__actions">
-                    
-                        <a
-                            href="{% url 'dashboard' %}"
-                            class="dc-nav__link-button"
-                        >
-                            Dashboard
-                        </a>
-                    
-                        <!-- Messages -->
-                        <a
-                            href="{% url 'messaging:messages' %}"
-                            class="dc-nav__icon-button dc-nav__message-button"
-                            aria-label="Messages"
-                        >
-                            <svg
-                                width="22"
-                                height="22"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.9"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                aria-hidden="true"
-                            >
-                                <path
-                                    d="M21 11.5a8.38 8.38 0 0 1-9 8.5
+      <div class="container dc-nav__container">
+        <!-- Brand + Desktop Navigation -->
+        <div class="dc-nav__brand-area">
+          <a href="{% url 'home' %}" class="dc-nav__brand">
+            Dev<span>Connect</span>
+          </a>
+
+          <nav class="dc-nav__links" aria-label="Primary navigation">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'accounts:developers' %}">Developers</a>
+            <a href="{% url 'portfolio:projects' %}">Projects</a>
+            <a href="{% url 'blog:blogs' %}">Blog</a>
+          </nav>
+        </div>
+
+        <!-- Desktop Actions -->
+        <div class="dc-nav__right">
+          {% if user.is_authenticated %}
+
+          <div class="dc-nav__actions">
+            <a href="{% url 'dashboard' %}" class="dc-nav__link-button">
+              Dashboard
+            </a>
+
+            <!-- Messages -->
+            <a
+              href="{% url 'messaging:messages' %}"
+              class="dc-nav__icon-button dc-nav__message-button"
+              aria-label="Messages"
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path
+                  d="M21 11.5a8.38 8.38 0 0 1-9 8.5
                                        8.5 8.5 0 0 1-4.3-1.17L3 20
                                        l1.17-4.7A8.5 8.5 0 1 1 21 11.5z"
-                                />
-                            </svg>
-                        
-                            {% if unread_messages_count %}
-                                <span class="dc-nav__badge">
-                                    {{ unread_messages_count }}
-                                </span>
-                            {% endif %}
-                        </a>
-                    
-                        <a
-                            href="{% url 'blog:my_blogs' %}"
-                            class="dc-nav__link-button"
-                        >
-                            My Blogs
-                        </a>
-                    
-                        <a
-                            href="{% url 'portfolio:my_projects' %}"
-                            class="dc-nav__link-button"
-                        >
-                            My Projects
-                        </a>
-                    
-                        <a
-                            href="{% url 'accounts:developer_detail' request.user.username %}"
-                            class="dc-nav__profile-button"
-                            aria-label="My profile"
-                        >
-                            <svg
-                                width="18"
-                                height="18"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.9"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                aria-hidden="true"
-                            >
-                                <circle cx="12" cy="8" r="3.5"/>
-                                <path d="M5 20c.8-3.2 3.2-5 7-5s6.2 1.8 7 5"/>
-                            </svg>
-                        </a>
-                    
-                        <form
-                            method="post"
-                            action="{% url 'accounts:logout' %}"
-                            class="dc-nav__logout-form"
-                        >
-                            {% csrf_token %}
-                    
-                            <button
-                                type="submit"
-                                class="dc-nav__icon-button"
-                                aria-label="Logout"
-                            >
-                                <svg
-                                    width="19"
-                                    height="19"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="1.9"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    aria-hidden="true"
-                                >
-                                    <path d="M10 5v-1a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-1"/>
-                                    <path d="M15 12H3"/>
-                                    <path d="m7 8-4 4 4 4"/>
-                                </svg>
-                            </button>
-                        </form>
-                    
-                    </div>
-                
-                {% else %}
-                
-                    <div class="dc-nav__actions">
-                        <a
-                            href="{% url 'accounts:login' %}"
-                            class="dc-nav__link-button"
-                        >
-                            Login
-                        </a>
-                    
-                        <a
-                            href="{% url 'accounts:register' %}"
-                            class="dc-nav__primary-button"
-                        >
-                            Register
-                        </a>
-                    </div>
-                
-                {% endif %}
-                
-                <!-- Mobile Toggle -->
-                <button
-                    class="dc-nav__mobile-toggle"
-                    id="mobileMenuBtn"
-                    type="button"
-                    aria-label="Toggle navigation"
-                    aria-expanded="false"
-                    aria-controls="mobileMenu"
-                >
-                    <svg
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16"
-                        />
-                    </svg>
-                </button>
-            
-            </div>
-        </div>
-    
-        <!-- Mobile Menu -->
-        <div class="dc-nav__mobile" id="mobileMenu">
-        
-            <nav
-                class="dc-nav__mobile-links"
-                aria-label="Mobile navigation"
+                />
+              </svg>
+
+              {% if unread_messages_count %}
+              <span class="dc-nav__badge"> {{ unread_messages_count }} </span>
+              {% endif %}
+            </a>
+
+            <a href="{% url 'blog:my_blogs' %}" class="dc-nav__link-button">
+              My Blogs
+            </a>
+
+            <a
+              href="{% url 'portfolio:my_projects' %}"
+              class="dc-nav__link-button"
             >
-                <a href="{% url 'home' %}">Home</a>
-                <a href="{% url 'accounts:developers' %}">Developers</a>
-                <a href="{% url 'portfolio:projects' %}">Projects</a>
-                <a href="{% url 'blog:blogs' %}">Blog</a>
-            </nav>
-        
-            <div class="dc-nav__mobile-divider"></div>
-        
-            {% if user.is_authenticated %}
-        
-                <div class="dc-nav__mobile-actions">
-                
-                    <a href="{% url 'dashboard' %}">
-                        Dashboard
-                    </a>
-                
-                    <a href="{% url 'messaging:messages' %}">
-                        Messages
-                    
-                        {% if unread_messages_count %}
-                            <span class="dc-nav__mobile-badge">
-                                {{ unread_messages_count }}
-                            </span>
-                        {% endif %}
-                    </a>
-                
-                    <a href="{% url 'blog:my_blogs' %}">
-                        My Blogs
-                    </a>
-                
-                    <a href="{% url 'portfolio:my_projects' %}">
-                        My Projects
-                    </a>
-                
-                    <a href="{% url 'accounts:developer_detail' request.user.username %}">
-                        My Profile
-                    </a>
-                
-                    <form
-                        method="post"
-                        action="{% url 'accounts:logout' %}"
-                    >
-                        {% csrf_token %}
-                
-                        <button type="submit">
-                            Logout
-                        </button>
-                    </form>
-                
-                </div>
-            
-            {% else %}
-            
-                <div class="dc-nav__mobile-actions">
-                
-                    <a href="{% url 'accounts:login' %}">
-                        Login
-                    </a>
-                
-                    <a href="{% url 'accounts:register' %}">
-                        Register
-                    </a>
-                
-                </div>
-            
-            {% endif %}
-            
+              My Projects
+            </a>
+
+            <a
+              href="{% url 'accounts:developer_detail' request.user.username %}"
+              class="dc-nav__profile-button"
+              aria-label="My profile"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M5 20c.8-3.2 3.2-5 7-5s6.2 1.8 7 5" />
+              </svg>
+            </a>
+
+            <form
+              method="post"
+              action="{% url 'accounts:logout' %}"
+              class="dc-nav__logout-form"
+            >
+              {% csrf_token %}
+
+              <button
+                type="submit"
+                class="dc-nav__icon-button"
+                aria-label="Logout"
+              >
+                <svg
+                  width="19"
+                  height="19"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.9"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M10 5v-1a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-1"
+                  />
+                  <path d="M15 12H3" />
+                  <path d="m7 8-4 4 4 4" />
+                </svg>
+              </button>
+            </form>
+          </div>
+
+          {% else %}
+
+          <div class="dc-nav__actions">
+            <a href="{% url 'accounts:login' %}" class="dc-nav__link-button">
+              Login
+            </a>
+
+            <a
+              href="{% url 'accounts:register' %}"
+              class="dc-nav__primary-button"
+            >
+              Register
+            </a>
+          </div>
+
+          {% endif %}
+
+          <!-- Mobile Toggle -->
+          <button
+            class="dc-nav__mobile-toggle"
+            id="mobileMenuBtn"
+            type="button"
+            aria-label="Toggle navigation"
+            aria-expanded="false"
+            aria-controls="mobileMenu"
+          >
+            <svg
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
         </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div class="dc-nav__mobile" id="mobileMenu">
+        <nav class="dc-nav__mobile-links" aria-label="Mobile navigation">
+          <a href="{% url 'home' %}">Home</a>
+          <a href="{% url 'accounts:developers' %}">Developers</a>
+          <a href="{% url 'portfolio:projects' %}">Projects</a>
+          <a href="{% url 'blog:blogs' %}">Blog</a>
+        </nav>
+
+        <div class="dc-nav__mobile-divider"></div>
+
+        {% if user.is_authenticated %}
+
+        <div class="dc-nav__mobile-actions">
+          <a href="{% url 'dashboard' %}"> Dashboard </a>
+
+          <a href="{% url 'messaging:messages' %}">
+            Messages {% if unread_messages_count %}
+            <span class="dc-nav__mobile-badge">
+              {{ unread_messages_count }}
+            </span>
+            {% endif %}
+          </a>
+
+          <a href="{% url 'blog:my_blogs' %}"> My Blogs </a>
+
+          <a href="{% url 'portfolio:my_projects' %}"> My Projects </a>
+
+          <a href="{% url 'accounts:developer_detail' request.user.username %}">
+            My Profile
+          </a>
+
+          <form method="post" action="{% url 'accounts:logout' %}">
+            {% csrf_token %}
+
+            <button type="submit">Logout</button>
+          </form>
+        </div>
+
+        {% else %}
+
+        <div class="dc-nav__mobile-actions">
+          <a href="{% url 'accounts:login' %}"> Login </a>
+
+          <a href="{% url 'accounts:register' %}"> Register </a>
+        </div>
+
+        {% endif %}
+      </div>
     </header>
 
     <!-- MAIN CONTENT -->
     <main class="container">
-        <!-- Django Messages System -->
-        {% if messages %}
-            <div class="django-messages">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags|default:'info' }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+      <!-- Django Messages System -->
+      {% if messages %}
+      <div class="django-messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }}">
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
 
-        <!-- App Specific Content Goes Here -->
-        {% block content %}
-        {% endblock content %}
+      <!-- App Specific Content Goes Here -->
+      {% block content %} {% endblock content %}
     </main>
 
     <!-- FOOTER -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <a href="{% url 'home' %}" class="brand">Dev<span>Connect</span></a>
-                    <p class="footer-desc">Discover developers, explore their work, and connect with the right talent to bring your technical ideas to life.</p>
-                </div>
-                <div>
-                    <h4 class="footer-heading">Platform</h4>
-                    <ul class="footer-links">
-                        <li><a href="{% url 'accounts:developers' %}">Find Developers</a></li>
-                        <li><a href="{% url 'portfolio:projects' %}">Explore Projects</a></li>
-                        <li><a href="{% url 'blog:blogs' %}">Community Blog</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="footer-heading">Company</h4>
-                    <ul class="footer-links">
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Contact Support</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; {% now "Y" %} DevConnect Platform. All rights reserved.</p>
-                <div class="footer-socials">
-                    <!-- Placeholder for Social Icons (SVG or FontAwesome) -->
-                    <a href="#" style="margin-left: 1rem;">Twitter</a>
-                    <a href="#" style="margin-left: 1rem;">GitHub</a>
-                    <a href="#" style="margin-left: 1rem;">LinkedIn</a>
-                </div>
-            </div>
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="{% url 'home' %}" class="brand">Dev<span>Connect</span></a>
+            <p class="footer-desc">
+              Discover developers, explore their work, and connect with the
+              right talent to bring your technical ideas to life.
+            </p>
+          </div>
+          <div>
+            <h4 class="footer-heading">Platform</h4>
+            <ul class="footer-links">
+              <li>
+                <a href="{% url 'accounts:developers' %}">Find Developers</a>
+              </li>
+              <li>
+                <a href="{% url 'portfolio:projects' %}">Explore Projects</a>
+              </li>
+              <li><a href="{% url 'blog:blogs' %}">Community Blog</a></li>
+            </ul>
+          </div>
         </div>
+        <div class="footer-bottom">
+          <p>&copy; {% now "Y" %} DevConnect Platform. All rights reserved.</p>
+          <b>Created by <a href="https://github.com/AmirMustafa10" target="_blank">Amir Mostafa</a></b>
+          <div class="footer-socials">
+            <!-- Placeholder for Social Icons (SVG or FontAwesome) -->
+            <a
+              href="https://github.com/AmirMustafa10"
+              target="_blank"
+              style="margin-left: 1rem"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-github"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+                />
+              </svg>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/amir-mostafa-21494b347/"
+              target="_blank"
+              style="margin-left: 1rem"
+              >LinkedIn</a
+            >
+          </div>
+        </div>
+      </div>
     </footer>
-    
-<div
-    class="modal fade"
-    id="deleteModal"
-    tabindex="-1"
-    aria-labelledby="deleteModalLabel"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-dialog-centered">
 
+    <div
+      class="modal fade"
+      id="deleteModal"
+      tabindex="-1"
+      aria-labelledby="deleteModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
 
-            <div class="modal-header">
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
 
-                <h5
-                    class="modal-title"
-                    id="deleteModalLabel"
-                >
-                    Confirm Deletion
-                </h5>
+          <div class="modal-body">
+            <p class="mb-1">
+              Are you sure you want to delete this
+              <span id="delete-item-type"></span>?
+            </p>
 
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
+            <div id="delete-item-name" class="fw-semibold text-main"></div>
+          </div>
 
-            </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
 
-            <div class="modal-body">
+            <form method="POST" id="confirm-delete-form">
+              {% csrf_token %}
 
-                <p class="mb-1">
-                    Are you sure you want to delete this
-                    <span id="delete-item-type"></span>?
-                </p>
-
-                <div
-                    id="delete-item-name"
-                    class="fw-semibold text-main"
-                ></div>
-
-            </div>
-
-            <div class="modal-footer">
-
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                >
-                    Cancel
-                </button>
-
-                <form
-                    method="POST"
-                    id="confirm-delete-form"
-                >
-                    {% csrf_token %}
-
-                    <button
-                        type="submit"
-                        class="btn btn-danger"
-                    >
-                        Delete
-                    </button>
-                </form>
-
-            </div>
-
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+          </div>
         </div>
-
+      </div>
     </div>
-</div>
-    
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
         const button = document.getElementById("mobileMenuBtn");
         const menu = document.getElementById("mobileMenu");
 
         if (!button || !menu) {
-            return;
+          return;
         }
 
         button.addEventListener("click", function () {
-            const isOpen = menu.classList.toggle("active");
+          const isOpen = menu.classList.toggle("active");
 
-            button.setAttribute("aria-expanded", String(isOpen));
+          button.setAttribute("aria-expanded", String(isOpen));
 
-            button.innerHTML = isOpen
-                ? `
+          button.innerHTML = isOpen
+            ? `
                     <svg
                         fill="none"
                         stroke="currentColor"
@@ -432,7 +387,7 @@
                         />
                     </svg>
                 `
-                : `
+            : `
                     <svg
                         fill="none"
                         stroke="currentColor"
@@ -450,17 +405,16 @@
         });
 
         menu.querySelectorAll("a").forEach((link) => {
-            link.addEventListener("click", () => {
-                menu.classList.remove("active");
-                button.setAttribute("aria-expanded", "false");
-            });
+          link.addEventListener("click", () => {
+            menu.classList.remove("active");
+            button.setAttribute("aria-expanded", "false");
+          });
         });
-    });
-</script>
+      });
+    </script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/delete_modal.js' %}"></script>
 
-    {% block js %}
-    {% endblock js %}
-</body>
+    {% block js %} {% endblock js %}
+  </body>
 </html>

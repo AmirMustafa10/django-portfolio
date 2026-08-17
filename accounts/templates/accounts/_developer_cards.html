@@ -1,0 +1,63 @@
+{% for developer in page_obj %}
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="dev-card">
+            <!-- Identity -->
+            <div class="dev-card-header">
+                {% if developer.avatar %}
+                    <img src="{{ developer.avatar.url }}" alt="{{ developer.get_full_name }}" class="dev-avatar">
+                {% else %}
+                    <div class="dev-avatar">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                {% endif %}
+                <div class="dev-identity">
+                    <h3 class="dev-name">{{ developer.get_full_name }}</h3>
+                    <p class="dev-username">@{{ developer.user.username }}</p>
+                </div>
+            </div>
+
+            <!-- Role & Bio -->
+            <div class="dev-title">{{ developer.jop_title|default:" " }}</div>
+            <p class="dev-bio">{{ developer.bio|default:"" }}</p>
+
+            <!-- Skills -->
+            <div class="dev-skills">
+                {% for skill in developer.skills.all|slice:":4" %}
+                    <span class="skill-badge">{{ skill.name }}</span>
+                {% empty %}
+                    <span class="skill-badge">No skills added</span>
+                {% endfor %}
+            </div>
+
+            <!-- Meta: Location, Availability, Projects -->
+            <div class="dev-meta">
+                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <span>📍 {{ developer.location|default:"Remote" }}</span>
+                    {% if developer.available_for_work %}
+                        <span class="status-available"><span class="status-dot"></span> Available for work</span>
+                    {% endif %}
+                </div>
+                <div style="text-align: right; font-weight: 500; color: var(--text-main);">
+                    {{ developer.projects.count|default:"0" }} Projects
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <a href="{% url 'accounts:developer_detail' developer.user.username %}" class="btn btn-outline btn-block">View Profile</a>
+        </div>
+    </div>
+{% empty %}
+    <!-- EMPTY STATE -->
+    <div class="col-12">
+        <div class="empty-state text-center py-5">
+            <svg class="empty-state-icon mb-3" width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+            <h3>No developers found</h3>
+            <p class="text-muted">Try adjusting your search criteria or removing filters.</p>
+            <a href="{% url 'accounts:developers' %}" class="btn btn-primary mt-2">Clear Filters</a>
+        </div>
+    </div>
+{% endfor %}

@@ -1,0 +1,131 @@
+{% for project in page_obj %}
+<div class="col">
+    <article class="project-card h-100">
+        
+        <!-- PROJECT IMAGE AREA (Multi-image Carousel) -->
+        <div class="project-gallery">
+            {% if project.is_featured %}
+                <div class="featured-badge">Featured</div>
+            {% endif %}
+            
+            {% if project.images.all %}
+                <!-- Display multiple images -->
+                <div class="gallery-track">
+                    {% for img in project.images.all %}
+                        <div class="gallery-item">
+                            <img src="{{ img.image.url }}" alt="{{ project.title }} image {{ forloop.counter }}" loading="lazy">
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Gallery Controls (only show if >1 image) -->
+                {% if project.images.count > 1 %}
+                    <button class="gallery-nav prev" aria-label="Previous image">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                    </button>
+                    <button class="gallery-nav next" aria-label="Next image">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
+                    </button>
+                    <div class="gallery-counter">
+                        <span class="current">1</span> / {{ project.images.count }}
+                    </div>
+                {% endif %}
+
+            {% else %}
+                <!-- Fallback if no images -->
+                <div class="gallery-fallback">
+                    <svg width="48" height="48" fill="currentColor" viewBox="0 0 16 16"><path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3zM4.5 10a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-7z"/></svg>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- PROJECT CONTENT -->
+        <div class="project-content">
+            
+            <!-- Status Badge -->
+            <div>
+                {% if project.status|lower == 'draft' %}
+                    <span class="status-badge status-draft">Draft</span>
+                {% elif project.status|lower == 'in_progress' %}
+                    <span class="status-badge status-in_progress">In Progress</span>
+                {% elif project.status|lower == 'completed' %}
+                    <span class="status-badge status-completed">Completed</span>
+                {% elif project.status|lower == 'archived' %}
+                    <span class="status-badge status-archived">Archived</span>
+                {% else %}
+                    <span class="status-badge status-draft">{{ project.status }}</span>
+                {% endif %}
+            </div>
+
+            <h3 class="project-title">{{ project.title }}</h3>
+            <div class="project-desc">{{ project.description }}</div>
+
+            <!-- SKILLS -->
+            <div class="skills-container">
+                {% for skill in project.skills.all|slice:":3" %}
+                    <span class="skill-chip">{{ skill.name }}</span>
+                {% endfor %}
+                {% if project.skills.count > 3 %}
+                    <span class="skill-chip skill-chip-more">+{{ project.skills.count|add:"-3" }} more</span>
+                {% endif %}
+            </div>
+
+            <!-- DEVELOPER INFORMATION -->
+            <div class="developer-info">
+                {% if project.profile.avatar %}
+                    <img src="{{ project.profile.avatar.url }}" alt="{{ project.profile.user.get_full_name|default:project.profile.user.username }}" class="dev-avatar">
+                {% else %}
+                    <div class="dev-avatar d-flex align-items-center justify-content-center text-white" style="background: var(--text-muted);">
+                        {{ project.profile.user.username|make_list|first|upper }}
+                    </div>
+                {% endif %}
+                
+                <div class="dev-details">
+                    <span class="dev-name">{{ project.profile.user.get_full_name|default:project.profile.user.username }}</span>
+                    <span class="dev-username">@{{ project.profile.user.username }}</span>
+                </div>
+            </div>
+
+            <!-- PROJECT ACTIONS -->
+            <div class="project-actions">
+                <a href="{% url 'portfolio:project_details' project.slug %}" class="btn-view">View Project</a>
+                
+                {% if project.source_code_url %}
+                <a href="{{ project.source_code_url }}" target="_blank" class="btn-icon" aria-label="Source Code" title="View Source">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                </a>
+                {% endif %}
+                
+                {% if project.live_demo_url %}
+                <a href="{{ project.live_demo_url }}" target="_blank" class="btn-icon" aria-label="Live Demo" title="View Live Demo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                        <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                    </svg>
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </article>
+</div>
+
+{% empty %}
+
+<!-- EMPTY STATE -->
+<div class="col-12">
+    <div class="empty-state text-center py-5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="empty-icon bi bi-folder2-open mb-3" viewBox="0 0 16 16">
+            <path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v.64c.57.265.94.876.856 1.546l-.64 5.124A2.5 2.5 0 0 1 12.733 15H3.266a2.5 2.5 0 0 1-2.481-2.19l-.64-5.124A1.5 1.5 0 0 1 1 6.14V3.5zM2 6h12v-.5a.5.5 0 0 0-.5-.5H9c-.964 0-1.71-.629-2.174-1.154C6.374 3.334 5.82 3 5.264 3H2.5a.5.5 0 0 0-.5.5V6zm-.367 1a.5.5 0 0 0-.496.562l.64 5.124A1.5 1.5 0 0 0 3.266 14h9.468a1.5 1.5 0 0 0 1.489-1.314l.64-5.124A.5.5 0 0 0 14.367 7H1.633z"/>
+        </svg>
+        <h3 class="fw-bold" style="color: #0f172a;">No projects found</h3>
+        <p style="color: #64748b; margin-bottom: 1.5rem;">Try changing your search keywords or status filter.</p>
+        {% if request.GET.q or request.GET.status %}
+            <a href="?" class="btn btn-outline-primary rounded-3 px-4">Clear Filters</a>
+        {% endif %}
+    </div>
+</div>
+
+{% endfor %}
