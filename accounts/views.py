@@ -97,7 +97,7 @@ def developers_view(request):
         request,
         "accounts/developers.html",
         {
-            "developers": page_obj,
+            "page_obj": page_obj,
             "query": query,
             "availability": availability,
         },

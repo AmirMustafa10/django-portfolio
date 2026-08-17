@@ -227,7 +227,7 @@ def projects_view(request):
         request,
         "portfolio/project/Projects.html",
         {
-            "Projects": page_obj,
+            "page_obj": page_obj,
             "query": query,
         },
     )
