@@ -24,12 +24,6 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
 
-            Activity.objects.create(
-                user=request.user,
-                action=Activity.Action.CREATED,
-                target=user,
-            )
-
             login(request, user)
 
             return redirect("home")
