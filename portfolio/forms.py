@@ -21,7 +21,6 @@ class ExperienceForm(forms.ModelForm):
             "job_title",
             "employment_type",
             "description",
-            "description",
             "start_date",
             "end_date",
             "currently_working",
