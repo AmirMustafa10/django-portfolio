@@ -578,20 +578,63 @@ Represents a message submitted through the contact form.
 
 # Testing
 
-## Accounts
+The project has been thoroughly tested using Django’s test framework across the main apps and core functionality.
 
-- ✅ User creation
-- ✅ Profile creation
-- ✅ File upload validation
-- ✅ Business rule validation
-- ✅ Django Admin
-- ✅ Search and filtering
+## Coverage
 
-## Portfolio
+* **Accounts**
 
-- ✅ Skill model
+  * User creation
+  * Profile creation and editing
+  * File upload validation
+  * Business rule validation
+  * URL routing
+  * Views and forms
 
-> Additional model and feature tests will be added as development progresses.
+* **Portfolio**
+
+  * Skill model
+  * Project model
+  * Project images
+  * Experience
+  * Education
+  * Forms, views, and URLs
+
+* **Blog**
+
+  * Blog posts
+  * Comments
+  * Replies
+  * Forms, views, and URLs
+
+* **Messaging**
+
+  * Message model
+  * Message forms
+  * Conversations
+  * Send, edit, and delete message flows
+  * Views and URLs
+
+* **Core**
+
+  * File size validation
+  * Activity tracking
+  * Dashboard and activity views
+  * URLs
+
+## Test Status
+
+* All implemented tests pass successfully with:
+
+```bash
+python manage.py test
+```
+
+## Notes
+
+* The test suite covers models, forms, views, and URLs.
+* Custom validation rules and business logic are included in the coverage.
+* More tests may be added as new features are implemented.
 
 ---
 
