@@ -11,8 +11,19 @@ from core.models import Activity
 
 # Blog views
 def blogpost_view(request):
+    is_fresh_bot_redirect = request.session.pop("bot_filters_fresh", False)
+    is_pagination = "page" in request.GET
+
+    # Clear filters if it's a normal refresh/visit
+    if not is_fresh_bot_redirect and not is_pagination:
+        if "bot_filters" in request.session:
+            del request.session["bot_filters"]
+            request.session.modified = True
 
     query = request.GET.get("q", "").strip()
+
+    bot_filters = request.session.get("bot_filters", {})
+    bot_keywords_list = bot_filters.get("q", [])
 
     blogs = (
         BlogPost.objects.select_related("profile__user")
@@ -26,13 +37,21 @@ def blogpost_view(request):
             | Q(slug__icontains=query)
             | Q(content__icontains=query)
         )
+    elif bot_keywords_list and len(bot_keywords_list) > 0:
+        search_conditions = Q()
+        for phrase in bot_keywords_list:
+            if phrase:
+                clean_phrase = phrase.strip()
+                search_conditions |= Q(title__icontains=clean_phrase)
+                search_conditions |= Q(content__icontains=clean_phrase)
+                search_conditions |= Q(slug__icontains=clean_phrase)
+
+        blogs = blogs.filter(search_conditions)
 
     blogs = blogs.filter(status=BlogPost.Status.PUBLISHED)
 
     paginator = Paginator(blogs, 9)
-
     page_number = request.GET.get("page", 1)
-
     page_obj = paginator.get_page(page_number)
 
     return render(
@@ -41,6 +60,7 @@ def blogpost_view(request):
         {
             "page_obj": page_obj,
             "query": query,
+            "has_bot_filters": bool(bot_filters and any(bot_filters.values())),
         },
     )
 
