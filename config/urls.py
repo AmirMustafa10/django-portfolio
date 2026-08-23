@@ -27,6 +27,7 @@ urlpatterns = [
     path("", include("portfolio.urls")),
     path("", include("BlogPost.urls")),
     path("", include("messaging.urls")),
+    path("", include("chat_ai.urls")),
 ]
 
 if settings.DEBUG:

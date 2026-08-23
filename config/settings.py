@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "BlogPost.apps.BlogpostConfig",
     "messaging.apps.MessagingConfig",
     "core.apps.CoreConfig",
+    "chat_ai.apps.ChatAiConfig",
 ]
 
 MIDDLEWARE = [

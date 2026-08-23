@@ -19,7 +19,9 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     {% block css %} {% endblock css %}
   </head>
-  <body>
+  <body
+    data-page-name="{{ request.resolver_match.url_name|default:'unknown' }}"
+  >
     <!-- NAVBAR -->
     <header class="dc-nav">
       <div class="container dc-nav__container">
@@ -277,7 +279,12 @@
         </div>
         <div class="footer-bottom">
           <p>&copy; {% now "Y" %} DevConnect Platform. All rights reserved.</p>
-          <b>Created by <a href="https://github.com/AmirMustafa10" target="_blank">Amir Mostafa</a></b>
+          <b
+            >Created by
+            <a href="https://github.com/AmirMustafa10" target="_blank"
+              >Amir Mostafa</a
+            ></b
+          >
           <div class="footer-socials">
             <!-- Placeholder for Social Icons (SVG or FontAwesome) -->
             <a
@@ -411,10 +418,47 @@
           });
         });
       });
+
+      window.addEventListener('DOMContentLoaded', async () => {
+        // --- NEW: Check if the bot redirected the user and open chat immediately ---
+        if (sessionStorage.getItem("keepBotChatOpen") === "true") {
+            sessionStorage.removeItem("keepBotChatOpen"); // Clear it for manual refreshes
+            chatWindow.style.display = 'flex';            // Open the chat window
+            
+            // Focus on input field after a slight delay to ensure UI is ready
+            setTimeout(() => {
+                chatInput.focus();
+            }, 100);
+        }
+        // ---------------------------------------------------------------------------
+
+        try {
+            const response = await fetch('/chatbot/api/');
+            const data = await response.json();
+            
+            if (data.history && data.history.length > 0) {
+                data.history.forEach(msg => {
+                    let content = msg.content;
+                    if (msg.role === 'user') {
+                        content = content.replace(/\[Page:.*?\]\s*/, '');
+                    }
+                    addMessage(content, msg.role === 'user' ? 'user' : 'bot');
+                });
+            } else {
+                addMessage(welcomeMessage, 'bot');
+            }
+            
+            scrollToBottom(); 
+
+        } catch (error) {
+            console.error("Error loading chat history:", error);
+            addMessage(welcomeMessage, 'bot');
+        }
+    });
     </script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/delete_modal.js' %}"></script>
 
-    {% block js %} {% endblock js %}
+    {% block js %} {% endblock js %} {% include 'ai/floating_chat.html' %}
   </body>
 </html>

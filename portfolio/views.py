@@ -201,26 +201,71 @@ def add_education_view(request):
 
 # Project views
 def projects_view(request):
+    # One-Time Flag (clears bot filters on manual page refresh)
+    is_fresh_bot_redirect = request.session.pop("bot_filters_fresh", False)
+    is_pagination = "page" in request.GET
+
+    if not is_fresh_bot_redirect and not is_pagination:
+        if "bot_filters" in request.session:
+            del request.session["bot_filters"]
+            request.session.modified = True
 
     query = request.GET.get("q", "").strip()
-    status = request.GET.get("status", "").strip()
+    manual_status = request.GET.get("status", "").strip()
 
+    bot_filters = request.session.get("bot_filters", {})
+
+    bot_keywords_list = bot_filters.get("q", [])
+    skills_list = bot_filters.get("skills", [])
+    bot_status = bot_filters.get("status")
+
+    # Query
     projects = Project.objects.select_related("profile__user").prefetch_related(
         "images", "skills"
     )
 
+    # Title & Slug search
     if query:
         projects = projects.filter(Q(title__icontains=query) | Q(slug__icontains=query))
 
-    if status:
-        projects = projects.filter(status=status)
+    elif bot_keywords_list and len(bot_keywords_list) > 0:
+        search_conditions = Q()
+        for phrase in bot_keywords_list:
+            if phrase:
+                clean_phrase = phrase.strip()
+                search_conditions |= Q(title__icontains=clean_phrase)
+                search_conditions |= Q(slug__icontains=clean_phrase)
+                search_conditions |= Q(description__icontains=clean_phrase)
 
+        projects = projects.filter(search_conditions)
+
+    # Skills Filter
+    if skills_list and len(skills_list) > 0:
+        skill_conditions = Q()
+        for skill in skills_list:
+            if skill:
+                skill_conditions |= Q(skills__name__icontains=skill)
+        projects = projects.filter(skill_conditions)
+
+    # Status Filter
+    # Check if manual status is selected from UI
+    if manual_status:
+        projects = projects.filter(status=manual_status)
+    # If no manual status, check if bot provided an array of statuses
+    elif isinstance(bot_status, list) and len(bot_status) > 0:
+        status_conditions = Q()
+        for stat in bot_status:
+            if stat:
+                # Add each status to the OR condition
+                status_conditions |= Q(status=stat)
+
+        projects = projects.filter(status_conditions)
+
+    # Distinct & Pagination
     projects = projects.distinct()
 
     paginator = Paginator(projects, 9)
-
     page_number = request.GET.get("page", 1)
-
     page_obj = paginator.get_page(page_number)
 
     return render(
@@ -229,6 +274,7 @@ def projects_view(request):
         {
             "page_obj": page_obj,
             "query": query,
+            "has_bot_filters": bool(bot_filters and any(bot_filters.values())),
         },
     )
 
