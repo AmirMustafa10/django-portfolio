@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     {% block css %} {% endblock css %}
   </head>
-  <body>
+  <body data-page-name="{{ request.resolver_match.url_name|default:'unknown' }}">
     <!-- NAVBAR -->
     <header class="dc-nav">
       <div class="container dc-nav__container">
@@ -416,5 +416,7 @@
     <script src="{% static 'js/delete_modal.js' %}"></script>
 
     {% block js %} {% endblock js %}
+
+    {% include 'ai/floating_chat.html' %}
   </body>
 </html>
