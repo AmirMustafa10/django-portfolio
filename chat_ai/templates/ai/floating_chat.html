@@ -1,0 +1,286 @@
+<!-- ==========================================
+     CSS: تصميم الشات بوت العائم
+=========================================== -->
+<style>
+    /* زر فتح الشات */
+    #dc-chat-btn { 
+        position: fixed; 
+        bottom: 25px; 
+        right: 25px; /* يفضل على اليمين لو الموقع إنجليزي أو العكس حسب الـ RTL */
+        background-color: #2563eb; 
+        color: white; 
+        border: none; 
+        border-radius: 50%; 
+        width: 65px; 
+        height: 65px; 
+        font-size: 28px; 
+        cursor: pointer; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+        z-index: 9999;
+        transition: transform 0.2s;
+    }
+    #dc-chat-btn:hover { transform: scale(1.05); }
+
+    /* نافذة الشات */
+    #dc-chat-window { 
+        position: fixed; 
+        bottom: 100px; 
+        right: 25px; 
+        width: 360px; 
+        background: white; 
+        border-radius: 12px; 
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15); 
+        display: none; 
+        flex-direction: column; 
+        overflow: hidden; 
+        z-index: 9999;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* رأس الشات (Header) */
+    #dc-chat-header { 
+        background-color: #2563eb; 
+        color: white; 
+        padding: 16px; 
+        font-weight: 600; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+    }
+    #dc-close-btn { 
+        background: none; 
+        border: none; 
+        color: white; 
+        cursor: pointer; 
+        font-size: 20px; 
+        padding: 0;
+    }
+
+    /* منطقة عرض الرسائل */
+    #dc-chat-messages { 
+        padding: 16px; 
+        height: 350px; 
+        overflow-y: auto; 
+        display: flex; 
+        flex-direction: column; 
+        gap: 12px; 
+        background-color: #f8fafc; 
+    }
+    .dc-msg { 
+        padding: 12px 16px; 
+        border-radius: 16px; 
+        max-width: 85%; 
+        font-size: 14px; 
+        line-height: 1.5; 
+        word-wrap: break-word;
+    }
+    .dc-bot-msg { 
+        background-color: #e2e8f0; 
+        color: #0f172a; 
+        align-self: flex-start; 
+        border-bottom-left-radius: 4px; 
+    }
+    .dc-user-msg { 
+        background-color: #2563eb; 
+        color: white; 
+        align-self: flex-end; 
+        border-bottom-right-radius: 4px; 
+    }
+
+    /* مؤشر التحميل (Typing indicator) */
+    .dc-typing { font-style: italic; color: #64748b; font-size: 13px; }
+
+    /* منطقة الكتابة (Input) */
+    #dc-chat-input-area { 
+        display: flex; 
+        padding: 12px; 
+        border-top: 1px solid #e2e8f0; 
+        background: white; 
+    }
+    #dc-chat-input { 
+        flex: 1; 
+        padding: 10px 16px; 
+        border: 1px solid #cbd5e1; 
+        border-radius: 24px; 
+        outline: none; 
+        transition: border-color 0.2s;
+    }
+    #dc-chat-input:focus { border-color: #2563eb; }
+    #dc-send-btn { 
+        background-color: transparent; 
+        color: #2563eb; 
+        border: none; 
+        padding: 0 12px; 
+        cursor: pointer; 
+        font-weight: 600;
+        margin-left: 8px; /* غيرها لـ margin-right لو الموقع عربي بالكامل */
+    }
+</style>
+
+<!-- ==========================================
+     HTML: هيكل الشات بوت
+=========================================== -->
+<button id="dc-chat-btn" onclick="toggleChat()">💬</button>
+
+<div id="dc-chat-window">
+    <div id="dc-chat-header">
+        <span>DevConnect Assistant</span>
+        <button id="dc-close-btn" onclick="toggleChat()">✖</button>
+    </div>
+    <div id="dc-chat-messages">
+    </div>
+    <div id="dc-chat-input-area">
+        <input type="text" id="dc-chat-input" placeholder="Type your request here..." onkeypress="handleEnter(event)">
+        <button id="dc-send-btn" onclick="sendMessage()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+    </div>
+</div>
+
+
+===========================================
+<script>
+    const chatWindow = document.getElementById('dc-chat-window');
+    const chatMessages = document.getElementById('dc-chat-messages');
+    const chatInput = document.getElementById('dc-chat-input');
+    
+    const currentPageName = document.body.getAttribute('data-page-name') || 'home';
+    
+    let welcomeMessage = "Hello! I'm DevConnect's AI assistant. How can I help you today?";
+    if (currentPageName === 'developers' || currentPageName === 'accounts:developers') {
+        welcomeMessage = "Welcome to the Developers page! Are you looking for a specific skill or role? 👨‍💻";
+    } else if (currentPageName === 'projects' || currentPageName === 'portfolio:projects') {
+        welcomeMessage = "Welcome to the Projects page! Want to filter projects by specific tech stacks? 🚀";
+    } else if (currentPageName === 'blogs' || currentPageName === 'blog:blogs') {
+        welcomeMessage = "Welcome to the Blog section! What topics are you interested in reading about? 📚";
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch('/chatbot/api/');
+            const data = await response.json();
+            
+            if (data.history && data.history.length > 0) {
+                data.history.forEach(msg => {
+                    let content = msg.content;
+                    if (msg.role === 'user') {
+                        content = content.replace(/\[Page:.*?\]\s*/, '');
+                    }
+                    addMessage(content, msg.role === 'user' ? 'user' : 'bot');
+                });
+            } else {
+                addMessage(welcomeMessage, 'bot');
+            }
+            
+            // USE FALSE HERE to snap instantly to the bottom on load
+            scrollToBottom(false); 
+
+        } catch (error) {
+            console.error("Error loading chat history:", error);
+            addMessage(welcomeMessage, 'bot');
+            scrollToBottom(false); // Snap instantly here too
+        }
+    });
+
+    // Added 'smooth' parameter. True for new messages, false for initial load.
+    function scrollToBottom(smooth = true) {
+        const chatBody = document.getElementById('dc-chat-messages'); 
+        
+        if (chatBody) {
+            // Using requestAnimationFrame is more reliable than setTimeout for UI rendering
+            requestAnimationFrame(() => {
+                chatBody.scrollTo({
+                    top: chatBody.scrollHeight,
+                    behavior: smooth ? 'smooth' : 'auto' // 'auto' means jump instantly
+                });
+            });
+        }
+    }
+
+    function toggleChat() { 
+        if (chatWindow.style.display === 'flex') {
+            chatWindow.style.display = 'none';
+        } else {
+            chatWindow.style.display = 'flex';
+            chatInput.focus();
+            
+            // Snap instantly when manually opened
+            scrollToBottom(false); 
+        }
+    }
+    
+    function handleEnter(event) { if (event.key === 'Enter') sendMessage(); }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    async function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        addMessage(text, 'user');
+        chatInput.value = '';
+        
+        const loadingId = 'loading-' + Date.now();
+        addMessage("Thinking...", 'bot', loadingId, true);
+
+        try {
+            const response = await fetch('/chatbot/api/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken') 
+                },
+                body: JSON.stringify({ 
+                    message: text,
+                    current_page: currentPageName
+                })
+            });
+
+            if (!response.ok) throw new Error('Network response was not ok');
+
+            const data = await response.json();
+            
+            document.getElementById(loadingId)?.remove();
+            
+            addMessage(data.chat_reply, 'bot');
+
+            if (data.redirect_url) {
+                sessionStorage.setItem("keepBotChatOpen", "true");
+
+                setTimeout(() => {
+                    window.location.href = data.redirect_url;
+                }, 500); 
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById(loadingId)?.remove();
+            addMessage("Sorry, there was an issue processing your request. Please try again.", 'bot');
+        }
+    }
+
+    function addMessage(text, sender, id = null, isTyping = false) {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('dc-msg', sender === 'user' ? 'dc-user-msg' : 'dc-bot-msg');
+        if (id) msgDiv.id = id;
+        if (isTyping) msgDiv.classList.add('dc-typing');
+        
+        msgDiv.textContent = text;
+        chatMessages.appendChild(msgDiv);
+        
+        scrollToBottom(true);
+    }
+</script>
