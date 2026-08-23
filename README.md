@@ -90,6 +90,15 @@ The project follows clean architecture principles, Django best practices, and a 
 - Self-message validation
 
 ---
+### AI Chatbot
+
+- AI-powered chatbot
+- Developer search assistance
+- Project search assistance
+- Blog search assistance
+- Persistent chat widget
+
+---
 
 ### Dashboard
 
@@ -116,8 +125,7 @@ The project follows clean architecture principles, Django best practices, and a 
 
 🚧 **In Development**
 
-The core architecture, authentication, developer profiles, portfolio management, blog system, and contact functionality are currently implemented.
-
+e architecture, authentication, developer profiles, portfolio management, blog system, messaging, AI chatbot, dashboard, and contact functionality are currently implemented.
 ## Progress
 
 ### Core
@@ -194,6 +202,17 @@ The core architecture, authentication, developer profiles, portfolio management,
 
 ---
 
+### AI Chatbot
+
+- [x] Chatbot application created
+- [x] AI chatbot interface
+- [x] Developer search integration
+- [x] Project search integration
+- [x] Blog search integration
+- [x] Persistent chat widget
+
+---
+
 ### Dashboard
 
 - [x] Dashboard application created
@@ -245,6 +264,15 @@ Responsible for:
 - Message management
 
 ---
+### Chatbot
+
+Responsible for:
+
+- AI chatbot
+- Intelligent search assistance
+- Search integration
+
+---
 
 # Project Structure
 
@@ -270,6 +298,13 @@ django-portfolio/
 │   ├── migrations/
 │   ├── admin.py
 │   ├── models.py
+│   └── ...
+|
+├── chat_ai/
+│   ├── migrations/
+│   ├── templates/
+│   ├── urls.py
+│   ├── views.py
 │   └── ...
 │
 ├── contact/
