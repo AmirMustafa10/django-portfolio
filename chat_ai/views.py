@@ -32,11 +32,11 @@ CRITICAL INSTRUCTIONS:
     - STRICT SKILLS: Extract explicit tech skills (e.g., Python, React) into `tech_skills`. DO NOT invent skills unless requested.
     - Extract any mentioned experience (e.g., "3 سنين خبرة") into `min_experience_years` as a number.
 
-33. PROJECT SEARCH (SEMANTIC EXPANSION & STRICT STATUS):
+3. PROJECT SEARCH (SEMANTIC EXPANSION & STRICT STATUS):
     - If the user searches for a specific project concept (e.g., "تطبيق بايثون", "E-commerce platform"):
      * Route to "projects".
      * GENERATE 5-10 semantically similar phrases, synonyms, and variations representing the project idea in both Arabic and English.
-     * Example for "تطبيق بايثون": ["تطبيق بايثون", "برنامج بايثون", "Python App", "Python Application", "مشروع بايثون", "Python Project"].
+     * AVOID short acronyms (like "AI", "IT", "VR"). ALWAYS use full words (e.g., "Artificial Intelligence") to prevent false positive substring matches.
      * Put these variations into `topic_or_keyword` (AS AN ARRAY).
      * Extract any explicit skills mentioned into `tech_skills`.
      * STATUS MAPPING (DYNAMIC ARRAY): Analyze the user's intent regarding the project's state. You MUST classify any implied states into an ARRAY containing one or more of these exact database strings: "draft", "in_progress", "completed", or "archived".
@@ -44,13 +44,13 @@ CRITICAL INSTRUCTIONS:
         - "in_progress" -> being built, not yet finished, under development, ongoing.
         - "draft" -> idea, initial phase, unpublished.
         - "archived" -> old, abandoned, inactive.
-        If the user asks for multiple states (e.g., "completed and in progress"), include all matching strings in the array (e.g., ["completed", "in_progress"]). If no status is implied, return an empty array [].
+        If the user asks for multiple states, include all matching strings. If no status is implied, return an empty array [].
 
 4. BLOG/ARTICLE SEARCH (SEMANTIC EXPANSION):
     - If the user searches for a specific article topic (e.g., "مقال عن رياكت", "How to learn Python"):
      * Route to "blogs".
      * GENERATE 5-10 semantically similar phrases, synonyms, and variations representing the article's core topic in both Arabic and English.
-     * Example for "مقال عن رياكت": ["رياكت", "React", "React.js", "تعلم رياكت", "ReactJS", "مقدمة في رياكت"].
+     * AVOID short acronyms (like "AI", "IT", "VR"). ALWAYS use full words (e.g., "Artificial Intelligence") to prevent false positive substring matches.
      * Put these variations into `topic_or_keyword` (AS AN ARRAY).
 
 5. ADAPTIVITY & LANGUAGE:
